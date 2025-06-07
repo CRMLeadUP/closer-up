@@ -23,16 +23,18 @@ const Assistant = () => {
   const [conversation, setConversation] = useState([
     {
       type: "ai",
-      message: "Olá! Sou seu assistente CloseAI. Como posso ajudar na sua venda hoje?",
+      message: "Olá! Sou seu assistente CloseAI. Posso ajudar com vendas, negociação, estratégias comerciais, desenvolvimento pessoal e muito mais. Como posso ajudá-lo hoje?",
       time: "14:30"
     }
   ]);
 
   const quickActions = [
     "Como quebrar objeção de preço?",
-    "Cliente perdeu interesse",
-    "Estratégia de urgência",
-    "Fechamento de venda"
+    "Estratégias de prospecção",
+    "Técnicas de fechamento",
+    "Desenvolvimento de equipe",
+    "Análise de mercado",
+    "Motivação pessoal"
   ];
 
   const insights = [
@@ -41,52 +43,90 @@ const Assistant = () => {
     { label: "Vendas Hoje", value: "5", icon: TrendingUp, color: "sales-accent" }
   ];
 
-  // Sistema de respostas inteligentes
+  // Sistema de respostas inteligentes expandido
   const generateResponse = (userMessage: string): string => {
     const message = userMessage.toLowerCase();
     
+    // === VENDAS E NEGOCIAÇÃO ===
+    
     // Objeções de preço
     if (message.includes("preço") || message.includes("caro") || message.includes("barato") || message.includes("desconto")) {
-      return "Para quebrar objeções de preço, use a técnica do 'Valor Percebido':\n\n1. **Reconheça a objeção**: 'Entendo sua preocupação com o preço'\n2. **Reforce o valor**: Destaque os benefícios únicos e resultados\n3. **Compare com o custo**: 'O custo de não resolver o problema é maior'\n4. **Ofereça opções**: Apresente diferentes formas de pagamento\n5. **Crie urgência**: 'Esta condição especial é válida até...'\n\n💡 Lembre-se: Preço só é objeção quando não há valor percebido!";
-    }
-    
-    // Cliente perdeu interesse
-    if (message.includes("interesse") || message.includes("desistiu") || message.includes("desanimado")) {
-      return "Para resgatar o interesse do cliente:\n\n1. **Identifique o motivo**: 'O que mudou desde nossa última conversa?'\n2. **Reative a dor**: Relembre o problema que ele precisa resolver\n3. **Mostre novos benefícios**: Apresente aspectos que ele não viu antes\n4. **Use prova social**: 'Outros clientes como você obtiveram...'\n5. **Crie uma nova urgência**: Ofereça algo exclusivo\n\n🎯 Dica: Às vezes o cliente só precisa de mais tempo para decidir.";
-    }
-    
-    // Fechamento de venda
-    if (message.includes("fechar") || message.includes("finalizar") || message.includes("venda")) {
-      return "Técnicas de fechamento eficazes:\n\n1. **Fechamento assumido**: 'Quando você gostaria de começar?'\n2. **Fechamento por escolha**: 'Você prefere a opção A ou B?'\n3. **Fechamento de urgência**: 'Temos apenas 2 vagas restantes'\n4. **Fechamento por benefício**: 'Com isso você vai conseguir...'\n5. **Fechamento de teste**: 'Se eu conseguir resolver X, você fecha hoje?'\n\n✅ Sinais de compra: cliente faz perguntas técnicas, pergunta sobre prazo, menciona implementação.";
-    }
-    
-    // Perfis comportamentais
-    if (message.includes("perfil") || message.includes("comportamento") || message.includes("cliente")) {
-      return "Identifique o perfil do cliente:\n\n🔴 **Dominante**: Direto, objetivo, quer resultados rápidos\n• Abordagem: Seja assertivo, foque em resultados\n\n🟡 **Influenciador**: Comunicativo, social, emotivo\n• Abordagem: Use storytelling, mostre reconhecimento\n\n🟢 **Estável**: Cauteloso, leal, precisa de confiança\n• Abordagem: Construa relacionamento, dê garantias\n\n🔵 **Consciente**: Analítico, detalhista, precisa de dados\n• Abordagem: Apresente fatos, seja técnico";
-    }
-    
-    // Objeções gerais
-    if (message.includes("objeção") || message.includes("não") || message.includes("dúvida")) {
-      return "Técnica para lidar com objeções:\n\n1. **Ouça completamente**: Deixe o cliente terminar\n2. **Reconheça**: 'Entendo sua preocupação'\n3. **Questione**: 'Além disso, existe mais alguma coisa?'\n4. **Responda**: Use dados, exemplos ou casos de sucesso\n5. **Confirme**: 'Isso esclarece sua dúvida?'\n\n🔑 Principais objeções: preço, tempo, autoridade, necessidade, confiança";
+      return "💰 **Estratégias para Objeções de Preço:**\n\n1. **Reconheça e valide**: 'Entendo sua preocupação com o investimento'\n2. **Reframe o valor**: 'Vamos pensar no retorno que isso trará'\n3. **Quebre em partes**: 'São apenas R$ X por dia para resolver Y'\n4. **Compare custos**: 'O custo de não resolver é maior'\n5. **Ofereça opções**: Apresente diferentes formas de pagamento\n6. **Crie urgência**: 'Esta condição especial é válida até...'\n\n💡 **Lembre-se**: Preço só é objeção quando não há valor percebido!\n\n🎯 **Script**: 'Além do preço, existe mais alguma preocupação que eu posso esclarecer?'";
     }
     
     // Prospecção
-    if (message.includes("prospecção") || message.includes("lead") || message.includes("contato")) {
-      return "Estratégias de prospecção eficazes:\n\n1. **Pesquise antes**: Conheça a empresa e dores do setor\n2. **Valor na abordagem**: Ofereça insights, não produtos\n3. **Multiple touchpoints**: E-mail + LinkedIn + telefone\n4. **Follow-up inteligente**: Adicione valor a cada contato\n5. **Timing certo**: Identifique momentos de necessidade\n\n📞 Script inicial: 'Olá [Nome], notei que vocês estão [situação]. Ajudei empresas similares a [resultado]. Posso compartilhar como?'";
+    if (message.includes("prospecção") || message.includes("prospect") || message.includes("lead") || message.includes("contato")) {
+      return "🎯 **Estratégias de Prospecção Eficazes:**\n\n**1. Pesquisa Prévia:**\n• LinkedIn da empresa e decisores\n• Notícias recentes do setor\n• Dores comuns do segmento\n\n**2. Múltiplos Canais:**\n• E-mail personalizado\n• LinkedIn com valor\n• Telefone estratégico\n• Redes sociais\n\n**3. Sequência de Follow-up:**\n• 1º contato: Insight relevante\n• 2º contato: Case de sucesso\n• 3º contato: Pergunta provocativa\n• 4º contato: Oferta específica\n\n**4. Scripts Eficazes:**\n• 'Notei que vocês estão [situação]. Ajudei empresas similares a [resultado]'\n• 'Você tem 30 segundos para uma ideia que pode [benefício]?'\n\n📞 **Dica**: Sempre termine com uma pergunta!";
     }
     
-    // Negociação
-    if (message.includes("negociar") || message.includes("proposta") || message.includes("acordo")) {
-      return "Princípios de negociação:\n\n1. **Prepare-se**: Conheça seus limites e alternativas\n2. **Entenda o outro lado**: Quais são as prioridades dele?\n3. **Crie valor**: Busque soluções win-win\n4. **Use silêncio**: Deixe o cliente falar primeiro\n5. **Feche com resumo**: 'Então, acordamos que...'\n\n⚖️ Regra de ouro: Quem fala primeiro sobre preço, perde poder na negociação.";
+    // Fechamento
+    if (message.includes("fechar") || message.includes("finalizar") || message.includes("venda") || message.includes("close")) {
+      return "🎯 **Técnicas de Fechamento Poderosas:**\n\n**1. Fechamento Assumido**\n• 'Quando você gostaria de começar?'\n• 'Qual forma de pagamento prefere?'\n\n**2. Fechamento por Escolha**\n• 'Você prefere a opção A ou B?'\n• 'Implementamos na segunda ou terça?'\n\n**3. Fechamento de Urgência**\n• 'Temos apenas 2 vagas este mês'\n• 'Esta condição expira amanhã'\n\n**4. Fechamento de Benefício**\n• 'Com isso você conseguirá [resultado específico]'\n\n**5. Fechamento de Teste**\n• 'Se eu conseguir [resolver X], você fecha hoje?'\n\n✅ **Sinais de Compra:**\n• Perguntas técnicas/detalhadas\n• Menciona implementação\n• Pergunta sobre prazos\n• Envolve outras pessoas";
     }
     
-    // Follow-up
-    if (message.includes("follow") || message.includes("acompanhamento") || message.includes("retorno")) {
-      return "Estratégia de follow-up:\n\n📅 **Timeline**:\n• 24h: Agradeça e confirme próximos passos\n• 3 dias: Compartilhe conteúdo relevante\n• 1 semana: Faça pergunta sobre implementação\n• 2 semanas: Ofereça demonstração/teste\n\n💡 **Cada contato deve**:\n- Adicionar valor\n- Ter motivo específico\n- Incluir call-to-action clara\n- Ser personalizado";
+    // === GESTÃO E LIDERANÇA ===
+    
+    if (message.includes("gestão") || message.includes("gerenciar") || message.includes("líder") || message.includes("liderança") || message.includes("equipe")) {
+      return "👨‍💼 **Princípios de Liderança em Vendas:**\n\n**1. Comunicação Eficaz:**\n• Reuniões de alinhamento semanais\n• Feedback construtivo regular\n• Metas claras e mensuráveis\n\n**2. Motivação da Equipe:**\n• Reconhecimento público dos resultados\n• Plano de carreira definido\n• Comissões atrativas e justas\n\n**3. Desenvolvimento:**\n• Treinamentos regulares\n• Mentoria individual\n• Compartilhamento de best practices\n\n**4. Acompanhamento:**\n• Dashboard de performance\n• 1:1 semanal com cada vendedor\n• Análise de pipeline conjunto\n\n**5. Cultura de Resultados:**\n• Celebração de conquistas\n• Aprendizado com fracassos\n• Ambiente colaborativo\n\n🎯 **Dica**: Um bom líder cria outros líderes!";
     }
     
-    // Resposta padrão
-    return "Entendi sua situação. Baseado na minha experiência com vendas, recomendo:\n\n1. **Identifique a real necessidade** do cliente\n2. **Construa rapport** antes de apresentar soluções\n3. **Use perguntas abertas** para entender melhor o cenário\n4. **Apresente benefícios**, não apenas características\n5. **Sempre confirme** se o cliente entendeu o valor\n\n💬 Pode me dar mais detalhes sobre sua situação específica? Assim posso ajudar de forma mais direcionada.";
+    // === DESENVOLVIMENTO PESSOAL ===
+    
+    if (message.includes("motivação") || message.includes("motivado") || message.includes("desmotivado") || message.includes("ânimo")) {
+      return "🚀 **Estratégias de Motivação:**\n\n**1. Definição de Propósito:**\n• Por que você vende?\n• Qual seu 'why' profundo?\n• Como suas vendas impactam vidas?\n\n**2. Metas SMART:**\n• Específicas e mensuráveis\n• Prazo definido\n• Quebradas em micro-objetivos\n\n**3. Rotina de Sucesso:**\n• Manhã produtiva\n• Exercícios físicos\n• Leitura/podcasts\n• Networking ativo\n\n**4. Mindset Vencedor:**\n• Foco em soluções, não problemas\n• Aprendizado contínuo\n• Resiliência diante do 'não'\n\n**5. Celebração:**\n• Comemore pequenas vitórias\n• Recompense-se pelos resultados\n• Compartilhe sucessos\n\n💡 **Lembre-se**: Motivação é como banho - precisa ser diária!";
+    }
+    
+    // === ANÁLISE E ESTRATÉGIA ===
+    
+    if (message.includes("mercado") || message.includes("concorrência") || message.includes("estratégia") || message.includes("planejamento")) {
+      return "📊 **Análise Estratégica de Mercado:**\n\n**1. Análise SWOT:**\n• **Forças**: O que fazemos melhor?\n• **Fraquezas**: Onde podemos melhorar?\n• **Oportunidades**: Que gaps existem?\n• **Ameaças**: Quais são os riscos?\n\n**2. Pesquisa de Concorrência:**\n• Preços e propostas de valor\n• Pontos fortes e fracos\n• Estratégias de marketing\n• Feedback de clientes\n\n**3. Segmentação de Mercado:**\n• Perfil do cliente ideal (ICP)\n• Jornada do cliente\n• Dores e necessidades\n• Canais de comunicação\n\n**4. Posicionamento:**\n• Diferencial competitivo único\n• Proposta de valor clara\n• Messaging consistente\n\n**5. Plano de Ação:**\n• Objetivos trimestrais\n• Táticas específicas\n• Métricas de acompanhamento\n• Budget e recursos\n\n🎯 **Dica**: Estratégia sem execução é apenas planejamento!";
+    }
+    
+    // === PERFIS COMPORTAMENTAIS ===
+    
+    if (message.includes("perfil") || message.includes("comportamento") || message.includes("cliente") || message.includes("disc")) {
+      return "🔍 **Identificação de Perfis Comportamentais (DISC):**\n\n🔴 **DOMINANTE (D)**\n• **Características**: Direto, objetivo, resultados rápidos\n• **Abordagem**: Seja assertivo, foque ROI, apresente fatos\n• **Evite**: Detalhes excessivos, relacionamento pessoal\n\n🟡 **INFLUENCIADOR (I)**\n• **Características**: Comunicativo, social, emotivo\n• **Abordagem**: Use storytelling, mostre reconhecimento\n• **Evite**: Dados frios, pressão excessiva\n\n🟢 **ESTÁVEL (S)**\n• **Características**: Cauteloso, leal, precisa confiança\n• **Abordagem**: Construa relacionamento, dê garantias\n• **Evite**: Mudanças bruscas, pressão por tempo\n\n🔵 **CONSCIENTE (C)**\n• **Características**: Analítico, detalhista, precisa dados\n• **Abordagem**: Apresente fatos, seja técnico, dê tempo\n• **Evite**: Promessas vagas, pressão emocional\n\n💡 **Como identificar**: Observe linguagem corporal, tom de voz, perguntas feitas e velocidade de decisão.";
+    }
+    
+    // === TECNOLOGIA E INOVAÇÃO ===
+    
+    if (message.includes("tecnologia") || message.includes("digital") || message.includes("automação") || message.includes("crm") || message.includes("ia")) {
+      return "💻 **Tecnologia em Vendas:**\n\n**1. CRM Eficiente:**\n• Histórico completo do cliente\n• Pipeline visual organizado\n• Automação de follow-ups\n• Relatórios de performance\n\n**2. Ferramentas de Prospecção:**\n• LinkedIn Sales Navigator\n• Ferramentas de email finder\n• Sequências automatizadas\n• Social selling\n\n**3. Inteligência Artificial:**\n• Análise de sentimento\n• Previsão de vendas\n• Chatbots qualificadores\n• Personalização em escala\n\n**4. Métricas Importantes:**\n• Taxa de conversão por etapa\n• Tempo médio de ciclo\n• Valor médio do ticket\n• CAC vs LTV\n\n**5. Tendências Futuras:**\n• Vendas conversacionais\n• Video selling\n• Realidade virtual/aumentada\n• Análise preditiva\n\n🚀 **Dica**: Tecnologia potencializa, mas não substitui o relacionamento humano!";
+    }
+    
+    // === OBJEÇÕES GERAIS ===
+    
+    if (message.includes("objeção") || message.includes("não") || message.includes("dúvida") || message.includes("resistência")) {
+      return "🛡️ **Técnica Universal para Objeções:**\n\n**1. OUCA** (Método Comprovado):\n• **O**uça completamente\n• **U**nderstand (entenda a real preocupação)\n• **C**onfirme a objeção\n• **A**presente a solução\n\n**2. Principais Objeções:**\n• **Preço**: Foque no valor e ROI\n• **Tempo**: Mostre urgência e oportunidade\n• **Autoridade**: Identifique o decisor real\n• **Necessidade**: Reforce a dor\n• **Confiança**: Use prova social\n\n**3. Frases Poderosas:**\n• 'Entendo sua preocupação...'\n• 'Além disso, existe mais alguma coisa?'\n• 'Se eu conseguir resolver isso...'\n• 'O que precisa acontecer para...?'\n\n**4. Tratamento Emocional:**\n• Mantenha calma e empatia\n• Não argumente, questione\n• Use tom consultivo\n• Transforme objeção em oportunidade\n\n💡 **Lembre-se**: Objeção é interesse disfarçado!";
+    }
+    
+    // === NETWORKING E RELACIONAMENTO ===
+    
+    if (message.includes("networking") || message.includes("relacionamento") || message.includes("rapport") || message.includes("conexão")) {
+      return "🤝 **Construção de Relacionamentos:**\n\n**1. Networking Estratégico:**\n• Eventos do setor\n• LinkedIn ativo e engajado\n• Grupos e comunidades\n• Referências e indicações\n\n**2. Construção de Rapport:**\n• Espelhamento sutil\n• Interesses em comum\n• Escuta ativa genuína\n• Linguagem corporal positiva\n\n**3. Manutenção de Relacionamentos:**\n• Check-ins regulares sem venda\n• Compartilhamento de valor\n• Lembrar de datas importantes\n• Apresentação de contatos\n\n**4. Follow-up Inteligente:**\n• Adicione valor a cada contato\n• Seja consistente, não insistente\n• Use múltiplos canais\n• Personalize cada mensagem\n\n**5. Long-term Thinking:**\n• Pense em relacionamento, não transação\n• Seja genuinamente útil\n• Construa reputação sólida\n• Cultive promotores da marca\n\n🌟 **Dica**: Relacionamentos são construídos antes de serem precisos!";
+    }
+    
+    // === APRESENTAÇÕES E DEMOS ===
+    
+    if (message.includes("apresentação") || message.includes("demo") || message.includes("proposta") || message.includes("pitch")) {
+      return "🎤 **Apresentações Impactantes:**\n\n**1. Estrutura SPIN:**\n• **S**ituação atual do cliente\n• **P**roblemas identificados\n• **I**mplicações das dores\n• **N**ecessidades específicas\n\n**2. Storytelling Eficaz:**\n• Comece com um case similar\n• Use dados concretos\n• Crie conexão emocional\n• Termine com call-to-action\n\n**3. Demo Personalizada:**\n• Foque nos features que importam\n• Use dados/exemplos do cliente\n• Interaja, não apenas mostre\n• Confirme entendimento constantemente\n\n**4. Proposta Vencedora:**\n• ROI claro e mensurável\n• Timeline realista\n• Próximos passos definidos\n• Termos e condições claros\n\n**5. Handling de Perguntas:**\n• Antecipe possíveis dúvidas\n• Responda com confiança\n• Use perguntas para qualificar\n• Termine sempre confirmando\n\n🎯 **Regra de Ouro**: Fale 30%, escute 70%!";
+    }
+    
+    // === PSICOLOGIA DE VENDAS ===
+    
+    if (message.includes("psicologia") || message.includes("mental") || message.includes("mindset") || message.includes("persuasão")) {
+      return "🧠 **Psicologia Aplicada às Vendas:**\n\n**1. Princípios de Cialdini:**\n• **Reciprocidade**: Dê primeiro\n• **Compromisso**: Obtenha confirmações\n• **Prova Social**: Use cases e depoimentos\n• **Autoridade**: Demonstre expertise\n• **Simpatia**: Construa afinidade\n• **Escassez**: Crie senso de urgência\n\n**2. Gatilhos Mentais:**\n• Urgência e escassez\n• Autoridade e expertise\n• Prova social e consenso\n• Novidade e curiosidade\n• Benefício e transformação\n\n**3. Neurovendas:**\n• Cérebro reptiliano busca segurança\n• Límbico busca emoção\n• Neocórtex busca lógica\n• Balance os três cérebros\n\n**4. Técnicas de Influência:**\n• Ancoragem de preços\n• Contraste de opções\n• Efeito enquadramento\n• Aversão à perda\n\n**5. Mindset Vencedor:**\n• Reframe do 'não' como 'ainda não'\n• Foco em valor, não venda\n• Mentalidade de consultor\n• Persistência inteligente\n\n💡 **Lembre-se**: Pessoas compram emocionalmente e justificam logicamente!";
+    }
+    
+    // === RESPOSTA GENÉRICA INTELIGENTE ===
+    
+    // Análise de contexto para resposta personalizada
+    if (message.includes("como") || message.includes("o que") || message.includes("quando") || message.includes("onde") || message.includes("por que")) {
+      return "🤔 **Vou ajudar você com essa questão!**\n\nPara dar uma resposta mais específica e útil, me conte:\n\n1. **Contexto**: Em que situação você está?\n2. **Objetivo**: O que você quer alcançar?\n3. **Desafio**: Qual a principal dificuldade?\n4. **Prazo**: Quando precisa resolver?\n\n💡 **Enquanto isso, algumas dicas gerais:**\n• Comece sempre pelo 'porquê'\n• Foque na dor do cliente\n• Use dados para fundamentar\n• Teste e meça resultados\n• Seja persistente, mas inteligente\n\n📚 **Áreas que posso ajudar:**\n• Estratégias de vendas\n• Técnicas de negociação\n• Desenvolvimento pessoal\n• Gestão de equipes\n• Análise de mercado\n• Psicologia aplicada\n\n🎯 Pode ser mais específico sobre sua situação?";
+    }
+    
+    // Resposta padrão melhorada
+    return "🎯 **Analisando sua questão...**\n\nCom base na minha experiência em vendas e negócios, aqui estão algumas diretrizes:\n\n**1. Identifique o Core da Questão**\n• Qual é o real problema a resolver?\n• Quem são os stakeholders envolvidos?\n• Qual o impacto de não resolver?\n\n**2. Abordagem Estruturada**\n• Gather: Colete todas as informações\n• Analyze: Analise os dados objetivamente\n• Strategize: Desenvolva opções de solução\n• Execute: Implemente com foco em resultados\n\n**3. Princípios Universais**\n• Foque em valor, não em features\n• Escute mais do que fale\n• Seja genuinamente útil\n• Construa relacionamentos duradouros\n• Meça e otimize constantemente\n\n💬 **Para uma resposta mais específica**, me conte:\n• Contexto da situação\n• Objetivo desejado\n• Principais desafios\n• Recursos disponíveis\n\n🚀 **Lembre-se**: Todo problema tem solução, é questão de encontrar a abordagem certa!";
   };
 
   const handleSendMessage = () => {
@@ -135,10 +175,10 @@ const Assistant = () => {
               🤖 CloseAI Assistant
             </Badge>
             <h1 className="text-2xl font-bold gradient-text mb-2">
-              Assistente em Tempo Real
+              Assistente Inteligente
             </h1>
             <p className="text-muted-foreground text-sm">
-              Seu consultor de vendas pessoal
+              Seu consultor pessoal para vendas, negócios e desenvolvimento
             </p>
           </div>
 
@@ -165,7 +205,7 @@ const Assistant = () => {
             <CardHeader className="pb-4">
               <CardTitle className="text-lg flex items-center gap-2">
                 <MessageSquare className="h-5 w-5 text-sales-secondary" />
-                Chat em Tempo Real
+                Chat Inteligente
               </CardTitle>
             </CardHeader>
             
@@ -204,7 +244,7 @@ const Assistant = () => {
 
         {/* Quick Actions */}
         <div className="px-4 my-6">
-          <h3 className="text-sm font-semibold mb-3">Ações Rápidas</h3>
+          <h3 className="text-sm font-semibold mb-3">Tópicos Populares</h3>
           <div className="grid grid-cols-2 gap-2">
             {quickActions.map((action, index) => (
               <Button
@@ -226,7 +266,7 @@ const Assistant = () => {
             <CardContent className="p-4">
               <div className="flex gap-2">
                 <Input
-                  placeholder="Digite sua dúvida sobre vendas..."
+                  placeholder="Faça qualquer pergunta sobre vendas, negócios, estratégia..."
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
