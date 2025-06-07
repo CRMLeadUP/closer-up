@@ -100,6 +100,16 @@
     @apply bg-background text-foreground;
     background: linear-gradient(135deg, hsl(240 10% 3.9%) 0%, hsl(240 8% 6%) 100%);
     min-height: 100vh;
+    /* Mobile optimizations */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    touch-action: manipulation;
+    user-select: none;
+  }
+
+  /* Mobile-first responsive text selection */
+  input, textarea {
+    user-select: text;
   }
 
   .gradient-text {
@@ -117,11 +127,25 @@
   .success-glow {
     box-shadow: 0 0 20px hsl(var(--sales-success) / 0.3);
   }
+
+  /* Mobile touch optimizations */
+  button, .card-glass {
+    @apply active:scale-95 transition-transform duration-150;
+  }
+
+  /* Safe area handling for mobile devices */
+  .mobile-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .mobile-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
 }
 
 @layer components {
   .btn-gradient {
-    @apply bg-gradient-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg;
+    @apply bg-gradient-primary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 hover:scale-105 hover:shadow-lg active:scale-95;
   }
 
   .card-glass {
@@ -134,5 +158,54 @@
 
   .progress-ring circle {
     @apply transition-all duration-500;
+  }
+
+  /* Mobile-specific styles */
+  .mobile-header {
+    @apply fixed top-0 left-0 right-0 z-50 glass-effect border-b border-white/10;
+    height: 60px;
+  }
+
+  .mobile-content {
+    @apply pt-16 pb-20;
+  }
+
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 glass-effect border-t border-white/10 z-40;
+    height: 70px;
+  }
+}
+
+/* Scrollbar styling for mobile */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/20 rounded-full;
+}
+
+/* Mobile viewport handling */
+@media screen and (max-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+  
+  .card-glass {
+    @apply p-4;
+  }
+}
+
+/* Prevent zoom on input focus (iOS) */
+@media screen and (max-width: 768px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  textarea {
+    font-size: 16px;
   }
 }
