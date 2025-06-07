@@ -4,53 +4,54 @@ import { Badge } from "@/components/ui/badge";
 import { 
   BarChart3, 
   TrendingUp, 
-  Target, 
   Clock,
   Award,
-  Users,
-  Calendar
+  Brain,
+  Calendar,
+  BookOpen,
+  Target
 } from "lucide-react";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
 
 const Analytics = () => {
-  const weeklyStats = [
-    { day: "Seg", sales: 3, time: 45 },
-    { day: "Ter", sales: 5, time: 60 },
-    { day: "Qua", sales: 2, time: 30 },
-    { day: "Qui", sales: 7, time: 90 },
-    { day: "Sex", sales: 4, time: 55 },
-    { day: "Sáb", sales: 1, time: 15 },
-    { day: "Dom", sales: 0, time: 0 }
+  const weeklyStudyTime = [
+    { day: "Seg", minutes: 25, lessons: 1 },
+    { day: "Ter", minutes: 45, lessons: 2 },
+    { day: "Qua", minutes: 0, lessons: 0 },
+    { day: "Qui", minutes: 60, lessons: 3 },
+    { day: "Sex", minutes: 30, lessons: 1 },
+    { day: "Sáb", minutes: 15, lessons: 1 },
+    { day: "Dom", minutes: 0, lessons: 0 }
   ];
 
-  const metrics = [
+  const trainingMetrics = [
     { 
-      title: "Vendas Este Mês", 
-      value: "22", 
-      change: "+15%", 
-      icon: Target, 
+      title: "Módulos Concluídos", 
+      value: "1", 
+      change: "+1", 
+      icon: BookOpen, 
       color: "sales-success",
       positive: true 
     },
     { 
-      title: "Taxa de Conversão", 
-      value: "68%", 
-      change: "+12%", 
+      title: "Progresso Geral", 
+      value: "8%", 
+      change: "+8%", 
       icon: TrendingUp, 
       color: "sales-primary",
       positive: true 
     },
     { 
-      title: "Tempo Médio", 
-      value: "18min", 
-      change: "-3min", 
+      title: "Tempo de Estudo", 
+      value: "175min", 
+      change: "+45min", 
       icon: Clock, 
       color: "sales-accent",
       positive: true 
     },
     { 
-      title: "XP Ganho", 
+      title: "XP Acumulado", 
       value: "1.580", 
       change: "+240", 
       icon: Award, 
@@ -59,14 +60,41 @@ const Analytics = () => {
     }
   ];
 
-  const recentActivities = [
-    { action: "Módulo 'Gatilhos Mentais' concluído", time: "2h atrás", type: "training" },
-    { action: "Venda fechada com CloseAI", time: "4h atrás", type: "sale" },
-    { action: "Quiz 'Perfis Comportamentais' - 90%", time: "1 dia", type: "quiz" },
-    { action: "Badge 'Vendedor Ativo' conquistado", time: "2 dias", type: "achievement" }
+  const trainingActivities = [
+    { action: "Quiz 'Perfil Dominante' - 85%", time: "2h atrás", type: "quiz", module: "Perfis Comportamentais" },
+    { action: "Aula 'Identificando Perfis' concluída", time: "4h atrás", type: "lesson", module: "Perfis Comportamentais" },
+    { action: "Aula 'Introdução aos Perfis' concluída", time: "1 dia", type: "lesson", module: "Perfis Comportamentais" },
+    { action: "Módulo 'Perfis Comportamentais' iniciado", time: "2 dias", type: "module", module: "Perfis Comportamentais" }
   ];
 
-  const maxSales = Math.max(...weeklyStats.map(stat => stat.sales));
+  const moduleProgress = [
+    {
+      name: "Perfis Comportamentais",
+      progress: 37.5,
+      lessonsCompleted: 3,
+      totalLessons: 8,
+      timeSpent: 175,
+      lastActivity: "2h atrás"
+    },
+    {
+      name: "Gatilhos Mentais",
+      progress: 0,
+      lessonsCompleted: 0,
+      totalLessons: 12,
+      timeSpent: 0,
+      lastActivity: "Não iniciado"
+    },
+    {
+      name: "Rapport e Conexão",
+      progress: 0,
+      lessonsCompleted: 0,
+      totalLessons: 6,
+      timeSpent: 0,
+      lastActivity: "Não iniciado"
+    }
+  ];
+
+  const maxMinutes = Math.max(...weeklyStudyTime.map(stat => stat.minutes));
 
   return (
     <div className="min-h-screen bg-background">
@@ -76,19 +104,19 @@ const Analytics = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <Badge className="mb-4 bg-sales-accent/20 text-sales-accent border-sales-accent/30">
-            📊 Analytics Dashboard
+            📚 Relatório de Treinamento
           </Badge>
           <h1 className="text-2xl font-bold gradient-text mb-2">
-            Seus Relatórios
+            Desempenho nos Estudos
           </h1>
           <p className="text-muted-foreground">
-            Acompanhe seu progresso e performance
+            Acompanhe seu progresso nos módulos de treinamento
           </p>
         </div>
 
-        {/* Key Metrics */}
+        {/* Training Metrics */}
         <div className="grid grid-cols-2 gap-3 mb-6">
-          {metrics.map((metric, index) => {
+          {trainingMetrics.map((metric, index) => {
             const IconComponent = metric.icon;
             return (
               <Card key={index} className="card-glass">
@@ -109,23 +137,23 @@ const Analytics = () => {
           })}
         </div>
 
-        {/* Weekly Performance Chart */}
+        {/* Weekly Study Time Chart */}
         <Card className="card-glass mb-6">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <BarChart3 className="h-5 w-5 text-sales-primary" />
-              Performance Semanal
+              Tempo de Estudo Semanal
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {/* Chart */}
               <div className="flex items-end justify-between h-32 border-b border-white/10 pb-2">
-                {weeklyStats.map((stat, index) => (
+                {weeklyStudyTime.map((stat, index) => (
                   <div key={index} className="flex flex-col items-center gap-2">
                     <div 
                       className="w-6 bg-gradient-primary rounded-t"
-                      style={{ height: `${(stat.sales / maxSales) * 100}%` }}
+                      style={{ height: `${maxMinutes > 0 ? (stat.minutes / maxMinutes) * 100 : 0}%` }}
                     ></div>
                     <span className="text-xs text-muted-foreground">{stat.day}</span>
                   </div>
@@ -136,14 +164,50 @@ const Analytics = () => {
               <div className="flex justify-center gap-4 text-xs text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <div className="w-3 h-3 bg-gradient-primary rounded"></div>
-                  <span>Vendas</span>
+                  <span>Minutos de estudo</span>
                 </div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Recent Activities */}
+        {/* Module Progress */}
+        <Card className="card-glass mb-6">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Brain className="h-5 w-5 text-sales-secondary" />
+              Progresso por Módulo
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {moduleProgress.map((module, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h4 className="font-medium text-sm">{module.name}</h4>
+                      <p className="text-xs text-muted-foreground">
+                        {module.lessonsCompleted}/{module.totalLessons} aulas • {module.timeSpent}min
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-sm font-semibold">{module.progress}%</div>
+                      <div className="text-xs text-muted-foreground">{module.lastActivity}</div>
+                    </div>
+                  </div>
+                  <div className="w-full bg-muted rounded-full h-2">
+                    <div 
+                      className="bg-sales-primary h-2 rounded-full" 
+                      style={{ width: `${module.progress}%` }}
+                    ></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Training Activities */}
         <Card className="card-glass mb-6">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
@@ -153,17 +217,19 @@ const Analytics = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {recentActivities.map((activity, index) => (
+              {trainingActivities.map((activity, index) => (
                 <div key={index} className="flex items-start gap-3">
                   <div className={`w-2 h-2 rounded-full mt-2 ${
-                    activity.type === 'training' ? 'bg-sales-primary' :
-                    activity.type === 'sale' ? 'bg-sales-success' :
-                    activity.type === 'quiz' ? 'bg-sales-accent' :
+                    activity.type === 'lesson' ? 'bg-sales-primary' :
+                    activity.type === 'quiz' ? 'bg-sales-success' :
+                    activity.type === 'module' ? 'bg-sales-accent' :
                     'bg-sales-secondary'
                   }`}></div>
                   <div className="flex-1">
                     <p className="text-sm">{activity.action}</p>
-                    <p className="text-xs text-muted-foreground">{activity.time}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {activity.module} • {activity.time}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -171,33 +237,43 @@ const Analytics = () => {
           </CardContent>
         </Card>
 
-        {/* Goals Card */}
+        {/* Learning Goals */}
         <Card className="card-glass">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Target className="h-5 w-5 text-sales-success" />
-              Metas do Mês
+              Metas de Aprendizado
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span>Vendas (22/30)</span>
-                  <span>73%</span>
+                  <span>Módulo Atual (3/8 aulas)</span>
+                  <span>38%</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-sales-success h-2 rounded-full" style={{ width: '73%' }}></div>
+                  <div className="bg-sales-success h-2 rounded-full" style={{ width: '38%' }}></div>
                 </div>
               </div>
               
               <div>
                 <div className="flex justify-between text-sm mb-1">
-                  <span>Módulos (2/5)</span>
-                  <span>40%</span>
+                  <span>Tempo Semanal (175/300 min)</span>
+                  <span>58%</span>
                 </div>
                 <div className="w-full bg-muted rounded-full h-2">
-                  <div className="bg-sales-primary h-2 rounded-full" style={{ width: '40%' }}></div>
+                  <div className="bg-sales-primary h-2 rounded-full" style={{ width: '58%' }}></div>
+                </div>
+              </div>
+
+              <div>
+                <div className="flex justify-between text-sm mb-1">
+                  <span>XP Mensal (1.580/2.000)</span>
+                  <span>79%</span>
+                </div>
+                <div className="w-full bg-muted rounded-full h-2">
+                  <div className="bg-sales-accent h-2 rounded-full" style={{ width: '79%' }}></div>
                 </div>
               </div>
             </div>
