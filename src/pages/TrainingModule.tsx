@@ -23,7 +23,7 @@ const TrainingModule = () => {
   const [completedLessons, setCompletedLessons] = useState<number[]>([1, 2]);
 
   const moduleData = {
-    1: {
+    "1": {
       title: "Perfis Comportamentais",
       description: "Identifique e adapte estratégias ao perfil do cliente",
       icon: Brain,
