@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,8 @@ import {
   ArrowLeft, 
   Clock,
   Trophy,
-  Star
+  Star,
+  Lock
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
@@ -29,76 +31,87 @@ const TrainingModule = () => {
       totalLessons: 10,
       duration: "3h 15min",
       xpReward: 250,
+      freeLimit: 3, // Apenas até a lição 3 (primeiro quiz)
       lessons: [
         {
           id: 1,
           title: "Introdução aos Perfis Comportamentais",
           duration: "15 min",
           type: "video",
-          description: "Entenda os 4 perfis principais: Dominante, Influenciador, Estável e Cauteloso"
+          description: "Entenda os 4 perfis principais: Dominante, Influenciador, Estável e Cauteloso",
+          isFree: true
         },
         {
           id: 2,
           title: "Identificando o Perfil Dominante",
           duration: "20 min",
           type: "interactive",
-          description: "Características e técnicas de vendas para clientes dominantes"
+          description: "Características e técnicas de vendas para clientes dominantes",
+          isFree: true
         },
         {
           id: 3,
           title: "Quiz: Perfil Dominante",
           duration: "10 min",
           type: "quiz",
-          description: "Teste seus conhecimentos sobre vendas para perfis dominantes"
+          description: "Teste seus conhecimentos sobre vendas para perfis dominantes",
+          isFree: true
         },
         {
           id: 4,
           title: "O Perfil Influenciador",
           duration: "18 min",
           type: "video",
-          description: "Como vender para pessoas extrovertidas e sociáveis"
+          description: "Como vender para pessoas extrovertidas e sociáveis",
+          isFree: false
         },
         {
           id: 5,
           title: "Simulador: Vendendo para Influenciador",
           duration: "25 min",
           type: "simulator",
-          description: "Pratique uma conversa de vendas com um cliente influenciador"
+          description: "Pratique uma conversa de vendas com um cliente influenciador",
+          isFree: false
         },
         {
           id: 6,
           title: "O Perfil Estável",
           duration: "20 min",
           type: "video",
-          description: "Estratégias para clientes estáveis, confiáveis e orientados a relacionamentos"
+          description: "Estratégias para clientes estáveis, confiáveis e orientados a relacionamentos",
+          isFree: false
         },
         {
           id: 7,
           title: "Simulador: Vendendo para Perfil Estável",
           duration: "22 min",
           type: "simulator",
-          description: "Pratique abordagens para clientes que valorizam segurança e confiança"
+          description: "Pratique abordagens para clientes que valorizam segurança e confiança",
+          isFree: false
         },
         {
           id: 8,
           title: "O Perfil Cauteloso",
           duration: "18 min",
           type: "video",
-          description: "Como lidar com clientes analíticos, detalhistas e mais conservadores"
+          description: "Como lidar com clientes analíticos, detalhistas e mais conservadores",
+          isFree: false
         },
         {
           id: 9,
           title: "Quiz Final: Todos os Perfis",
           duration: "15 min",
           type: "quiz",
-          description: "Avaliação completa sobre todos os perfis comportamentais"
+          description: "Avaliação completa sobre todos os perfis comportamentais",
+          isFree: false
         },
         {
           id: 10,
           title: "Certificação do Módulo",
           duration: "5 min",
           type: "certificate",
-          description: "Receba seu certificado de conclusão"
+          description: "Receba seu certificado de conclusão",
+          isFree: false
         }
       ]
     }
@@ -107,9 +120,11 @@ const TrainingModule = () => {
   const module = moduleData[moduleId as keyof typeof moduleData];
   if (!module) return <div>Módulo não encontrado</div>;
 
-  const progress = (completedLessons.length / module.totalLessons) * 100;
+  const freeLessons = module.lessons.filter(lesson => lesson.isFree);
+  const progress = (completedLessons.length / freeLessons.length) * 100;
 
-  const getLessonIcon = (type: string, completed: boolean) => {
+  const getLessonIcon = (type: string, completed: boolean, isFree: boolean) => {
+    if (!isFree) return <Lock className="h-5 w-5 text-muted-foreground" />;
     if (completed) return <CheckCircle2 className="h-5 w-5 text-sales-success" />;
     
     switch (type) {
@@ -121,7 +136,9 @@ const TrainingModule = () => {
     }
   };
 
-  const startLesson = (lessonId: number, type: string) => {
+  const startLesson = (lessonId: number, type: string, isFree: boolean) => {
+    if (!isFree) return;
+    
     if (type === 'quiz') {
       navigate(`/training/module/${moduleId}/quiz/${lessonId}`);
     } else if (type === 'simulator') {
@@ -148,6 +165,23 @@ const TrainingModule = () => {
           Voltar ao Treinamento
         </Button>
 
+        {/* Free Access Notice */}
+        <Card className="card-glass mb-4 border border-sales-success/30">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-sales-success/20 flex items-center justify-center">
+                <span className="text-sales-success text-sm">✓</span>
+              </div>
+              <div>
+                <h3 className="font-semibold text-sales-success">Acesso Gratuito</h3>
+                <p className="text-sm text-muted-foreground">
+                  Primeiras 3 aulas disponíveis gratuitamente
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Module Header */}
         <Card className="card-glass mb-6">
           <CardHeader>
@@ -165,7 +199,7 @@ const TrainingModule = () => {
                     <Clock className="h-3 w-3" />
                     {module.duration}
                   </span>
-                  <span>{module.totalLessons} aulas</span>
+                  <span>{freeLessons.length} aulas grátis</span>
                   <span className="flex items-center gap-1">
                     <Trophy className="h-3 w-3" />
                     {module.xpReward} XP
@@ -177,7 +211,7 @@ const TrainingModule = () => {
           <CardContent>
             <div className="space-y-2">
               <div className="flex justify-between text-sm">
-                <span>Progresso</span>
+                <span>Progresso (Aulas Gratuitas)</span>
                 <span>{Math.round(progress)}%</span>
               </div>
               <Progress value={progress} className="h-2" />
@@ -189,17 +223,19 @@ const TrainingModule = () => {
         <div className="space-y-3">
           {module.lessons.map((lesson) => {
             const isCompleted = completedLessons.includes(lesson.id);
-            const isLocked = lesson.id > Math.max(...completedLessons) + 1;
+            const isLocked = lesson.id > Math.max(...completedLessons) + 1 || !lesson.isFree;
             
             return (
               <Card 
                 key={lesson.id}
-                className={`card-glass ${isLocked ? 'opacity-50' : 'hover:scale-105 cursor-pointer'}`}
+                className={`card-glass ${
+                  lesson.isFree && !isLocked ? 'hover:scale-105 cursor-pointer' : 'opacity-60'
+                } ${lesson.isFree ? 'border-sales-primary/20' : 'border-muted/20'}`}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
                     <div className="flex-shrink-0">
-                      {getLessonIcon(lesson.type, isCompleted)}
+                      {getLessonIcon(lesson.type, isCompleted, lesson.isFree)}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
@@ -211,6 +247,8 @@ const TrainingModule = () => {
                           {lesson.type === 'interactive' && '🎯 Interativo'}
                           {lesson.type === 'certificate' && '🏆 Certificado'}
                         </Badge>
+                        {lesson.isFree && <Badge className="text-xs bg-sales-success">GRÁTIS</Badge>}
+                        {!lesson.isFree && <Badge variant="outline" className="text-xs">PREMIUM</Badge>}
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">
                         {lesson.description}
@@ -223,16 +261,20 @@ const TrainingModule = () => {
                         <Button
                           size="sm"
                           className={`${
-                            isCompleted 
+                            isCompleted && lesson.isFree
                               ? 'bg-sales-success hover:bg-sales-success/80' 
+                              : !lesson.isFree
+                              ? 'bg-muted hover:bg-muted text-muted-foreground cursor-not-allowed'
                               : isLocked
                               ? 'bg-muted hover:bg-muted text-muted-foreground cursor-not-allowed'
                               : 'btn-gradient'
                           }`}
                           disabled={isLocked}
-                          onClick={() => !isLocked && startLesson(lesson.id, lesson.type)}
+                          onClick={() => lesson.isFree && !isLocked && startLesson(lesson.id, lesson.type, lesson.isFree)}
                         >
-                          {isCompleted ? "✓ Concluído" : isLocked ? "🔒 Bloqueado" : "▶ Iniciar"}
+                          {!lesson.isFree ? "👑 Premium" : 
+                           isCompleted ? "✓ Concluído" : 
+                           isLocked ? "🔒 Bloqueado" : "▶ Iniciar"}
                         </Button>
                       </div>
                     </div>
@@ -242,6 +284,21 @@ const TrainingModule = () => {
             );
           })}
         </div>
+
+        {/* Upgrade CTA */}
+        <Card className="card-glass mt-6">
+          <CardContent className="p-6 text-center">
+            <h3 className="font-bold mb-2 gradient-text">
+              Continue sua jornada de aprendizado
+            </h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Desbloqueie as próximas 7 aulas deste módulo + 4 módulos completos
+            </p>
+            <Button className="w-full btn-gradient" onClick={() => navigate('/plans')}>
+              👑 Upgrade para Premium - R$ 29,90/mês
+            </Button>
+          </CardContent>
+        </Card>
       </div>
 
       <AppBottomNav />

@@ -29,7 +29,8 @@ const Training = () => {
       progress: 25,
       status: "in-progress",
       lessons: 8,
-      duration: "2h 30min"
+      duration: "2h 30min",
+      isFree: true
     },
     {
       id: 2,
@@ -37,9 +38,10 @@ const Training = () => {
       description: "Técnicas de persuasão e construção de urgência",
       icon: Brain,
       progress: 0,
-      status: "available",
+      status: "locked",
       lessons: 12,
-      duration: "3h 45min"
+      duration: "3h 45min",
+      isFree: false
     },
     {
       id: 3,
@@ -47,9 +49,10 @@ const Training = () => {
       description: "Como criar conexão e confiança com o cliente",
       icon: MessageSquare,
       progress: 0,
-      status: "available",
+      status: "locked",
       lessons: 6,
-      duration: "2h 15min"
+      duration: "2h 15min",
+      isFree: false
     },
     {
       id: 4,
@@ -59,7 +62,8 @@ const Training = () => {
       progress: 0,
       status: "locked",
       lessons: 10,
-      duration: "4h 20min"
+      duration: "4h 20min",
+      isFree: false
     },
     {
       id: 5,
@@ -69,7 +73,8 @@ const Training = () => {
       progress: 0,
       status: "locked",
       lessons: 15,
-      duration: "5h 10min"
+      duration: "5h 10min",
+      isFree: false
     }
   ];
 
@@ -87,8 +92,8 @@ const Training = () => {
     return "sales-accent";
   };
 
-  const handleModuleClick = (moduleId: number, status: string) => {
-    if (status !== "locked") {
+  const handleModuleClick = (moduleId: number, status: string, isFree: boolean) => {
+    if (status !== "locked" && isFree) {
       navigate(`/training/module/${moduleId}`);
     }
   };
@@ -128,29 +133,52 @@ const Training = () => {
           </CardContent>
         </Card>
 
+        {/* Free Module Notice */}
+        <Card className="card-glass mb-6 border border-sales-primary/30">
+          <CardContent className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-sales-primary/20 flex items-center justify-center">
+                <Users className="h-5 w-5 text-sales-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-sales-primary">Módulo Gratuito Disponível</h3>
+                <p className="text-sm text-muted-foreground">
+                  Acesse o módulo de Perfis Comportamentais gratuitamente
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Training Modules */}
         <div className="space-y-4">
           {modules.map((module) => {
             const IconComponent = module.icon;
             const statusColor = getStatusColor(module.status);
-            const isLocked = module.status === "locked";
+            const isLocked = !module.isFree;
             
             return (
               <Card 
                 key={module.id} 
                 className={`card-glass transition-all duration-300 ${
-                  !isLocked ? 'hover:scale-105 cursor-pointer' : 'opacity-60'
-                }`}
-                onClick={() => handleModuleClick(module.id, module.status)}
+                  module.isFree ? 'hover:scale-105 cursor-pointer' : 'opacity-60'
+                } ${module.isFree ? 'border-sales-primary/20' : ''}`}
+                onClick={() => handleModuleClick(module.id, module.status, module.isFree)}
               >
                 <CardHeader className="pb-4">
                   <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${statusColor} to-${statusColor}/70 flex items-center justify-center`}>
+                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${statusColor} to-${statusColor}/70 flex items-center justify-center relative`}>
                       <IconComponent className="h-6 w-6 text-white" />
+                      {module.isFree && (
+                        <div className="absolute -top-1 -right-1 w-4 h-4 bg-sales-success rounded-full flex items-center justify-center">
+                          <span className="text-white text-xs">✓</span>
+                        </div>
+                      )}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2 mb-1">
                         <CardTitle className="text-lg">{module.title}</CardTitle>
+                        {module.isFree && <Badge className="text-xs bg-sales-success">GRÁTIS</Badge>}
                         {getStatusIcon(module.status, module.progress)}
                       </div>
                       <p className="text-sm text-muted-foreground mb-3">
@@ -164,7 +192,7 @@ const Training = () => {
                   </div>
                 </CardHeader>
                 
-                {module.progress > 0 && (
+                {module.progress > 0 && module.isFree && (
                   <CardContent className="pt-0">
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm">
@@ -179,24 +207,24 @@ const Training = () => {
                 <CardContent className="pt-2">
                   <Button 
                     className={`w-full ${
-                      module.status === "completed" 
-                        ? 'bg-sales-success hover:bg-sales-success/80' 
-                        : module.status === "in-progress"
-                        ? 'btn-gradient'
-                        : isLocked
-                        ? 'bg-muted hover:bg-muted text-muted-foreground cursor-not-allowed'
-                        : 'bg-sales-accent hover:bg-sales-accent/80'
+                      module.isFree
+                        ? module.status === "completed" 
+                          ? 'bg-sales-success hover:bg-sales-success/80' 
+                          : 'btn-gradient'
+                        : 'bg-muted hover:bg-muted text-muted-foreground cursor-not-allowed'
                     }`}
-                    disabled={isLocked}
+                    disabled={!module.isFree}
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleModuleClick(module.id, module.status);
+                      handleModuleClick(module.id, module.status, module.isFree);
                     }}
                   >
-                    {module.status === "completed" && "✓ Revisitar"}
-                    {module.status === "in-progress" && "▶ Continuar"}
-                    {module.status === "available" && "🚀 Iniciar"}
-                    {module.status === "locked" && "🔒 Bloqueado"}
+                    {module.isFree ? (
+                      module.status === "completed" ? "✓ Revisitar" : 
+                      module.status === "in-progress" ? "▶ Continuar" : "🚀 Iniciar"
+                    ) : (
+                      "🔒 Premium"
+                    )}
                   </Button>
                 </CardContent>
               </Card>
@@ -211,7 +239,7 @@ const Training = () => {
               Desbloqueie todos os módulos
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Upgrade para Premium e acelere seu aprendizado
+              Upgrade para Premium e acelere seu aprendizado com mais 4 módulos completos
             </p>
             <Button className="w-full btn-gradient" onClick={() => navigate('/plans')}>
               👑 Fazer Upgrade - R$ 29,90/mês
