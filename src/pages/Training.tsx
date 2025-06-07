@@ -13,18 +13,21 @@ import {
   CheckCircle2,
   Lock
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
 
 const Training = () => {
+  const navigate = useNavigate();
+
   const modules = [
     {
       id: 1,
       title: "Perfis Comportamentais",
       description: "Identifique e adapte estratégias ao perfil do cliente",
       icon: Users,
-      progress: 100,
-      status: "completed",
+      progress: 25,
+      status: "in-progress",
       lessons: 8,
       duration: "2h 30min"
     },
@@ -33,8 +36,8 @@ const Training = () => {
       title: "Gatilhos Mentais",
       description: "Técnicas de persuasão e construção de urgência",
       icon: Brain,
-      progress: 65,
-      status: "in-progress",
+      progress: 0,
+      status: "available",
       lessons: 12,
       duration: "3h 45min"
     },
@@ -84,6 +87,12 @@ const Training = () => {
     return "sales-accent";
   };
 
+  const handleModuleClick = (moduleId: number, status: string) => {
+    if (status !== "locked") {
+      navigate(`/training/module/${moduleId}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <MobileHeader />
@@ -108,14 +117,14 @@ const Training = () => {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="font-semibold">Progresso Geral</h3>
-                <p className="text-sm text-muted-foreground">33% completo</p>
+                <p className="text-sm text-muted-foreground">8% completo</p>
               </div>
               <div className="text-right">
                 <div className="text-2xl font-bold gradient-text">1.580</div>
                 <div className="text-xs text-muted-foreground">XP ganhos</div>
               </div>
             </div>
-            <Progress value={33} className="h-2" />
+            <Progress value={8} className="h-2" />
           </CardContent>
         </Card>
 
@@ -132,6 +141,7 @@ const Training = () => {
                 className={`card-glass transition-all duration-300 ${
                   !isLocked ? 'hover:scale-105 cursor-pointer' : 'opacity-60'
                 }`}
+                onClick={() => handleModuleClick(module.id, module.status)}
               >
                 <CardHeader className="pb-4">
                   <div className="flex items-start gap-4">
@@ -178,6 +188,10 @@ const Training = () => {
                         : 'bg-sales-accent hover:bg-sales-accent/80'
                     }`}
                     disabled={isLocked}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleModuleClick(module.id, module.status);
+                    }}
                   >
                     {module.status === "completed" && "✓ Revisitar"}
                     {module.status === "in-progress" && "▶ Continuar"}
@@ -199,7 +213,7 @@ const Training = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Upgrade para Premium e acelere seu aprendizado
             </p>
-            <Button className="w-full btn-gradient">
+            <Button className="w-full btn-gradient" onClick={() => navigate('/plans')}>
               👑 Fazer Upgrade - R$ 29,90/mês
             </Button>
           </CardContent>
