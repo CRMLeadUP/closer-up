@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,9 +26,9 @@ const TrainingModule = () => {
       title: "Perfis Comportamentais",
       description: "Identifique e adapte estratégias ao perfil do cliente",
       icon: Brain,
-      totalLessons: 8,
-      duration: "2h 30min",
-      xpReward: 200,
+      totalLessons: 10,
+      duration: "3h 15min",
+      xpReward: 250,
       lessons: [
         {
           id: 1,
@@ -68,20 +67,34 @@ const TrainingModule = () => {
         },
         {
           id: 6,
-          title: "Perfil Estável e Cauteloso",
-          duration: "22 min",
+          title: "O Perfil Estável",
+          duration: "20 min",
           type: "video",
-          description: "Estratégias para clientes mais conservadores e analíticos"
+          description: "Estratégias para clientes estáveis, confiáveis e orientados a relacionamentos"
         },
         {
           id: 7,
+          title: "Simulador: Vendendo para Perfil Estável",
+          duration: "22 min",
+          type: "simulator",
+          description: "Pratique abordagens para clientes que valorizam segurança e confiança"
+        },
+        {
+          id: 8,
+          title: "O Perfil Cauteloso",
+          duration: "18 min",
+          type: "video",
+          description: "Como lidar com clientes analíticos, detalhistas e mais conservadores"
+        },
+        {
+          id: 9,
           title: "Quiz Final: Todos os Perfis",
           duration: "15 min",
           type: "quiz",
           description: "Avaliação completa sobre todos os perfis comportamentais"
         },
         {
-          id: 8,
+          id: 10,
           title: "Certificação do Módulo",
           duration: "5 min",
           type: "certificate",
