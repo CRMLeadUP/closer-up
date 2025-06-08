@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,7 +11,8 @@ import {
   Clock,
   Trophy,
   Star,
-  Lock
+  Lock,
+  ExternalLink
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
@@ -39,7 +39,8 @@ const TrainingModule = () => {
           duration: "15 min",
           type: "video",
           description: "Entenda os 4 perfis principais: Dominante, Influenciador, Estável e Cauteloso",
-          isFree: true
+          isFree: true,
+          videoUrl: "https://www.veed.io/view/a6cb70ea-34f2-41f9-8b36-ae103fbbf75c?panel=share"
         },
         {
           id: 2,
@@ -136,13 +137,20 @@ const TrainingModule = () => {
     }
   };
 
-  const startLesson = (lessonId: number, type: string, isFree: boolean) => {
+  const startLesson = (lessonId: number, type: string, isFree: boolean, videoUrl?: string) => {
     if (!isFree) return;
     
     if (type === 'quiz') {
       navigate(`/training/module/${moduleId}/quiz/${lessonId}`);
     } else if (type === 'simulator') {
       navigate(`/training/module/${moduleId}/simulator/${lessonId}`);
+    } else if (type === 'video' && videoUrl) {
+      // Open video in new tab
+      window.open(videoUrl, '_blank');
+      // Mark as completed
+      if (!completedLessons.includes(lessonId)) {
+        setCompletedLessons([...completedLessons, lessonId]);
+      }
     } else {
       // Simular conclusão da lição
       if (!completedLessons.includes(lessonId)) {
@@ -249,6 +257,9 @@ const TrainingModule = () => {
                         </Badge>
                         {lesson.isFree && <Badge className="text-xs bg-sales-success">GRÁTIS</Badge>}
                         {!lesson.isFree && <Badge variant="outline" className="text-xs">PREMIUM</Badge>}
+                        {lesson.type === 'video' && lesson.videoUrl && lesson.isFree && (
+                          <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                        )}
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">
                         {lesson.description}
@@ -270,11 +281,12 @@ const TrainingModule = () => {
                               : 'btn-gradient'
                           }`}
                           disabled={isLocked}
-                          onClick={() => lesson.isFree && !isLocked && startLesson(lesson.id, lesson.type, lesson.isFree)}
+                          onClick={() => lesson.isFree && !isLocked && startLesson(lesson.id, lesson.type, lesson.isFree, lesson.videoUrl)}
                         >
                           {!lesson.isFree ? "👑 Premium" : 
                            isCompleted ? "✓ Concluído" : 
-                           isLocked ? "🔒 Bloqueado" : "▶ Iniciar"}
+                           isLocked ? "🔒 Bloqueado" : 
+                           lesson.type === 'video' && lesson.videoUrl ? "▶ Assistir" : "▶ Iniciar"}
                         </Button>
                       </div>
                     </div>
