@@ -49,9 +49,10 @@ const TrainingModule = () => {
           id: 2,
           title: "Identificando o Perfil Dominante",
           duration: "20 min",
-          type: "interactive",
+          type: "video",
           description: "Características e técnicas de vendas para clientes dominantes",
-          isFree: true
+          isFree: true,
+          videoUrl: "https://youtu.be/ZPV9pC-T2dE?si=Vc87bTQrnYcsHpAb"
         },
         {
           id: 3,
