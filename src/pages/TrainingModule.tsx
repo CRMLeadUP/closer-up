@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { 
   CheckCircle2, 
   PlayCircle, 
@@ -12,7 +13,7 @@ import {
   Trophy,
   Star,
   Lock,
-  ExternalLink
+  Play
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
@@ -22,6 +23,8 @@ const TrainingModule = () => {
   const navigate = useNavigate();
   const { moduleId } = useParams();
   const [completedLessons, setCompletedLessons] = useState<number[]>([1, 2]);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
+  const [currentVideoUrl, setCurrentVideoUrl] = useState("");
 
   const moduleData = {
     "1": {
@@ -40,7 +43,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Entenda os 4 perfis principais: Dominante, Influenciador, Estável e Cauteloso",
           isFree: true,
-          videoUrl: "https://www.veed.io/view/a6cb70ea-34f2-41f9-8b36-ae103fbbf75c?panel=share"
+          videoUrl: "https://youtu.be/abDCOXYrWsA?si=Dd1Zmu6zwuqdr7DX"
         },
         {
           id: 2,
@@ -137,6 +140,12 @@ const TrainingModule = () => {
     }
   };
 
+  // Convert YouTube URL to embed format
+  const getEmbedUrl = (url: string) => {
+    const videoId = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=|youtube\.com\/embed\/)([^&\n?#]+)/);
+    return videoId ? `https://www.youtube.com/embed/${videoId[1]}` : url;
+  };
+
   const startLesson = (lessonId: number, type: string, isFree: boolean, videoUrl?: string) => {
     if (!isFree) return;
     
@@ -145,8 +154,9 @@ const TrainingModule = () => {
     } else if (type === 'simulator') {
       navigate(`/training/module/${moduleId}/simulator/${lessonId}`);
     } else if (type === 'video' && videoUrl) {
-      // Open video in new tab
-      window.open(videoUrl, '_blank');
+      // Open video in modal
+      setCurrentVideoUrl(getEmbedUrl(videoUrl));
+      setIsVideoModalOpen(true);
       // Mark as completed
       if (!completedLessons.includes(lessonId)) {
         setCompletedLessons([...completedLessons, lessonId]);
@@ -258,7 +268,7 @@ const TrainingModule = () => {
                         {lesson.isFree && <Badge className="text-xs bg-sales-success">GRÁTIS</Badge>}
                         {!lesson.isFree && <Badge variant="outline" className="text-xs">PREMIUM</Badge>}
                         {lesson.type === 'video' && lesson.videoUrl && lesson.isFree && (
-                          <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                          <Play className="h-3 w-3 text-muted-foreground" />
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground mb-2">
@@ -312,6 +322,26 @@ const TrainingModule = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Video Modal */}
+      <Dialog open={isVideoModalOpen} onOpenChange={setIsVideoModalOpen}>
+        <DialogContent className="max-w-4xl w-full p-0">
+          <DialogHeader className="p-6 pb-0">
+            <DialogTitle>Vídeo da Aula</DialogTitle>
+          </DialogHeader>
+          <div className="p-6 pt-0">
+            <div className="aspect-video w-full">
+              <iframe
+                src={currentVideoUrl}
+                className="w-full h-full rounded-lg"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <AppBottomNav />
     </div>
