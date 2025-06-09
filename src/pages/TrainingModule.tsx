@@ -128,7 +128,6 @@ const TrainingModule = () => {
   const progress = (completedLessons.length / allLessons.length) * 100;
 
   const getLessonIcon = (type: string, completed: boolean, isFree: boolean) => {
-    if (!isFree) return <Lock className="h-5 w-5 text-muted-foreground" />;
     if (completed) return <CheckCircle2 className="h-5 w-5 text-sales-success" />;
     
     switch (type) {
@@ -147,8 +146,6 @@ const TrainingModule = () => {
   };
 
   const startLesson = (lessonId: number, type: string, isFree: boolean, videoUrl?: string) => {
-    if (!isFree) return;
-    
     if (type === 'quiz') {
       navigate(`/training/module/${moduleId}/quiz/${lessonId}`);
     } else if (type === 'simulator') {
@@ -241,7 +238,6 @@ const TrainingModule = () => {
         <div className="space-y-3">
           {module.lessons.map((lesson) => {
             const isCompleted = completedLessons.includes(lesson.id);
-            const isLocked = lesson.id > Math.max(...completedLessons) + 1;
             
             return (
               <Card 
@@ -281,15 +277,11 @@ const TrainingModule = () => {
                           className={`${
                             isCompleted
                               ? 'bg-sales-success hover:bg-sales-success/80' 
-                              : isLocked
-                              ? 'bg-muted hover:bg-muted text-muted-foreground cursor-not-allowed'
                               : 'btn-gradient'
                           }`}
-                          disabled={isLocked}
-                          onClick={() => !isLocked && startLesson(lesson.id, lesson.type, true, lesson.videoUrl)}
+                          onClick={() => startLesson(lesson.id, lesson.type, true, lesson.videoUrl)}
                         >
                           {isCompleted ? "✓ Concluído" : 
-                           isLocked ? "🔒 Bloqueado" : 
                            lesson.type === 'video' && lesson.videoUrl ? "▶ Assistir" : "▶ Iniciar"}
                         </Button>
                       </div>
