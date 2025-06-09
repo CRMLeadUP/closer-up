@@ -118,6 +118,118 @@ const TrainingModule = () => {
           isFree: true
         }
       ]
+    },
+    "2": {
+      title: "Gatilhos Mentais",
+      description: "Técnicas de persuasão e construção de urgência",
+      icon: Brain,
+      totalLessons: 12,
+      duration: "3h 45min",
+      xpReward: 300,
+      lessons: [
+        {
+          id: 1,
+          title: "Introdução aos Gatilhos Mentais",
+          duration: "18 min",
+          type: "video",
+          description: "O que são gatilhos mentais e como usá-los eticamente nas vendas",
+          isFree: true,
+          videoUrl: "https://youtu.be/sample1"
+        },
+        {
+          id: 2,
+          title: "Gatilho da Escassez",
+          duration: "22 min",
+          type: "video",
+          description: "Como criar urgência através da escassez de produto, tempo ou oportunidade",
+          isFree: true,
+          videoUrl: "https://youtu.be/sample2"
+        },
+        {
+          id: 3,
+          title: "Quiz: Escassez",
+          duration: "8 min",
+          type: "quiz",
+          description: "Teste seus conhecimentos sobre o gatilho da escassez",
+          isFree: true
+        },
+        {
+          id: 4,
+          title: "Gatilho da Autoridade",
+          duration: "20 min",
+          type: "video",
+          description: "Como estabelecer autoridade e credibilidade para influenciar decisões",
+          isFree: true,
+          videoUrl: "https://youtu.be/sample3"
+        },
+        {
+          id: 5,
+          title: "Simulador: Usando Autoridade",
+          duration: "25 min",
+          type: "simulator",
+          description: "Pratique como demonstrar autoridade em conversas de venda",
+          isFree: true
+        },
+        {
+          id: 6,
+          title: "Gatilho da Prova Social",
+          duration: "19 min",
+          type: "video",
+          description: "Use depoimentos, cases e números para validar sua proposta",
+          isFree: true,
+          videoUrl: "https://youtu.be/sample4"
+        },
+        {
+          id: 7,
+          title: "Gatilho da Reciprocidade",
+          duration: "16 min",
+          type: "video",
+          description: "Como oferecer valor primeiro para criar obrigação de retorno",
+          isFree: true,
+          videoUrl: "https://youtu.be/sample5"
+        },
+        {
+          id: 8,
+          title: "Quiz: Prova Social e Reciprocidade",
+          duration: "10 min",
+          type: "quiz",
+          description: "Avalie seu entendimento sobre estes dois gatilhos",
+          isFree: true
+        },
+        {
+          id: 9,
+          title: "Gatilho da Novidade",
+          duration: "17 min",
+          type: "video",
+          description: "Como usar o novo, o exclusivo e o inovador para despertar interesse",
+          isFree: true,
+          videoUrl: "https://youtu.be/sample6"
+        },
+        {
+          id: 10,
+          title: "Simulador: Combinando Gatilhos",
+          duration: "30 min",
+          type: "simulator",
+          description: "Pratique usando múltiplos gatilhos em uma conversa de venda",
+          isFree: true
+        },
+        {
+          id: 11,
+          title: "Quiz Final: Todos os Gatilhos",
+          duration: "15 min",
+          type: "quiz",
+          description: "Avaliação completa sobre todos os gatilhos mentais",
+          isFree: true
+        },
+        {
+          id: 12,
+          title: "Certificação do Módulo",
+          duration: "5 min",
+          type: "certificate",
+          description: "Receba seu certificado de conclusão em Gatilhos Mentais",
+          isFree: true
+        }
+      ]
     }
   };
 
@@ -293,17 +405,17 @@ const TrainingModule = () => {
           })}
         </div>
 
-        {/* Upgrade CTA */}
+        {/* Continue Learning CTA */}
         <Card className="card-glass mt-6">
           <CardContent className="p-6 text-center">
             <h3 className="font-bold mb-2 gradient-text">
               Continue sua jornada de aprendizado
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
-              Desbloqueie as próximas 7 aulas deste módulo + 4 módulos completos
+              Explore outros módulos para dominar todas as técnicas de vendas
             </p>
-            <Button className="w-full btn-gradient" onClick={() => navigate('/plans')}>
-              👑 Upgrade para Premium - R$ 29,90/mês
+            <Button className="w-full btn-gradient" onClick={() => navigate('/training')}>
+              🚀 Ver Todos os Módulos
             </Button>
           </CardContent>
         </Card>
