@@ -291,6 +291,101 @@ const TrainingModule = () => {
           isFree: true
         }
       ]
+    },
+    "4": {
+      title: "Quebra de Objeções",
+      description: "Respostas práticas para situações comuns",
+      icon: Brain,
+      totalLessons: 10,
+      duration: "4h 20min",
+      xpReward: 350,
+      lessons: [
+        {
+          id: 1,
+          title: "Fundamentos da Quebra de Objeções",
+          duration: "22 min",
+          type: "video",
+          description: "Entenda a psicologia por trás das objeções e como respondê-las",
+          isFree: true,
+          videoUrl: "https://youtu.be/objections1"
+        },
+        {
+          id: 2,
+          title: "Objeção de Preço: 'Está muito caro'",
+          duration: "28 min",
+          type: "video",
+          description: "Técnicas para superar a objeção mais comum nas vendas",
+          isFree: true,
+          videoUrl: "https://youtu.be/objections2"
+        },
+        {
+          id: 3,
+          title: "Quiz: Objeções de Preço",
+          duration: "12 min",
+          type: "quiz",
+          description: "Teste seus conhecimentos sobre como lidar com objeções de preço",
+          isFree: true
+        },
+        {
+          id: 4,
+          title: "Objeção de Tempo: 'Preciso pensar'",
+          duration: "25 min",
+          type: "video",
+          description: "Como responder quando o cliente quer 'pensar melhor'",
+          isFree: true,
+          videoUrl: "https://youtu.be/objections3"
+        },
+        {
+          id: 5,
+          title: "Simulador: Objeções de Tempo",
+          duration: "30 min",
+          type: "simulator",
+          description: "Pratique superando objeções relacionadas à tomada de decisão",
+          isFree: true
+        },
+        {
+          id: 6,
+          title: "Objeção de Autoridade: 'Preciso falar com...'",
+          duration: "23 min",
+          type: "video",
+          description: "Estratégias quando o cliente não é o decisor final",
+          isFree: true,
+          videoUrl: "https://youtu.be/objections4"
+        },
+        {
+          id: 7,
+          title: "Objeção de Confiança: 'Não conheço a empresa'",
+          duration: "26 min",
+          type: "video",
+          description: "Como construir credibilidade e superar desconfiança",
+          isFree: true,
+          videoUrl: "https://youtu.be/objections5"
+        },
+        {
+          id: 8,
+          title: "Simulador: Múltiplas Objeções",
+          duration: "35 min",
+          type: "simulator",
+          description: "Pratique lidando com várias objeções em sequência",
+          isFree: true
+        },
+        {
+          id: 9,
+          title: "Quiz Final: Todas as Objeções",
+          duration: "15 min",
+          type: "quiz",
+          description: "Avaliação completa sobre quebra de objeções",
+          isFree: true
+        },
+        {
+          id: 10,
+          title: "Certificação do Módulo",
+          duration: "5 min",
+          type: "certificate",
+          description: "Receba seu certificado de conclusão em Quebra de Objeções",
+          isFree: true
+        }
+      ]
     }
   };
 
