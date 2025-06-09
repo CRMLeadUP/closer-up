@@ -14,7 +14,7 @@ const Header = () => {
             <div className="w-10 h-10 bg-gradient-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xl">C</span>
             </div>
-            <span className="text-2xl font-bold gradient-text">CloserAI</span>
+            <span className="text-2xl font-bold gradient-text">CloserUP</span>
           </div>
           
           <nav className="hidden md:flex items-center space-x-8">

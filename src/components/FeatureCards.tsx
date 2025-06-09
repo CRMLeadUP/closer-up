@@ -15,7 +15,7 @@ import {
 const FeatureCards = () => {
   const features = [
     {
-      title: "AICloser - Treinamento Interativo",
+      title: "CloserUP - Treinamento Interativo",
       description: "Módulos gamificados com simulações reais, gatilhos mentais e técnicas avançadas de vendas.",
       icon: Brain,
       badge: "Treinamento",
@@ -28,7 +28,7 @@ const FeatureCards = () => {
       ]
     },
     {
-      title: "CloseAI - Assistente em Tempo Real",
+      title: "CloserAI - Assistente em Tempo Real",
       description: "Seu consultor de vendas pessoal que analisa conversas e sugere as melhores estratégias.",
       icon: MessageSquare,
       badge: "Assistente IA",

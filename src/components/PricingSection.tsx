@@ -14,7 +14,7 @@ const PricingSection = () => {
       badge: "Mais Popular",
       badgeColor: "sales-accent",
       features: [
-        "Acesso ao AICloser (módulos básicos)",
+        "Acesso ao CloserUP (módulos básicos)",
         "3 módulos de treinamento",
         "Sistema de gamificação básico",
         "Certificado de conclusão",
@@ -33,8 +33,8 @@ const PricingSection = () => {
       badge: "Recomendado",
       badgeColor: "sales-primary",
       features: [
-        "Acesso completo ao AICloser",
-        "CloseAI - Assistente em tempo real",
+        "Acesso completo ao CloserUP",
+        "CloserAI - Assistente em tempo real",
         "Todos os módulos de treinamento",
         "Gamificação avançada com rankings",
         "Análises detalhadas de performance",

@@ -14,8 +14,8 @@ const HeroSection = () => {
         </Badge>
         
         <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-          <span className="gradient-text">AICloser</span> +{" "}
-          <span className="gradient-text">CloseAI</span>
+          <span className="gradient-text">CloserUP</span> +{" "}
+          <span className="gradient-text">CloserAI</span>
           <br />
           <span className="text-foreground text-4xl md:text-5xl">
             Sua dupla perfeita para vendas
@@ -23,8 +23,8 @@ const HeroSection = () => {
         </h1>
         
         <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-4xl mx-auto leading-relaxed">
-          Treine como um profissional no <strong>AICloser</strong> e tenha um consultor de vendas 
-          IA no seu bolso com o <strong>CloseAI</strong>. A solução completa para multiplicar seus resultados.
+          Treine como um profissional no <strong>CloserUP</strong> e tenha um consultor de vendas 
+          IA no seu bolso com o <strong>CloserAI</strong>. A solução completa para multiplicar seus resultados.
         </p>
         
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">

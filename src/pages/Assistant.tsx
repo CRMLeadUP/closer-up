@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
+import { useNavigate } from "react-router-dom";
 
 const Assistant = () => {
   const [message, setMessage] = useState("");
@@ -23,7 +23,7 @@ const Assistant = () => {
   const [conversation, setConversation] = useState([
     {
       type: "ai",
-      message: "Olá! Sou seu assistente CloseAI. Posso ajudar com vendas, negociação, estratégias comerciais, desenvolvimento pessoal e muito mais. Como posso ajudá-lo hoje?",
+      message: "Olá! Sou seu assistente CloserAI. Posso ajudar com vendas, negociação, estratégias comerciais, desenvolvimento pessoal e muito mais. Como posso ajudá-lo hoje?",
       time: "14:30"
     }
   ]);
@@ -172,7 +172,7 @@ const Assistant = () => {
         <div className="px-4 mb-6">
           <div className="text-center mb-6">
             <Badge className="mb-4 bg-sales-secondary/20 text-sales-secondary border-sales-secondary/30">
-              🤖 CloseAI Assistant
+              🤖 CloserAI Assistant
             </Badge>
             <h1 className="text-2xl font-bold gradient-text mb-2">
               Assistente Inteligente

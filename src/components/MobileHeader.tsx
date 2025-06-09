@@ -16,7 +16,7 @@ const MobileHeader = () => {
             <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">C</span>
             </div>
-            <span className="text-lg font-bold gradient-text">CloserAI</span>
+            <span className="text-lg font-bold gradient-text">CloserUP</span>
           </div>
           
           <div className="flex items-center space-x-2">

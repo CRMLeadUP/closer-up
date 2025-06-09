@@ -40,7 +40,7 @@ const Index = () => {
           </Badge>
           
           <h1 className="text-3xl font-bold gradient-text">
-            AICloser + CloseAI
+            CloserUP + CloserAI
           </h1>
           
           <p className="text-muted-foreground text-lg">
@@ -72,7 +72,7 @@ const Index = () => {
         <h2 className="text-xl font-bold mb-6 text-center">Escolha sua ferramenta</h2>
         
         <div className="space-y-4">
-          {/* AICloser Card */}
+          {/* CloserUP Card */}
           <Card 
             className="card-glass hover:scale-105 transition-all duration-300 cursor-pointer"
             onClick={() => navigate('/training')}
@@ -83,7 +83,7 @@ const Index = () => {
                   <Brain className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <CardTitle className="text-lg">AICloser</CardTitle>
+                  <CardTitle className="text-lg">CloserUP</CardTitle>
                   <p className="text-sm text-muted-foreground">Treinamento Interativo</p>
                 </div>
               </div>
@@ -98,7 +98,7 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          {/* CloseAI Card */}
+          {/* CloserAI Card */}
           <Card 
             className="card-glass hover:scale-105 transition-all duration-300 cursor-pointer"
             onClick={() => navigate('/assistant')}
@@ -109,7 +109,7 @@ const Index = () => {
                   <MessageSquare className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <CardTitle className="text-lg">CloseAI</CardTitle>
+                  <CardTitle className="text-lg">CloserAI</CardTitle>
                   <p className="text-sm text-muted-foreground">Assistente em Tempo Real</p>
                 </div>
               </div>
