@@ -230,6 +230,67 @@ const TrainingModule = () => {
           isFree: true
         }
       ]
+    },
+    "3": {
+      title: "Rapport e Conexão",
+      description: "Como criar conexão e confiança com o cliente",
+      icon: Brain,
+      totalLessons: 6,
+      duration: "2h 15min",
+      xpReward: 200,
+      lessons: [
+        {
+          id: 1,
+          title: "Fundamentos do Rapport",
+          duration: "20 min",
+          type: "video",
+          description: "O que é rapport e por que é essencial nas vendas",
+          isFree: true,
+          videoUrl: "https://youtu.be/rapport1"
+        },
+        {
+          id: 2,
+          title: "Linguagem Corporal e Espelhamento",
+          duration: "25 min",
+          type: "video",
+          description: "Como usar a linguagem corporal para criar conexão",
+          isFree: true,
+          videoUrl: "https://youtu.be/rapport2"
+        },
+        {
+          id: 3,
+          title: "Quiz: Linguagem Corporal",
+          duration: "8 min",
+          type: "quiz",
+          description: "Teste seus conhecimentos sobre comunicação não-verbal",
+          isFree: true
+        },
+        {
+          id: 4,
+          title: "Escuta Ativa e Empatia",
+          duration: "22 min",
+          type: "video",
+          description: "Técnicas para demonstrar interesse genuíno pelo cliente",
+          isFree: true,
+          videoUrl: "https://youtu.be/rapport3"
+        },
+        {
+          id: 5,
+          title: "Simulador: Construindo Rapport",
+          duration: "35 min",
+          type: "simulator",
+          description: "Pratique técnicas de rapport em conversas reais",
+          isFree: true
+        },
+        {
+          id: 6,
+          title: "Certificação do Módulo",
+          duration: "5 min",
+          type: "certificate",
+          description: "Receba seu certificado de conclusão em Rapport e Conexão",
+          isFree: true
+        }
+      ]
     }
   };
 
