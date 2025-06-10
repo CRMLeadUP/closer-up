@@ -386,6 +386,84 @@ const TrainingModule = () => {
           isFree: true
         }
       ]
+    },
+    "5": {
+      title: "Estratégias de Fechamento",
+      description: "Técnicas para finalizar vendas com sucesso",
+      icon: Brain,
+      totalLessons: 8,
+      duration: "2h 50min",
+      xpReward: 280,
+      lessons: [
+        {
+          id: 1,
+          title: "Fundamentos do Fechamento",
+          duration: "20 min",
+          type: "video",
+          description: "Entenda quando e como finalizar uma venda de forma natural",
+          isFree: true,
+          videoUrl: "https://youtu.be/closing1"
+        },
+        {
+          id: 2,
+          title: "Fechamento Assumido",
+          duration: "25 min",
+          type: "video",
+          description: "Como usar a técnica do fechamento assumido sem ser invasivo",
+          isFree: true,
+          videoUrl: "https://youtu.be/closing2"
+        },
+        {
+          id: 3,
+          title: "Quiz: Técnicas de Fechamento",
+          duration: "10 min",
+          type: "quiz",
+          description: "Teste seus conhecimentos sobre diferentes tipos de fechamento",
+          isFree: true
+        },
+        {
+          id: 4,
+          title: "Fechamento por Escassez",
+          duration: "22 min",
+          type: "video",
+          description: "Como criar urgência genuína para acelerar a decisão",
+          isFree: true,
+          videoUrl: "https://youtu.be/closing3"
+        },
+        {
+          id: 5,
+          title: "Simulador: Praticando Fechamentos",
+          duration: "30 min",
+          type: "simulator",
+          description: "Pratique diferentes técnicas de fechamento em cenários reais",
+          isFree: true
+        },
+        {
+          id: 6,
+          title: "Fechamento Consultivo",
+          duration: "28 min",
+          type: "video",
+          description: "A abordagem consultiva para fechar vendas complexas",
+          isFree: true,
+          videoUrl: "https://youtu.be/closing4"
+        },
+        {
+          id: 7,
+          title: "Quiz Final: Estratégias de Fechamento",
+          duration: "12 min",
+          type: "quiz",
+          description: "Avaliação completa sobre todas as estratégias de fechamento",
+          isFree: true
+        },
+        {
+          id: 8,
+          title: "Certificação do Módulo",
+          duration: "5 min",
+          type: "certificate",
+          description: "Receba seu certificado de conclusão em Estratégias de Fechamento",
+          isFree: true
+        }
+      ]
     }
   };
 

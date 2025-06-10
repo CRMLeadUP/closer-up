@@ -5,11 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { 
   Brain, 
-  Users, 
   Target, 
-  MessageSquare, 
-  Award,
-  PlayCircle,
+  Users, 
+  MessageSquare,
+  TrendingUp,
+  Star,
+  Trophy,
+  BookOpen,
+  Play,
   CheckCircle2
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -21,200 +24,210 @@ const Training = () => {
 
   const modules = [
     {
-      id: 1,
+      id: "1",
       title: "Perfis Comportamentais",
       description: "Identifique e adapte estratégias ao perfil do cliente",
-      icon: Users,
-      progress: 25,
-      status: "in-progress",
-      lessons: 10,
+      icon: Brain,
+      totalLessons: 10,
+      completedLessons: 7,
       duration: "3h 15min",
-      isFree: true
+      level: "Iniciante",
+      xpReward: 250,
+      color: "sales-primary",
+      isLocked: false
     },
     {
-      id: 2,
+      id: "2",
       title: "Gatilhos Mentais",
       description: "Técnicas de persuasão e construção de urgência",
-      icon: Brain,
-      progress: 0,
-      status: "available",
-      lessons: 12,
+      icon: Target,
+      totalLessons: 12,
+      completedLessons: 4,
       duration: "3h 45min",
-      isFree: true
+      level: "Intermediário",
+      xpReward: 300,
+      color: "sales-secondary",
+      isLocked: false
     },
     {
-      id: 3,
+      id: "3",
       title: "Rapport e Conexão",
       description: "Como criar conexão e confiança com o cliente",
-      icon: MessageSquare,
-      progress: 0,
-      status: "available",
-      lessons: 6,
+      icon: Users,
+      totalLessons: 6,
+      completedLessons: 2,
       duration: "2h 15min",
-      isFree: true
+      level: "Iniciante",
+      xpReward: 200,
+      color: "sales-accent",
+      isLocked: false
     },
     {
-      id: 4,
+      id: "4",
       title: "Quebra de Objeções",
       description: "Respostas práticas para situações comuns",
-      icon: Target,
-      progress: 0,
-      status: "available",
-      lessons: 10,
+      icon: MessageSquare,
+      totalLessons: 10,
+      completedLessons: 0,
       duration: "4h 20min",
-      isFree: true
+      level: "Avançado",
+      xpReward: 350,
+      color: "sales-warning",
+      isLocked: false
     },
     {
-      id: 5,
+      id: "5",
       title: "Estratégias de Fechamento",
-      description: "Métodos avançados para finalizar vendas",
-      icon: Award,
-      progress: 0,
-      status: "available",
-      lessons: 15,
-      duration: "5h 10min",
-      isFree: true
+      description: "Técnicas para finalizar vendas com sucesso",
+      icon: TrendingUp,
+      totalLessons: 8,
+      completedLessons: 0,
+      duration: "2h 50min",
+      level: "Intermediário",
+      xpReward: 280,
+      color: "sales-success",
+      isLocked: false
     }
   ];
 
-  const getStatusIcon = (status: string, progress: number) => {
-    if (status === "completed") return <CheckCircle2 className="h-5 w-5 text-sales-success" />;
-    if (status === "in-progress") return <PlayCircle className="h-5 w-5 text-sales-primary" />;
-    return <PlayCircle className="h-5 w-5 text-sales-accent" />;
-  };
+  const achievements = [
+    { title: "Primeiro Módulo", icon: Trophy, unlocked: true },
+    { title: "Especialista em Perfis", icon: Star, unlocked: false },
+    { title: "Mestre em Vendas", icon: BookOpen, unlocked: false }
+  ];
 
-  const getStatusColor = (status: string) => {
-    if (status === "completed") return "sales-success";
-    if (status === "in-progress") return "sales-primary";
-    return "sales-accent";
-  };
-
-  const handleModuleClick = (moduleId: number, status: string, isFree: boolean) => {
-    if (isFree) {
-      navigate(`/training/module/${moduleId}`);
-    }
+  const stats = {
+    totalXP: 850,
+    streak: 7,
+    coursesCompleted: 1,
+    averageScore: 89
   };
 
   return (
     <div className="min-h-screen bg-background">
       <MobileHeader />
       
-      <div className="pt-20 pb-24 px-4">
+      <div className="pt-20 pb-24">
         {/* Header */}
-        <div className="text-center mb-8">
-          <Badge className="mb-4 bg-sales-primary/20 text-sales-primary border-sales-primary/30">
-            🎯 AICloser Training
-          </Badge>
-          <h1 className="text-2xl font-bold gradient-text mb-2">
-            Treinamento Avançado
-          </h1>
-          <p className="text-muted-foreground">
-            Desenvolva suas habilidades de vendas com módulos interativos
-          </p>
+        <div className="px-4 mb-6">
+          <div className="text-center mb-6">
+            <Badge className="mb-4 bg-sales-primary/20 text-sales-primary border-sales-primary/30">
+              🎓 Plataforma de Treinamento
+            </Badge>
+            <h1 className="text-3xl font-bold gradient-text mb-2">
+              Treinamento CloserUP
+            </h1>
+            <p className="text-muted-foreground">
+              Desenvolva suas habilidades de vendas com nossos módulos especializados
+            </p>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+            <Card className="card-glass">
+              <CardContent className="p-3 text-center">
+                <div className="text-2xl font-bold gradient-text">{stats.totalXP}</div>
+                <div className="text-xs text-muted-foreground">XP Total</div>
+              </CardContent>
+            </Card>
+            <Card className="card-glass">
+              <CardContent className="p-3 text-center">
+                <div className="text-2xl font-bold text-sales-warning">{stats.streak}</div>
+                <div className="text-xs text-muted-foreground">Dias Seguidos</div>
+              </CardContent>
+            </Card>
+            <Card className="card-glass">
+              <CardContent className="p-3 text-center">
+                <div className="text-2xl font-bold text-sales-success">{stats.coursesCompleted}</div>
+                <div className="text-xs text-muted-foreground">Concluídos</div>
+              </CardContent>
+            </Card>
+            <Card className="card-glass">
+              <CardContent className="p-3 text-center">
+                <div className="text-2xl font-bold text-sales-accent">{stats.averageScore}%</div>
+                <div className="text-xs text-muted-foreground">Média</div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
-        {/* Progress Overview */}
-        <Card className="card-glass mb-6">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="font-semibold">Progresso Geral</h3>
-                <p className="text-sm text-muted-foreground">8% completo</p>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold gradient-text">1.580</div>
-                <div className="text-xs text-muted-foreground">XP ganhos</div>
-              </div>
-            </div>
-            <Progress value={8} className="h-2" />
-          </CardContent>
-        </Card>
-
-        {/* All Modules Available Notice */}
-        <Card className="card-glass mb-6 border border-sales-success/30">
-          <CardContent className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-sales-success/20 flex items-center justify-center">
-                <Award className="h-5 w-5 text-sales-success" />
-              </div>
-              <div>
-                <h3 className="font-semibold text-sales-success">Todos os Módulos Disponíveis</h3>
-                <p className="text-sm text-muted-foreground">
-                  Acesse todos os módulos de treinamento gratuitamente
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Training Modules */}
-        <div className="space-y-4">
-          {modules.map((module) => {
-            const IconComponent = module.icon;
-            const statusColor = getStatusColor(module.status);
-            
-            return (
-              <Card 
-                key={module.id} 
-                className="card-glass transition-all duration-300 hover:scale-105 cursor-pointer border-sales-primary/20"
-                onClick={() => handleModuleClick(module.id, module.status, module.isFree)}
-              >
-                <CardHeader className="pb-4">
-                  <div className="flex items-start gap-4">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${statusColor} to-${statusColor}/70 flex items-center justify-center relative`}>
-                      <IconComponent className="h-6 w-6 text-white" />
-                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-sales-success rounded-full flex items-center justify-center">
-                        <span className="text-white text-xs">✓</span>
+        {/* Modules */}
+        <div className="px-4 mb-8">
+          <h2 className="text-xl font-bold mb-4">Módulos de Treinamento</h2>
+          <div className="space-y-4">
+            {modules.map((module) => {
+              const progress = (module.completedLessons / module.totalLessons) * 100;
+              const IconComponent = module.icon;
+              
+              return (
+                <Card 
+                  key={module.id}
+                  className="card-glass hover:scale-105 cursor-pointer transition-all duration-200"
+                  onClick={() => navigate(`/training/module/${module.id}`)}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-4">
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${module.color} to-${module.color}/70 flex items-center justify-center`}>
+                        <IconComponent className="h-6 w-6 text-white" />
                       </div>
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <CardTitle className="text-lg">{module.title}</CardTitle>
-                        <Badge className="text-xs bg-sales-success">DISPONÍVEL</Badge>
-                        {getStatusIcon(module.status, module.progress)}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold">{module.title}</h3>
+                          <Badge variant="outline" className="text-xs">
+                            {module.level}
+                          </Badge>
+                          {progress === 100 && (
+                            <CheckCircle2 className="h-4 w-4 text-sales-success" />
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2">
+                          {module.description}
+                        </p>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                            <span>{module.totalLessons} aulas</span>
+                            <span>{module.duration}</span>
+                            <span>+{module.xpReward} XP</span>
+                          </div>
+                        </div>
+                        <div className="space-y-1">
+                          <div className="flex justify-between text-xs">
+                            <span>Progresso</span>
+                            <span>{module.completedLessons}/{module.totalLessons}</span>
+                          </div>
+                          <Progress value={progress} className="h-2" />
+                        </div>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-3">
-                        {module.description}
-                      </p>
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <span>{module.lessons} aulas</span>
-                        <span>{module.duration}</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardHeader>
-                
-                {module.progress > 0 && (
-                  <CardContent className="pt-0">
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Progresso</span>
-                        <span>{module.progress}%</span>
-                      </div>
-                      <Progress value={module.progress} className="h-2" />
+                      <Button size="sm" className="btn-gradient">
+                        <Play className="h-4 w-4 mr-1" />
+                        {progress > 0 ? "Continuar" : "Começar"}
+                      </Button>
                     </div>
                   </CardContent>
-                )}
-                
-                <CardContent className="pt-2">
-                  <Button 
-                    className={`w-full ${
-                      module.status === "completed" 
-                        ? 'bg-sales-success hover:bg-sales-success/80' 
-                        : 'btn-gradient'
-                    }`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleModuleClick(module.id, module.status, module.isFree);
-                    }}
-                  >
-                    {module.status === "completed" ? "✓ Revisitar" : 
-                     module.status === "in-progress" ? "▶ Continuar" : "🚀 Iniciar"}
-                  </Button>
-                </CardContent>
-              </Card>
-            );
-          })}
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Achievements */}
+        <div className="px-4">
+          <h2 className="text-xl font-bold mb-4">Conquistas</h2>
+          <div className="grid grid-cols-3 gap-3">
+            {achievements.map((achievement, index) => {
+              const IconComponent = achievement.icon;
+              return (
+                <Card key={index} className={`card-glass ${achievement.unlocked ? '' : 'opacity-50'}`}>
+                  <CardContent className="p-3 text-center">
+                    <IconComponent className={`h-6 w-6 mx-auto mb-2 ${
+                      achievement.unlocked ? 'text-sales-warning' : 'text-muted-foreground'
+                    }`} />
+                    <div className="text-xs font-semibold">{achievement.title}</div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </div>
       </div>
 
