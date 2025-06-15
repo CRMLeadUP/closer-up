@@ -84,7 +84,8 @@ const TrainingModule = () => {
           duration: "20 min",
           type: "video",
           description: "Estratégias para clientes estáveis, confiáveis e orientados a relacionamentos",
-          isFree: true
+          isFree: true,
+          videoUrl: "https://youtu.be/pHVmimdbg5E"
         },
         {
           id: 7,
