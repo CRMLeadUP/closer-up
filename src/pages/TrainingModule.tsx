@@ -101,7 +101,8 @@ const TrainingModule = () => {
           duration: "18 min",
           type: "video",
           description: "Como lidar com clientes analíticos, detalhistas e mais conservadores",
-          isFree: true
+          isFree: true,
+          videoUrl: "https://youtu.be/ndgiMFrVvds"
         },
         {
           id: 9,
