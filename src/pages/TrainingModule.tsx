@@ -137,7 +137,7 @@ const TrainingModule = () => {
           type: "video",
           description: "O que são gatilhos mentais e como usá-los eticamente nas vendas",
           isFree: true,
-          videoUrl: "https://youtu.be/sample1"
+          videoUrl: "https://youtu.be/AFCwxwH9uzU"
         },
         {
           id: 2,
