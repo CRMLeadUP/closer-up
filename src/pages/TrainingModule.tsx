@@ -67,7 +67,8 @@ const TrainingModule = () => {
           duration: "18 min",
           type: "video",
           description: "Como vender para pessoas extrovertidas e sociáveis",
-          isFree: true
+          isFree: true,
+          videoUrl: "https://youtu.be/kxf6LqAYK_U"
         },
         {
           id: 5,
