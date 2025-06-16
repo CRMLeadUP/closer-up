@@ -19,12 +19,20 @@ import {
 import { useNavigate } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const Training = () => {
   const navigate = useNavigate();
+  const { hasCloserUpAccess, hasCloserAIAccess, subscription_tier, isLoading: subLoading } = useSubscription();
 
-  // Simulating user's current plan - in real app this would come from user context/auth
-  const userPlan = "free" as "free" | "premium" | "ai"; // Can be changed to "premium" or "ai" for testing
+  // Determine user plan based on subscription
+  const getUserPlan = () => {
+    if (hasCloserAIAccess()) return "ai";
+    if (hasCloserUpAccess()) return "premium";
+    return "free";
+  };
+
+  const userPlan = getUserPlan();
 
   const modules = [
     {
@@ -158,6 +166,7 @@ const Training = () => {
                   <div>
                     <h3 className="font-semibold">
                       Plano {userPlan === "free" ? "Gratuito" : userPlan === "premium" ? "Premium" : "CloserAI"}
+                      {subLoading && " (Verificando...)"}
                     </h3>
                     <p className="text-sm text-muted-foreground">
                       {userPlan === "free" ? "1 módulo disponível" : userPlan === "premium" ? "Todo conteúdo CloserUP disponível" : "Acesso completo + CloserAI"}

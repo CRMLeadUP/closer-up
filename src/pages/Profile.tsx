@@ -10,14 +10,50 @@ import {
   Settings,
   HelpCircle,
   LogOut,
-  Crown
+  Crown,
+  CreditCard
 } from "lucide-react";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Profile = () => {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleManageSubscription = async () => {
+    setIsLoading(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('customer-portal');
+
+      if (error) {
+        toast({
+          title: "Erro",
+          description: error.message || "Não foi possível acessar o portal de assinaturas",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Customer portal error:', error);
+      toast({
+        title: "Erro",
+        description: "Não foi possível acessar o portal de assinaturas",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const achievements = [
     { name: "Primeiro Módulo", icon: "🎯", earned: true },
@@ -107,6 +143,16 @@ const Profile = () => {
           >
             <Crown className="h-5 w-5 mr-3 text-sales-primary" />
             Fazer Upgrade para Premium
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            className="w-full justify-start glass-effect"
+            onClick={handleManageSubscription}
+            disabled={isLoading}
+          >
+            <CreditCard className="h-5 w-5 mr-3" />
+            {isLoading ? "Carregando..." : "Gerenciar Assinatura"}
           </Button>
           
           <Button 

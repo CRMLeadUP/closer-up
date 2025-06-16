@@ -5,8 +5,46 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Crown, Zap, Users, Brain } from "lucide-react";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
+import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 const Plans = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleCheckout = async (plan: string) => {
+    setIsLoading(true);
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { plan }
+      });
+
+      if (error) {
+        toast({
+          title: "Erro no checkout",
+          description: error.message || "Ocorreu um erro ao processar o pagamento",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (data?.url) {
+        // Open Stripe checkout in a new tab
+        window.open(data.url, '_blank');
+      }
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast({
+        title: "Erro no checkout",
+        description: "Não foi possível iniciar o processo de pagamento",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
   const plans = [
     {
       name: "Gratuito",
@@ -178,9 +216,16 @@ const Plans = () => {
                         ? 'btn-gradient' 
                         : 'bg-card hover:bg-muted border border-border'
                     }`}
-                    disabled={plan.current}
+                    disabled={plan.current || isLoading}
+                    onClick={() => {
+                      if (plan.name === "Premium") {
+                        handleCheckout("closerUp");
+                      } else if (plan.name === "CloserAI") {
+                        handleCheckout("closerAI");
+                      }
+                    }}
                   >
-                    {plan.current ? '✓ Plano Atual' : plan.cta}
+                    {isLoading ? "Processando..." : plan.current ? '✓ Plano Atual' : plan.cta}
                   </Button>
                 </CardContent>
               </Card>
