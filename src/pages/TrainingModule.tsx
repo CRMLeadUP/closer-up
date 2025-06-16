@@ -353,7 +353,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Estratégias quando o cliente não é o decisor final",
           isFree: true,
-          videoUrl: "https://youtu.be/objections4"
+          videoUrl: "https://youtu.be/-ho5law40Mw"
         },
         {
           id: 7,
