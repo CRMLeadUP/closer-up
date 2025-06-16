@@ -180,7 +180,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Use depoimentos, cases e números para validar sua proposta",
           isFree: true,
-          videoUrl: "https://youtu.be/sample4"
+          videoUrl: "https://youtu.be/scot3SZwYyQ"
         },
         {
           id: 7,
