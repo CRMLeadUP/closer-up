@@ -319,7 +319,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Técnicas para superar a objeção mais comum nas vendas",
           isFree: true,
-          videoUrl: "https://youtu.be/objections2"
+          videoUrl: "https://youtu.be/GXzzh028J2Q"
         },
         {
           id: 3,
