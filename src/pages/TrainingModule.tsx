@@ -180,7 +180,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Use depoimentos, cases e números para validar sua proposta",
           isFree: true,
-          videoUrl: "https://youtu.be/scot3SZwYyQ"
+          videoUrl: "https://youtu.be/scot3SZwYYQ"
         },
         {
           id: 7,
@@ -336,7 +336,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como responder quando o cliente quer 'pensar melhor'",
           isFree: true,
-          videoUrl: "https://youtu.be/objections3"
+          videoUrl: "https://youtu.be/DI30Xix_9yI"
         },
         {
           id: 5,
