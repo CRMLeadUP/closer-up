@@ -28,7 +28,7 @@ const TrainingModule = () => {
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
 
   // Simulating user's current plan - in real app this would come from user context/auth
-  const userPlan: "free" | "premium" | "ai" = "free"; // "free", "premium", "ai"
+  const userPlan = "free" as "free" | "premium" | "ai"; // Can be changed to "premium" or "ai" for testing
 
   const moduleData = {
     "1": {
