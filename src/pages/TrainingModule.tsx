@@ -206,7 +206,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como usar o novo, o exclusivo e o inovador para despertar interesse",
           isFree: true,
-          videoUrl: "https://youtu.be/sample6"
+          videoUrl: "https://youtu.be/SpBP1VxJthQ"
         },
         {
           id: 10,
