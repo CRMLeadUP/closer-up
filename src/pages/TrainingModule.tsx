@@ -405,7 +405,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Entenda quando e como finalizar uma venda de forma natural",
           isFree: true,
-          videoUrl: "https://youtu.be/closing1"
+          videoUrl: "https://youtu.be/T4mtgtxye9E"
         },
         {
           id: 2,
