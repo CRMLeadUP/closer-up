@@ -431,7 +431,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como criar urgência genuína para acelerar a decisão",
           isFree: true,
-          videoUrl: "https://youtu.be/closing3"
+          videoUrl: "https://youtu.be/IPOL2QwjQEQ"
         },
         {
           id: 5,
