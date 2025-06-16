@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,7 +24,7 @@ const Training = () => {
   const navigate = useNavigate();
 
   // Simulating user's current plan - in real app this would come from user context/auth
-  const userPlan = "free"; // "free", "premium", "ai"
+  const userPlan: "free" | "premium" | "ai" = "free"; // "free", "premium", "ai"
 
   const modules = [
     {
@@ -41,7 +40,7 @@ const Training = () => {
       color: "sales-primary",
       isLocked: false,
       price: "Grátis",
-      planRequired: "free"
+      planRequired: "free" as const
     },
     {
       id: "2",
@@ -56,7 +55,7 @@ const Training = () => {
       color: "sales-secondary",
       isLocked: userPlan === "free",
       price: "R$ 17,90",
-      planRequired: "premium"
+      planRequired: "premium" as const
     },
     {
       id: "3",
@@ -71,7 +70,7 @@ const Training = () => {
       color: "sales-accent",
       isLocked: userPlan === "free",
       price: "R$ 17,90",
-      planRequired: "premium"
+      planRequired: "premium" as const
     },
     {
       id: "4",
@@ -86,7 +85,7 @@ const Training = () => {
       color: "sales-warning",
       isLocked: userPlan === "free",
       price: "R$ 17,90",
-      planRequired: "premium"
+      planRequired: "premium" as const
     },
     {
       id: "5",
@@ -101,7 +100,7 @@ const Training = () => {
       color: "sales-success",
       isLocked: userPlan === "free",
       price: "R$ 17,90",
-      planRequired: "premium"
+      planRequired: "premium" as const
     }
   ];
 
@@ -161,7 +160,7 @@ const Training = () => {
                       Plano {userPlan === "free" ? "Gratuito" : userPlan === "premium" ? "Premium" : "CloserAI"}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {userPlan === "free" ? "1 módulo disponível" : userPlan === "premium" ? "5 módulos disponíveis" : "Acesso completo + IA"}
+                      {userPlan === "free" ? "1 módulo disponível" : userPlan === "premium" ? "Todo conteúdo CloserUP disponível" : "Acesso completo + CloserAI"}
                     </p>
                   </div>
                 </div>
