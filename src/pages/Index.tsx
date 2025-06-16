@@ -147,7 +147,7 @@ const Index = () => {
               className="w-full glass-effect"
               onClick={() => window.open('https://wa.me/5511999484196', '_blank')}
             >
-              📞 +5511999484196
+              📞 Falar com Especialista
             </Button>
           </CardContent>
         </Card>
