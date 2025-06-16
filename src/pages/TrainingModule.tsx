@@ -448,7 +448,7 @@ const TrainingModule = () => {
           type: "video",
           description: "A abordagem consultiva para fechar vendas complexas",
           isFree: true,
-          videoUrl: "https://youtu.be/closing4"
+          videoUrl: "https://youtu.be/7QFAyLqZzso"
         },
         {
           id: 7,
