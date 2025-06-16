@@ -189,7 +189,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como oferecer valor primeiro para criar obrigação de retorno",
           isFree: true,
-          videoUrl: "https://youtu.be/sample5"
+          videoUrl: "https://youtu.be/KSIxkjR6V78"
         },
         {
           id: 8,
