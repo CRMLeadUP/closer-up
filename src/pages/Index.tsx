@@ -21,12 +21,23 @@ import { useNavigate } from "react-router-dom";
 const Index = () => {
   const navigate = useNavigate();
 
+  // Simulating user's current plan - in real app this would come from user context/auth
+  const userPlan: "free" | "premium" | "ai" = "free"; // "free", "premium", "ai"
+
   const quickStats = [
     { value: "+50K", label: "Vendedores", icon: Users },
     { value: "+300%", label: "Conversão", icon: TrendingUp },
     { value: "4.9/5", label: "Avaliação", icon: Award },
     { value: "98%", label: "Conclusão", icon: Target }
   ];
+
+  const handleCloserAIClick = () => {
+    if (userPlan === "ai") {
+      navigate('/assistant');
+    } else {
+      navigate('/plans');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -101,7 +112,7 @@ const Index = () => {
           {/* CloserAI Card */}
           <Card 
             className="card-glass hover:scale-105 transition-all duration-300 cursor-pointer"
-            onClick={() => navigate('/assistant')}
+            onClick={handleCloserAIClick}
           >
             <CardHeader className="pb-4">
               <div className="flex items-center gap-4">
@@ -109,7 +120,14 @@ const Index = () => {
                   <MessageSquare className="h-6 w-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <CardTitle className="text-lg">CloserAI</CardTitle>
+                  <div className="flex items-center gap-2">
+                    <CardTitle className="text-lg">CloserAI</CardTitle>
+                    {userPlan !== "ai" && (
+                      <Badge className="text-xs bg-sales-secondary/20 text-sales-secondary border-sales-secondary/30">
+                        R$ 34,90
+                      </Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground">Assistente em Tempo Real</p>
                 </div>
               </div>
@@ -118,8 +136,14 @@ const Index = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 Seu consultor de vendas pessoal que analisa conversas e sugere estratégias
               </p>
-              <Button className="w-full bg-sales-secondary hover:bg-sales-secondary/80 text-white">
-                💬 Ativar Suporte
+              <Button 
+                className={`w-full ${
+                  userPlan === "ai" 
+                    ? "bg-sales-secondary hover:bg-sales-secondary/80 text-white"
+                    : "border border-sales-secondary text-sales-secondary hover:bg-sales-secondary hover:text-white"
+                }`}
+              >
+                {userPlan === "ai" ? "💬 Ativar Suporte" : "🔓 Desbloquear CloserAI"}
               </Button>
             </CardContent>
           </Card>
