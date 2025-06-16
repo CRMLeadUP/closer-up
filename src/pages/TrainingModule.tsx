@@ -414,7 +414,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como usar a técnica do fechamento assumido sem ser invasivo",
           isFree: true,
-          videoUrl: "https://youtu.be/closing2"
+          videoUrl: "https://youtu.be/DR8cXuGt57I"
         },
         {
           id: 3,
