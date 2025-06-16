@@ -163,7 +163,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como estabelecer autoridade e credibilidade para influenciar decisões",
           isFree: true,
-          videoUrl: "https://youtu.be/sample3"
+          videoUrl: "https://youtu.be/mSzHxcNUWqY"
         },
         {
           id: 5,
