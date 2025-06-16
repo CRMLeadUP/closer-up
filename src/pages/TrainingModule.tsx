@@ -249,7 +249,7 @@ const TrainingModule = () => {
           type: "video",
           description: "O que é rapport e por que é essencial nas vendas",
           isFree: true,
-          videoUrl: "https://youtu.be/rapport1"
+          videoUrl: "https://youtu.be/41Kts8QKies"
         },
         {
           id: 2,
