@@ -258,7 +258,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como usar a linguagem corporal para criar conexão",
           isFree: true,
-          videoUrl: "https://youtu.be/rapport2"
+          videoUrl: "https://youtu.be/xfpJJ0VHP08"
         },
         {
           id: 3,
