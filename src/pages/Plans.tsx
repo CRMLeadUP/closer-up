@@ -2,70 +2,83 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Crown, Zap, Users } from "lucide-react";
+import { CheckCircle2, Crown, Zap, Users, Brain } from "lucide-react";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
 
 const Plans = () => {
   const plans = [
     {
-      name: "Starter",
+      name: "Gratuito",
       price: "Grátis",
       description: "Perfeito para começar sua jornada",
       icon: Zap,
-      badge: "Gratuito",
+      badge: "Atual",
       badgeColor: "sales-accent",
       features: [
-        "Acesso básico ao AICloser",
-        "3 módulos introdutórios",
-        "Gamificação básica",
+        "Módulo 'Perfis Comportamentais' completo",
+        "10 aulas de alta qualidade",
         "Certificado de conclusão",
+        "Gamificação básica",
         "Suporte por email"
       ],
-      cta: "Começar Grátis",
+      cta: "Plano Atual",
       highlight: false,
       current: true
     },
     {
-      name: "Profissional",
-      price: "R$ 29,90",
+      name: "Premium",
+      price: "R$ 17,90",
       priceSubtext: "/mês",
-      description: "Para vendedores que querem resultados",
+      description: "Acesso completo aos módulos de treinamento",
       icon: Crown,
       badge: "Mais Popular",
       badgeColor: "sales-primary",
       features: [
-        "Acesso completo ao AICloser",
-        "CloseAI com 10 interações/mês",
-        "Todos os módulos de treinamento",
+        "Todos os 5 módulos de treinamento",
+        "50+ aulas especializadas",
+        "Simuladores práticos",
+        "Quizzes interativos",
+        "Certificados profissionais",
         "Gamificação avançada",
-        "Análises de performance",
+        "Relatórios de progresso",
         "Suporte prioritário"
       ],
-      cta: "Fazer Upgrade",
+      cta: "Começar Premium",
       highlight: true,
       current: false
     },
     {
-      name: "Executivo",
-      price: "R$ 59,90",
+      name: "CloserAI",
+      price: "R$ 34,90",
       priceSubtext: "/mês",
-      description: "Solução completa para profissionais",
-      icon: Users,
-      badge: "Premium",
+      description: "Premium + Assistente de IA para vendas",
+      icon: Brain,
+      badge: "IA Avançada",
       badgeColor: "sales-success",
       features: [
-        "Tudo do plano Profissional",
-        "CloseAI ilimitado",
-        "Simuladores avançados",
-        "Relatórios detalhados",
+        "Tudo do plano Premium",
+        "CloserAI - Assistente inteligente",
+        "Análise de conversas em tempo real",
+        "Sugestões personalizadas de resposta",
+        "Relatórios de IA detalhados",
+        "Coaching automatizado",
         "Integração com CRMs",
-        "Consultoria personalizada"
+        "Suporte 24/7 especializado"
       ],
-      cta: "Escolher Executivo",
+      cta: "Ativar CloserAI",
       highlight: false,
       current: false
     }
+  ];
+
+  const moduleBreakdown = [
+    { name: "Perfis Comportamentais", plan: "Gratuito", color: "sales-success" },
+    { name: "Gatilhos Mentais", plan: "Premium", color: "sales-primary" },
+    { name: "Rapport e Conexão", plan: "Premium", color: "sales-primary" },
+    { name: "Quebra de Objeções", plan: "Premium", color: "sales-primary" },
+    { name: "Estratégias de Fechamento", plan: "Premium", color: "sales-primary" },
+    { name: "CloserAI", plan: "CloserAI", color: "sales-success" }
   ];
 
   return (
@@ -82,22 +95,24 @@ const Plans = () => {
             Escolha seu plano
           </h1>
           <p className="text-muted-foreground">
-            Comece grátis e faça upgrade quando quiser
+            Comece grátis e evolua conforme sua necessidade
           </p>
         </div>
 
-        {/* Current Plan */}
-        <Card className="card-glass mb-6 border-sales-accent/50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold">Plano Atual</h3>
-                <p className="text-sm text-muted-foreground">Starter (Gratuito)</p>
+        {/* Module Breakdown */}
+        <Card className="card-glass mb-6">
+          <CardHeader>
+            <CardTitle className="text-lg">O que cada plano inclui</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {moduleBreakdown.map((module, index) => (
+              <div key={index} className="flex items-center justify-between">
+                <span className="text-sm">{module.name}</span>
+                <Badge className={`text-xs bg-${module.color}/20 text-${module.color} border-${module.color}/30`}>
+                  {module.plan}
+                </Badge>
               </div>
-              <Badge className="bg-sales-accent/20 text-sales-accent border-sales-accent/30">
-                Ativo
-              </Badge>
-            </div>
+            ))}
           </CardContent>
         </Card>
 

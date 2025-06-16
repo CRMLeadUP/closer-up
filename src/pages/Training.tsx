@@ -13,7 +13,9 @@ import {
   Trophy,
   BookOpen,
   Play,
-  CheckCircle2
+  CheckCircle2,
+  Lock,
+  Crown
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
@@ -21,6 +23,9 @@ import AppBottomNav from "@/components/AppBottomNav";
 
 const Training = () => {
   const navigate = useNavigate();
+
+  // Simulating user's current plan - in real app this would come from user context/auth
+  const userPlan = "free"; // "free", "premium", "ai"
 
   const modules = [
     {
@@ -34,7 +39,9 @@ const Training = () => {
       level: "Iniciante",
       xpReward: 250,
       color: "sales-primary",
-      isLocked: false
+      isLocked: false,
+      price: "Grátis",
+      planRequired: "free"
     },
     {
       id: "2",
@@ -47,7 +54,9 @@ const Training = () => {
       level: "Intermediário",
       xpReward: 300,
       color: "sales-secondary",
-      isLocked: false
+      isLocked: userPlan === "free",
+      price: "R$ 17,90",
+      planRequired: "premium"
     },
     {
       id: "3",
@@ -60,7 +69,9 @@ const Training = () => {
       level: "Iniciante",
       xpReward: 200,
       color: "sales-accent",
-      isLocked: false
+      isLocked: userPlan === "free",
+      price: "R$ 17,90",
+      planRequired: "premium"
     },
     {
       id: "4",
@@ -73,7 +84,9 @@ const Training = () => {
       level: "Avançado",
       xpReward: 350,
       color: "sales-warning",
-      isLocked: false
+      isLocked: userPlan === "free",
+      price: "R$ 17,90",
+      planRequired: "premium"
     },
     {
       id: "5",
@@ -86,7 +99,9 @@ const Training = () => {
       level: "Intermediário",
       xpReward: 280,
       color: "sales-success",
-      isLocked: false
+      isLocked: userPlan === "free",
+      price: "R$ 17,90",
+      planRequired: "premium"
     }
   ];
 
@@ -101,6 +116,15 @@ const Training = () => {
     streak: 7,
     coursesCompleted: 1,
     averageScore: 89
+  };
+
+  const handleModuleClick = (module: any) => {
+    if (module.isLocked) {
+      // Redirect to plans page if module is locked
+      navigate('/plans');
+    } else {
+      navigate(`/training/module/${module.id}`);
+    }
   };
 
   return (
@@ -121,6 +145,34 @@ const Training = () => {
               Desenvolva suas habilidades de vendas com nossos módulos especializados
             </p>
           </div>
+
+          {/* Current Plan Notice */}
+          <Card className="card-glass mb-4 border border-sales-accent/30">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-sales-accent/20 flex items-center justify-center">
+                    <span className="text-sales-accent text-sm">
+                      {userPlan === "free" ? "🆓" : userPlan === "premium" ? "👑" : "🤖"}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="font-semibold">
+                      Plano {userPlan === "free" ? "Gratuito" : userPlan === "premium" ? "Premium" : "CloserAI"}
+                    </h3>
+                    <p className="text-sm text-muted-foreground">
+                      {userPlan === "free" ? "1 módulo disponível" : userPlan === "premium" ? "5 módulos disponíveis" : "Acesso completo + IA"}
+                    </p>
+                  </div>
+                </div>
+                {userPlan === "free" && (
+                  <Button size="sm" className="btn-gradient" onClick={() => navigate('/plans')}>
+                    Fazer Upgrade
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
@@ -162,13 +214,22 @@ const Training = () => {
               return (
                 <Card 
                   key={module.id}
-                  className="card-glass hover:scale-105 cursor-pointer transition-all duration-200"
-                  onClick={() => navigate(`/training/module/${module.id}`)}
+                  className={`card-glass transition-all duration-200 ${
+                    module.isLocked 
+                      ? 'opacity-75 cursor-pointer hover:scale-105' 
+                      : 'hover:scale-105 cursor-pointer'
+                  }`}
+                  onClick={() => handleModuleClick(module)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${module.color} to-${module.color}/70 flex items-center justify-center`}>
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${module.color} to-${module.color}/70 flex items-center justify-center relative`}>
                         <IconComponent className="h-6 w-6 text-white" />
+                        {module.isLocked && (
+                          <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
+                            <Lock className="h-4 w-4 text-white" />
+                          </div>
+                        )}
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
@@ -176,8 +237,16 @@ const Training = () => {
                           <Badge variant="outline" className="text-xs">
                             {module.level}
                           </Badge>
-                          {progress === 100 && (
+                          {module.isLocked && (
+                            <Badge className="text-xs bg-sales-warning/20 text-sales-warning border-sales-warning/30">
+                              {module.price}
+                            </Badge>
+                          )}
+                          {!module.isLocked && progress === 100 && (
                             <CheckCircle2 className="h-4 w-4 text-sales-success" />
+                          )}
+                          {module.planRequired === "premium" && (
+                            <Crown className="h-3 w-3 text-sales-primary" />
                           )}
                         </div>
                         <p className="text-sm text-muted-foreground mb-2">
@@ -190,17 +259,28 @@ const Training = () => {
                             <span>+{module.xpReward} XP</span>
                           </div>
                         </div>
-                        <div className="space-y-1">
-                          <div className="flex justify-between text-xs">
-                            <span>Progresso</span>
-                            <span>{module.completedLessons}/{module.totalLessons}</span>
+                        {!module.isLocked && (
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-xs">
+                              <span>Progresso</span>
+                              <span>{module.completedLessons}/{module.totalLessons}</span>
+                            </div>
+                            <Progress value={progress} className="h-2" />
                           </div>
-                          <Progress value={progress} className="h-2" />
-                        </div>
+                        )}
                       </div>
-                      <Button size="sm" className="btn-gradient">
-                        <Play className="h-4 w-4 mr-1" />
-                        {progress > 0 ? "Continuar" : "Começar"}
+                      <Button size="sm" className={module.isLocked ? "border border-sales-primary text-sales-primary hover:bg-sales-primary hover:text-white" : "btn-gradient"}>
+                        {module.isLocked ? (
+                          <>
+                            <Lock className="h-4 w-4 mr-1" />
+                            Desbloquear
+                          </>
+                        ) : (
+                          <>
+                            <Play className="h-4 w-4 mr-1" />
+                            {progress > 0 ? "Continuar" : "Começar"}
+                          </>
+                        )}
                       </Button>
                     </div>
                   </CardContent>
@@ -208,6 +288,63 @@ const Training = () => {
               );
             })}
           </div>
+        </div>
+
+        {/* CloserAI Module */}
+        <div className="px-4 mb-8">
+          <h2 className="text-xl font-bold mb-4">CloserAI - Assistente Inteligente</h2>
+          <Card className={`card-glass transition-all duration-200 ${
+            userPlan !== "ai" ? 'opacity-75 cursor-pointer hover:scale-105' : 'hover:scale-105 cursor-pointer'
+          }`}
+          onClick={() => userPlan !== "ai" ? navigate('/plans') : navigate('/assistant')}
+          >
+            <CardContent className="p-4">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sales-success to-sales-success/70 flex items-center justify-center relative">
+                  <Brain className="h-6 w-6 text-white" />
+                  {userPlan !== "ai" && (
+                    <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
+                      <Lock className="h-4 w-4 text-white" />
+                    </div>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-semibold">CloserAI</h3>
+                    <Badge className="text-xs bg-gradient-to-r from-sales-success to-sales-primary text-white">
+                      🤖 IA Avançada
+                    </Badge>
+                    {userPlan !== "ai" && (
+                      <Badge className="text-xs bg-sales-success/20 text-sales-success border-sales-success/30">
+                        R$ 34,90
+                      </Badge>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    Assistente de vendas com IA que analisa conversas em tempo real
+                  </p>
+                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <span>Análise em tempo real</span>
+                    <span>Sugestões personalizadas</span>
+                    <span>Relatórios detalhados</span>
+                  </div>
+                </div>
+                <Button size="sm" className={userPlan !== "ai" ? "border border-sales-success text-sales-success hover:bg-sales-success hover:text-white" : "btn-gradient"}>
+                  {userPlan !== "ai" ? (
+                    <>
+                      <Lock className="h-4 w-4 mr-1" />
+                      Desbloquear
+                    </>
+                  ) : (
+                    <>
+                      <Brain className="h-4 w-4 mr-1" />
+                      Usar CloserAI
+                    </>
+                  )}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Achievements */}

@@ -13,7 +13,8 @@ import {
   Trophy,
   Star,
   Lock,
-  Play
+  Play,
+  Crown
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
@@ -26,6 +27,9 @@ const TrainingModule = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
 
+  // Simulating user's current plan - in real app this would come from user context/auth
+  const userPlan = "free"; // "free", "premium", "ai"
+
   const moduleData = {
     "1": {
       title: "Perfis Comportamentais",
@@ -34,6 +38,8 @@ const TrainingModule = () => {
       totalLessons: 10,
       duration: "3h 15min",
       xpReward: 250,
+      planRequired: "free",
+      price: "Grátis",
       lessons: [
         {
           id: 1,
@@ -129,6 +135,8 @@ const TrainingModule = () => {
       totalLessons: 12,
       duration: "3h 45min",
       xpReward: 300,
+      planRequired: "premium",
+      price: "R$ 17,90",
       lessons: [
         {
           id: 1,
@@ -241,6 +249,8 @@ const TrainingModule = () => {
       totalLessons: 6,
       duration: "2h 15min",
       xpReward: 200,
+      planRequired: "premium",
+      price: "R$ 17,90",
       lessons: [
         {
           id: 1,
@@ -302,6 +312,8 @@ const TrainingModule = () => {
       totalLessons: 10,
       duration: "4h 20min",
       xpReward: 350,
+      planRequired: "premium",
+      price: "R$ 17,90",
       lessons: [
         {
           id: 1,
@@ -397,6 +409,8 @@ const TrainingModule = () => {
       totalLessons: 8,
       duration: "2h 50min",
       xpReward: 280,
+      planRequired: "premium",
+      price: "R$ 17,90",
       lessons: [
         {
           id: 1,
@@ -473,6 +487,14 @@ const TrainingModule = () => {
   const module = moduleData[moduleId as keyof typeof moduleData];
   if (!module) return <div>Módulo não encontrado</div>;
 
+  // Check if user has access to this module
+  const hasAccess = () => {
+    if (module.planRequired === "free") return true;
+    if (module.planRequired === "premium" && (userPlan === "premium" || userPlan === "ai")) return true;
+    if (module.planRequired === "ai" && userPlan === "ai") return true;
+    return false;
+  };
+
   const allLessons = module.lessons;
   const progress = (completedLessons.length / allLessons.length) * 100;
 
@@ -495,6 +517,11 @@ const TrainingModule = () => {
   };
 
   const startLesson = (lessonId: number, type: string, isFree: boolean, videoUrl?: string) => {
+    if (!hasAccess()) {
+      navigate('/plans');
+      return;
+    }
+
     if (type === 'quiz') {
       navigate(`/training/module/${moduleId}/quiz/${lessonId}`);
     } else if (type === 'simulator') {
@@ -530,6 +557,53 @@ const TrainingModule = () => {
     }
   };
 
+  // If user doesn't have access, show upgrade notice
+  if (!hasAccess()) {
+    return (
+      <div className="min-h-screen bg-background">
+        <MobileHeader />
+        
+        <div className="pt-20 pb-24 px-4">
+          <Button 
+            variant="ghost" 
+            className="mb-4"
+            onClick={() => navigate('/training')}
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Voltar ao Treinamento
+          </Button>
+
+          {/* Access Denied Notice */}
+          <Card className="card-glass border border-sales-warning/30 text-center">
+            <CardContent className="p-8">
+              <div className="w-20 h-20 mx-auto rounded-full bg-sales-warning/20 flex items-center justify-center mb-4">
+                <Lock className="h-10 w-10 text-sales-warning" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2">Módulo Premium</h2>
+              <p className="text-muted-foreground mb-4">
+                Este módulo faz parte do plano Premium. Faça upgrade para acessar todo o conteúdo.
+              </p>
+              <Badge className="mb-6 bg-sales-warning/20 text-sales-warning border-sales-warning/30">
+                {module.price}
+              </Badge>
+              <div className="space-y-3 mb-6">
+                <p className="text-sm text-muted-foreground">✓ Acesso completo a todos os módulos</p>
+                <p className="text-sm text-muted-foreground">✓ Certificados de conclusão</p>
+                <p className="text-sm text-muted-foreground">✓ Suporte prioritário</p>
+              </div>
+              <Button className="w-full btn-gradient" onClick={() => navigate('/plans')}>
+                <Crown className="h-4 w-4 mr-2" />
+                Fazer Upgrade Agora
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+
+        <AppBottomNav />
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <MobileHeader />
@@ -552,9 +626,11 @@ const TrainingModule = () => {
                 <span className="text-sales-success text-sm">✓</span>
               </div>
               <div>
-                <h3 className="font-semibold text-sales-success">Acesso Completo</h3>
+                <h3 className="font-semibold text-sales-success">
+                  {module.planRequired === "free" ? "Módulo Gratuito" : "Acesso Premium"}
+                </h3>
                 <p className="text-sm text-muted-foreground">
-                  Todas as aulas disponíveis para você
+                  {module.planRequired === "free" ? "Disponível gratuitamente" : "Todas as aulas disponíveis para você"}
                 </p>
               </div>
             </div>
