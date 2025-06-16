@@ -62,7 +62,7 @@ const PricingSection = () => {
         "Suporte dedicado",
         "Consultoria em vendas"
       ],
-      cta: "Falar com Vendas",
+      cta: "+5511999484196",
       highlight: false
     }
   ];
@@ -143,6 +143,11 @@ const PricingSection = () => {
                         : 'bg-card hover:bg-muted border border-border text-lg py-3'
                     }`}
                     size="lg"
+                    onClick={() => {
+                      if (plan.name === "Plano Corporativo") {
+                        window.open('https://wa.me/5511999484196', '_blank');
+                      }
+                    }}
                   >
                     {plan.cta}
                   </Button>
