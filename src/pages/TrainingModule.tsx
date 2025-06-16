@@ -310,7 +310,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Entenda a psicologia por trás das objeções e como respondê-las",
           isFree: true,
-          videoUrl: "https://youtu.be/objections1"
+          videoUrl: "https://youtu.be/CNnRe4dZ1Io"
         },
         {
           id: 2,
