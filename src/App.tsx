@@ -9,6 +9,8 @@ import Training from "./pages/Training";
 import TrainingModule from "./pages/TrainingModule";
 import TrainingQuiz from "./pages/TrainingQuiz";
 import TrainingSimulator from "./pages/TrainingSimulator";
+import TrainingSimulatorResult from "./pages/TrainingSimulatorResult";
+import TrainingCertificate from "./pages/TrainingCertificate";
 import Assistant from "./pages/Assistant";
 import Plans from "./pages/Plans";
 import Profile from "./pages/Profile";
@@ -29,6 +31,8 @@ const App = () => (
           <Route path="/training/module/:moduleId" element={<TrainingModule />} />
           <Route path="/training/module/:moduleId/quiz/:lessonId" element={<TrainingQuiz />} />
           <Route path="/training/module/:moduleId/simulator/:lessonId" element={<TrainingSimulator />} />
+          <Route path="/training/simulator/:moduleId/:lessonId/result" element={<TrainingSimulatorResult />} />
+          <Route path="/training/certificate/:moduleId" element={<TrainingCertificate />} />
           <Route path="/assistant" element={<Assistant />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/profile" element={<Profile />} />

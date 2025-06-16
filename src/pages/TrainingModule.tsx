@@ -499,6 +499,21 @@ const TrainingModule = () => {
       navigate(`/training/module/${moduleId}/quiz/${lessonId}`);
     } else if (type === 'simulator') {
       navigate(`/training/module/${moduleId}/simulator/${lessonId}`);
+    } else if (type === 'certificate') {
+      // Check if all previous lessons are completed
+      const allPreviousCompleted = module.lessons
+        .filter(lesson => lesson.id < lessonId)
+        .every(lesson => completedLessons.includes(lesson.id));
+        
+      if (allPreviousCompleted) {
+        navigate(`/training/certificate/${moduleId}`);
+        // Mark certificate as completed
+        if (!completedLessons.includes(lessonId)) {
+          setCompletedLessons([...completedLessons, lessonId]);
+        }
+      } else {
+        alert("Complete todas as aulas anteriores para acessar o certificado!");
+      }
     } else if (type === 'video' && videoUrl) {
       // Open video in modal
       setCurrentVideoUrl(getEmbedUrl(videoUrl));
@@ -587,11 +602,16 @@ const TrainingModule = () => {
         <div className="space-y-3">
           {module.lessons.map((lesson) => {
             const isCompleted = completedLessons.includes(lesson.id);
+            const canAccess = lesson.type === 'certificate' 
+              ? module.lessons.filter(l => l.id < lesson.id).every(l => completedLessons.includes(l.id))
+              : true;
             
             return (
               <Card 
                 key={lesson.id}
-                className="card-glass hover:scale-105 cursor-pointer border-sales-primary/20"
+                className={`card-glass transition-all duration-200 ${
+                  canAccess ? 'hover:scale-105 cursor-pointer border-sales-primary/20' : 'opacity-50'
+                }`}
               >
                 <CardContent className="p-4">
                   <div className="flex items-center gap-4">
@@ -628,10 +648,12 @@ const TrainingModule = () => {
                               ? 'bg-sales-success hover:bg-sales-success/80' 
                               : 'btn-gradient'
                           }`}
-                          onClick={() => startLesson(lesson.id, lesson.type, true, lesson.videoUrl)}
+                          onClick={() => canAccess && startLesson(lesson.id, lesson.type, true, lesson.videoUrl)}
+                          disabled={!canAccess}
                         >
                           {isCompleted ? "✓ Concluído" : 
-                           lesson.type === 'video' && lesson.videoUrl ? "▶ Assistir" : "▶ Iniciar"}
+                           lesson.type === 'video' && lesson.videoUrl ? "▶ Assistir" : 
+                           lesson.type === 'certificate' ? "🏆 Obter Certificado" : "▶ Iniciar"}
                         </Button>
                       </div>
                     </div>
