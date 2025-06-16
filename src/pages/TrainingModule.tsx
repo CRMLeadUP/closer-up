@@ -362,7 +362,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como construir credibilidade e superar desconfiança",
           isFree: true,
-          videoUrl: "https://youtu.be/objections5"
+          videoUrl: "https://youtu.be/Mcz1RXL8W4g"
         },
         {
           id: 8,
