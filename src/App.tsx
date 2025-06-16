@@ -14,6 +14,7 @@ import TrainingCertificate from "./pages/TrainingCertificate";
 import Assistant from "./pages/Assistant";
 import Plans from "./pages/Plans";
 import Profile from "./pages/Profile";
+import Settings from "./pages/Settings";
 import Analytics from "./pages/Analytics";
 import NotFound from "./pages/NotFound";
 
@@ -36,6 +37,7 @@ const App = () => (
           <Route path="/assistant" element={<Assistant />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/settings" element={<Settings />} />
           <Route path="/analytics" element={<Analytics />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

@@ -14,8 +14,11 @@ import {
 } from "lucide-react";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
+  const navigate = useNavigate();
+
   const achievements = [
     { name: "Primeiro Módulo", icon: "🎯", earned: true },
     { name: "Vendedor Ativo", icon: "⚡", earned: true },
@@ -100,7 +103,7 @@ const Profile = () => {
           <Button 
             variant="outline" 
             className="w-full justify-start glass-effect"
-            onClick={() => {}}
+            onClick={() => navigate('/plans')}
           >
             <Crown className="h-5 w-5 mr-3 text-sales-primary" />
             Fazer Upgrade para Premium
@@ -109,7 +112,7 @@ const Profile = () => {
           <Button 
             variant="outline" 
             className="w-full justify-start glass-effect"
-            onClick={() => {}}
+            onClick={() => navigate('/settings')}
           >
             <Settings className="h-5 w-5 mr-3" />
             Configurações
