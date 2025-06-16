@@ -275,7 +275,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Técnicas para demonstrar interesse genuíno pelo cliente",
           isFree: true,
-          videoUrl: "https://youtu.be/rapport3"
+          videoUrl: "https://youtu.be/mQzgkdJqQwk"
         },
         {
           id: 5,
