@@ -146,7 +146,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como criar urgência através da escassez de produto, tempo ou oportunidade",
           isFree: true,
-          videoUrl: "https://youtu.be/sample2"
+          videoUrl: "https://youtu.be/esYPR8Qnolw"
         },
         {
           id: 3,
