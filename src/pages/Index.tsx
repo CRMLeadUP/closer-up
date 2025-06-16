@@ -17,9 +17,11 @@ import {
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   // Simulating user's current plan - in real app this would come from user context/auth
   const userPlan = "free" as "free" | "premium" | "ai"; // Can be changed to "premium" or "ai" for testing
@@ -160,12 +162,21 @@ const Index = () => {
             <p className="text-sm text-muted-foreground mb-4">
               Comece grátis e upgrade quando quiser
             </p>
-            <Button 
-              className="w-full btn-gradient mb-3"
-              onClick={() => navigate('/plans')}
-            >
-              Ver Planos
-            </Button>
+            {user ? (
+              <Button 
+                className="w-full btn-gradient mb-3"
+                onClick={() => navigate('/plans')}
+              >
+                Ver Planos
+              </Button>
+            ) : (
+              <Button 
+                className="w-full btn-gradient mb-3"
+                onClick={() => navigate('/auth')}
+              >
+                Começar Grátis
+              </Button>
+            )}
             <Button 
               variant="outline" 
               className="w-full glass-effect"

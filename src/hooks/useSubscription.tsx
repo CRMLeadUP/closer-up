@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SubscriptionData {
   subscribed: boolean;
@@ -8,6 +9,7 @@ interface SubscriptionData {
 }
 
 export const useSubscription = () => {
+  const { user } = useAuth();
   const [subscriptionData, setSubscriptionData] = useState<SubscriptionData>({
     subscribed: false,
     subscription_tier: null,
@@ -17,6 +19,11 @@ export const useSubscription = () => {
   const [error, setError] = useState<string | null>(null);
 
   const checkSubscription = async () => {
+    if (!user) {
+      setIsLoading(false);
+      return;
+    }
+    
     try {
       setIsLoading(true);
       setError(null);
@@ -40,8 +47,12 @@ export const useSubscription = () => {
   };
 
   useEffect(() => {
-    checkSubscription();
-  }, []);
+    if (user) {
+      checkSubscription();
+    } else {
+      setIsLoading(false);
+    }
+  }, [user]);
 
   const hasCloserUpAccess = () => {
     return subscriptionData.subscribed && 
