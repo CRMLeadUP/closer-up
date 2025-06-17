@@ -171,7 +171,7 @@ const Profile = () => {
           <Button 
             variant="outline" 
             className="w-full justify-start glass-effect"
-            onClick={() => window.open('https://wa.me/5511999999999', '_blank')}
+            onClick={() => window.open('https://wa.me/5511999484196', '_blank')}
           >
             <HelpCircle className="h-5 w-5 mr-3" />
             Ajuda e Suporte
