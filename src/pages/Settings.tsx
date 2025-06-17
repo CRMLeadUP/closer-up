@@ -220,7 +220,7 @@ const SettingsPage = () => {
               <span>•</span>
               <button>Política de Privacidade</button>
               <span>•</span>
-              <button>Suporte</button>
+              <button onClick={() => window.open('https://wa.me/5511999484196', '_blank')}>Suporte</button>
             </div>
           </CardContent>
         </Card>

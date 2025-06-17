@@ -142,7 +142,7 @@ const Index = () => {
                 className={`w-full ${
                   userPlan === "ai" 
                     ? "bg-sales-secondary hover:bg-sales-secondary/80 text-white"
-                    : "border border-sales-secondary text-sales-secondary hover:bg-sales-secondary hover:text-white"
+                    : "btn-gradient"
                 }`}
               >
                 {userPlan === "ai" ? "💬 Ativar Suporte" : "🔓 Desbloquear CloserAI"}

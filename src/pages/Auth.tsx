@@ -34,14 +34,14 @@ const Auth = () => {
           email,
           password,
           options: {
-            emailRedirectTo: `${window.location.origin}/`,
             data: {
               full_name: fullName || email.split('@')[0]
             }
           }
         });
         if (error) throw error;
-        toast({ title: "Conta criada! Verifique seu email." });
+        toast({ title: "Bem-vindo! Conta criada com sucesso." });
+        navigate("/");
       }
     } catch (error: any) {
       toast({
