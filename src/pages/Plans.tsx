@@ -208,12 +208,14 @@ const Plans = () => {
                     ))}
                   </ul>
                   
-                  <Button 
+                   <Button 
                     className={`w-full ${
                       plan.current
                         ? 'bg-muted hover:bg-muted text-muted-foreground cursor-not-allowed'
                         : plan.highlight 
                         ? 'btn-gradient' 
+                        : plan.name === 'CloserAI' 
+                        ? 'btn-gradient'
                         : 'bg-card hover:bg-muted border border-border'
                     }`}
                     disabled={plan.current || isLoading}
