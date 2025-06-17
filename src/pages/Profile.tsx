@@ -19,11 +19,13 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleManageSubscription = async () => {
     setIsLoading(true);
@@ -79,7 +81,9 @@ const Profile = () => {
             <div className="w-20 h-20 rounded-full bg-gradient-primary mx-auto mb-4 flex items-center justify-center">
               <User className="h-10 w-10 text-white" />
             </div>
-            <h2 className="text-xl font-bold gradient-text mb-1">João Silva</h2>
+            <h2 className="text-xl font-bold gradient-text mb-1">
+              {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Usuário'}
+            </h2>
             <p className="text-muted-foreground text-sm mb-3">Vendedor Profissional</p>
             <Badge className="bg-sales-accent/20 text-sales-accent border-sales-accent/30">
               Plano Starter
@@ -176,7 +180,10 @@ const Profile = () => {
           <Button 
             variant="outline" 
             className="w-full justify-start glass-effect text-red-400 border-red-400/30 hover:bg-red-400/10"
-            onClick={() => {}}
+            onClick={async () => {
+              await supabase.auth.signOut();
+              navigate('/auth');
+            }}
           >
             <LogOut className="h-5 w-5 mr-3" />
             Sair da Conta

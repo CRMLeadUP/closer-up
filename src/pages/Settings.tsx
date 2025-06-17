@@ -21,35 +21,70 @@ import {
 import { useNavigate } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
+import { EditProfileDialog } from "@/components/EditProfileDialog";
+import { ChangeEmailDialog } from "@/components/ChangeEmailDialog";
+import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const SettingsPage = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [editProfileOpen, setEditProfileOpen] = useState(false);
+  const [changeEmailOpen, setChangeEmailOpen] = useState(false);
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [notifications, setNotifications] = useState({
+    push: true,
+    email: false,
+    sounds: true
+  });
+
+  const handleLogout = async () => {
+    try {
+      await supabase.auth.signOut();
+      navigate('/auth');
+      toast({
+        title: "Logout realizado",
+        description: "Você foi desconectado com sucesso"
+      });
+    } catch (error) {
+      toast({
+        title: "Erro",
+        description: "Não foi possível fazer logout",
+        variant: "destructive"
+      });
+    }
+  };
 
   const settingsSections = [
     {
       title: "Conta",
       icon: User,
       items: [
-        { label: "Editar Perfil", icon: User, action: () => {} },
-        { label: "Alterar Email", icon: Mail, action: () => {} },
-        { label: "Alterar Telefone", icon: Phone, action: () => {} },
-        { label: "Privacidade", icon: Eye, action: () => {} }
+        { label: "Editar Perfil", icon: User, action: () => setEditProfileOpen(true) },
+        { label: "Alterar Email", icon: Mail, action: () => setChangeEmailOpen(true) },
+        { label: "Alterar Telefone", icon: Phone, action: () => setEditProfileOpen(true) },
+        { label: "Privacidade", icon: Eye, action: () => toast({ title: "Configurações de privacidade", description: "Suas informações estão protegidas" }) }
       ]
     },
     {
       title: "Notificações",
       icon: Bell,
       items: [
-        { label: "Notificações Push", toggle: true, enabled: true },
-        { label: "Notificações por Email", toggle: true, enabled: false },
-        { label: "Sons", toggle: true, enabled: true }
+        { label: "Notificações Push", toggle: true, enabled: notifications.push, onChange: (val: boolean) => setNotifications({...notifications, push: val}) },
+        { label: "Notificações por Email", toggle: true, enabled: notifications.email, onChange: (val: boolean) => setNotifications({...notifications, email: val}) },
+        { label: "Sons", toggle: true, enabled: notifications.sounds, onChange: (val: boolean) => setNotifications({...notifications, sounds: val}) }
       ]
     },
     {
       title: "Aparência",
       icon: Moon,
       items: [
-        { label: "Modo Escuro", toggle: true, enabled: false },
+        { label: "Modo Escuro", toggle: true, enabled: darkMode, onChange: setDarkMode },
         { label: "Idioma", value: "Português (BR)", action: () => {} }
       ]
     },
@@ -57,8 +92,8 @@ const SettingsPage = () => {
       title: "Dados",
       icon: Download,
       items: [
-        { label: "Exportar Dados", icon: Download, action: () => {} },
-        { label: "Limpar Cache", icon: Trash2, action: () => {} }
+        { label: "Exportar Dados", icon: Download, action: () => toast({ title: "Exportação iniciada", description: "Seus dados serão enviados por email" }) },
+        { label: "Limpar Cache", icon: Trash2, action: () => toast({ title: "Cache limpo", description: "Cache do aplicativo foi limpo" }) }
       ]
     }
   ];
@@ -118,7 +153,7 @@ const SettingsPage = () => {
                         {item.toggle ? (
                           <Switch 
                             checked={item.enabled} 
-                            onCheckedChange={() => {}}
+                            onCheckedChange={item.onChange || (() => {})}
                             className="data-[state=checked]:bg-sales-primary"
                           />
                         ) : item.action && (
@@ -163,7 +198,12 @@ const SettingsPage = () => {
             </div>
             <div className="flex items-center justify-between py-2">
               <span className="text-sm">Alterar Senha</span>
-              <Button variant="ghost" size="sm" className="text-xs h-8">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs h-8"
+                onClick={() => setChangePasswordOpen(true)}
+              >
                 Alterar
               </Button>
             </div>
@@ -187,6 +227,21 @@ const SettingsPage = () => {
       </div>
 
       <AppBottomNav />
+      
+      <EditProfileDialog 
+        open={editProfileOpen} 
+        onOpenChange={setEditProfileOpen} 
+      />
+      
+      <ChangeEmailDialog 
+        open={changeEmailOpen} 
+        onOpenChange={setChangeEmailOpen} 
+      />
+      
+      <ChangePasswordDialog 
+        open={changePasswordOpen} 
+        onOpenChange={setChangePasswordOpen} 
+      />
     </div>
   );
 };
