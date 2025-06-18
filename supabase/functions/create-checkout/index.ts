@@ -59,8 +59,8 @@ serve(async (req) => {
 
     // Price IDs for different plans
     const priceIds = {
-      closerUp: "price_1RafmOCrRXCkk7rXLQ25h13B",
-      closerAI: "price_1RafttCrRXCkk7rXz36XhhKI"
+      closerUp: "price_1Rb5oNE06ubkhHJygHtdcVJB",
+      closerAI: "price_1Rb5oqE06ubkhHJyH7RW6SVC"
     };
 
     const priceId = priceIds[plan as keyof typeof priceIds];
