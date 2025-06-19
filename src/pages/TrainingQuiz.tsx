@@ -3,6 +3,8 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { useUserProgress } from "@/hooks/useUserProgress";
+import { useToast } from "@/hooks/use-toast";
 import { 
   ArrowLeft, 
   CheckCircle2, 
@@ -15,14 +17,15 @@ import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
 
 const TrainingQuiz = () => {
+  const { updateProgress } = useUserProgress();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { moduleId, lessonId } = useParams();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [answers, setAnswers] = useState<boolean[]>([]);
   const [showResult, setShowResult] = useState(false);
   const [quizCompleted, setQuizCompleted] = useState(false);
-
   const quizData = {
     title: "Quiz: Perfil Dominante",
     description: "Teste seus conhecimentos sobre vendas para perfis dominantes",
@@ -82,6 +85,11 @@ const TrainingQuiz = () => {
         setShowResult(false);
       } else {
         setQuizCompleted(true);
+        
+        // Update user progress
+        const score = Math.round((newAnswers.filter(Boolean).length / quizData.questions.length) * 100);
+        const perfectScore = score === 100;
+        updateProgress('quiz', score, perfectScore);
       }
     }, 2000);
   };

@@ -255,7 +255,29 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_user_progress: {
+        Args: { p_user_id: string }
+        Returns: {
+          total_xp: number
+          current_level: number
+          modules_completed: number
+          quizzes_completed: number
+          simulations_completed: number
+          perfect_scores: number
+          streak_days: number
+          next_level_xp: number
+          progress_percentage: number
+        }[]
+      }
+      update_user_progress: {
+        Args: {
+          p_user_id: string
+          p_activity_type: string
+          p_score?: number
+          p_perfect_score?: boolean
+        }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

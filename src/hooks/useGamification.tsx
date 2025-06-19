@@ -1,31 +1,16 @@
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { useToast } from '@/hooks/use-toast';
-
-export interface UserProgress {
-  id: string;
-  user_id: string;
-  total_xp: number;
-  current_level: number;
-  modules_completed: number;
-  quizzes_completed: number;
-  simulations_completed: number;
-  perfect_scores: number;
-  streak_days: number;
-  last_activity_date: string;
-}
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useUserProgress } from "./useUserProgress";
 
 export interface Achievement {
   id: string;
   name: string;
   description: string;
   icon: string;
-  category: string;
-  xp_reward: number;
-  requirements: any;
-  rarity: string;
-  unlocked?: boolean;
+  rarity: "common" | "rare" | "epic" | "legendary";
+  unlocked: boolean;
+  unlockedAt?: string;
+  xp_reward?: number;
   unlocked_at?: string;
 }
 
@@ -33,252 +18,205 @@ export interface Challenge {
   id: string;
   title: string;
   description: string;
-  challenge_type: string;
-  requirements: any;
-  xp_reward: number;
-  start_date: string;
-  end_date: string;
-  progress?: any;
-  completed?: boolean;
+  type: string;
+  progress: number;
+  target: number;
+  completed: boolean;
+  xpReward: number;
+  endDate: string;
+  requirements?: any;
+  end_date?: string;
+  challenge_type?: string;
+  xp_reward?: number;
+}
+
+export interface UserProgress {
+  total_xp: number;
+  current_level: number;
+  modules_completed: number;
+  quizzes_completed: number;
+  simulations_completed: number;
+  perfect_scores: number;
+  streak_days: number;
+  next_level_xp: number;
+  progress_percentage: number;
+}
+
+export interface LeaderboardEntry {
+  userId: string;
+  name: string;
+  level: number;
+  xp: number;
+  avatar?: string;
 }
 
 export const useGamification = () => {
-  const { user } = useAuth();
-  const { toast } = useToast();
-  const [userProgress, setUserProgress] = useState<UserProgress | null>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { progress } = useUserProgress();
 
-  // Calculate level from XP
-  const calculateLevel = (xp: number): number => {
-    return Math.floor(Math.sqrt(xp / 100)) + 1;
-  };
-
-  // Calculate XP needed for next level
-  const calculateXPForNextLevel = (level: number): number => {
-    return Math.pow(level, 2) * 100;
-  };
-
-  // Initialize user progress
-  const initializeUserProgress = async () => {
-    if (!user) return;
-
+  const fetchAchievements = async () => {
     try {
-      const { data: existingProgress } = await supabase
-        .from('user_progress')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
 
-      if (!existingProgress) {
-        const { data: newProgress } = await supabase
-          .from('user_progress')
-          .insert({
-            user_id: user.id,
-            total_xp: 500, // Bônus inicial do onboarding
-            current_level: 1
-          })
-          .select()
-          .single();
-
-        if (newProgress) {
-          setUserProgress(newProgress);
-        }
-      } else {
-        setUserProgress(existingProgress);
-      }
-    } catch (error) {
-      console.error('Error initializing user progress:', error);
-    }
-  };
-
-  // Load achievements
-  const loadAchievements = async () => {
-    if (!user) return;
-
-    try {
-      const { data: allAchievements } = await supabase
+      // Get all achievements
+      const { data: allAchievements, error: achievementsError } = await supabase
         .from('achievements')
         .select('*')
         .eq('is_active', true);
 
-      const { data: userAchievements } = await supabase
+      if (achievementsError) throw achievementsError;
+
+      // Get user's unlocked achievements
+      const { data: userAchievements, error: userAchievementsError } = await supabase
         .from('user_achievements')
         .select('achievement_id, unlocked_at')
         .eq('user_id', user.id);
 
-      const unlockedIds = userAchievements?.map(ua => ua.achievement_id) || [];
+      if (userAchievementsError) throw userAchievementsError;
 
+      // Combine data
       const achievementsWithStatus = allAchievements?.map(achievement => ({
-        ...achievement,
-        unlocked: unlockedIds.includes(achievement.id),
+        id: achievement.id,
+        name: achievement.name,
+        description: achievement.description,
+        icon: achievement.icon,
+        rarity: achievement.rarity as Achievement['rarity'],
+        unlocked: userAchievements?.some(ua => ua.achievement_id === achievement.id) || false,
+        unlockedAt: userAchievements?.find(ua => ua.achievement_id === achievement.id)?.unlocked_at,
+        xp_reward: achievement.xp_reward,
         unlocked_at: userAchievements?.find(ua => ua.achievement_id === achievement.id)?.unlocked_at
       })) || [];
 
       setAchievements(achievementsWithStatus);
     } catch (error) {
-      console.error('Error loading achievements:', error);
+      console.error('Error fetching achievements:', error);
     }
   };
 
-  // Load challenges
-  const loadChallenges = async () => {
-    if (!user) return;
-
+  const fetchChallenges = async () => {
     try {
-      const { data: activeChallenges } = await supabase
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Get active challenges
+      const { data: activeChallenges, error: challengesError } = await supabase
         .from('challenges')
         .select('*')
         .eq('is_active', true)
         .gte('end_date', new Date().toISOString());
 
-      const { data: userChallenges } = await supabase
+      if (challengesError) throw challengesError;
+
+      // Get user's challenge progress
+      const { data: userChallenges, error: userChallengesError } = await supabase
         .from('user_challenges')
-        .select('challenge_id, progress, completed')
+        .select('*')
         .eq('user_id', user.id);
 
+      if (userChallengesError) throw userChallengesError;
+
+      // Combine data
       const challengesWithProgress = activeChallenges?.map(challenge => {
         const userChallenge = userChallenges?.find(uc => uc.challenge_id === challenge.id);
+        const progressValue = userChallenge?.progress || {};
+        
+        // Calculate progress based on challenge type
+        let currentProgress = 0;
+        let target = 1;
+        
+        if (challenge.challenge_type === 'modules') {
+          currentProgress = progress.modules_completed;
+          target = (challenge.requirements as any)?.target || 5;
+        } else if (challenge.challenge_type === 'quizzes') {
+          currentProgress = progress.quizzes_completed;
+          target = (challenge.requirements as any)?.target || 3;
+        } else if (challenge.challenge_type === 'simulations') {
+          currentProgress = progress.simulations_completed;
+          target = (challenge.requirements as any)?.target || 2;
+        } else if (challenge.challenge_type === 'streak') {
+          currentProgress = progress.streak_days;
+          target = (challenge.requirements as any)?.target || 7;
+        }
+
         return {
-          ...challenge,
-          progress: userChallenge?.progress || {},
-          completed: userChallenge?.completed || false
+          id: challenge.id,
+          title: challenge.title,
+          description: challenge.description,
+          type: challenge.challenge_type,
+          progress: currentProgress,
+          target: target,
+          completed: userChallenge?.completed || false,
+          xpReward: challenge.xp_reward,
+          endDate: challenge.end_date,
+          requirements: challenge.requirements,
+          end_date: challenge.end_date,
+          challenge_type: challenge.challenge_type,
+          xp_reward: challenge.xp_reward
         };
       }) || [];
 
       setChallenges(challengesWithProgress);
     } catch (error) {
-      console.error('Error loading challenges:', error);
+      console.error('Error fetching challenges:', error);
     }
   };
 
-  // Add XP and check for achievements
-  const addXP = async (xpAmount: number, activityType: string) => {
-    if (!user || !userProgress) return;
-
-    setLoading(true);
+  const fetchLeaderboard = async () => {
     try {
-      const newTotalXP = userProgress.total_xp + xpAmount;
-      const newLevel = calculateLevel(newTotalXP);
-
-      // Update user progress
-      const updates: any = {
-        total_xp: newTotalXP,
-        current_level: newLevel,
-        last_activity_date: new Date().toISOString().split('T')[0]
-      };
-
-      // Update activity counters
-      if (activityType === 'module') updates.modules_completed = userProgress.modules_completed + 1;
-      if (activityType === 'quiz') updates.quizzes_completed = userProgress.quizzes_completed + 1;
-      if (activityType === 'perfect_quiz') {
-        updates.quizzes_completed = userProgress.quizzes_completed + 1;
-        updates.perfect_scores = userProgress.perfect_scores + 1;
-      }
-      if (activityType === 'simulation') updates.simulations_completed = userProgress.simulations_completed + 1;
-
-      const { data: updatedProgress } = await supabase
+      // Get top users by XP
+      const { data: topUsers, error } = await supabase
         .from('user_progress')
-        .update(updates)
-        .eq('user_id', user.id)
-        .select()
-        .single();
+        .select('user_id, total_xp, current_level')
+        .order('total_xp', { ascending: false })
+        .limit(10);
 
-      if (updatedProgress) {
-        setUserProgress(updatedProgress);
-        
-        if (newLevel > userProgress.current_level) {
-          toast({
-            title: "🎉 Level Up!",
-            description: `Parabéns! Você alcançou o nível ${newLevel}!`,
-          });
-        }
+      if (error) throw error;
 
-        // Check for new achievements
-        await checkAchievements(updatedProgress);
-        
-        toast({
-          title: "XP Ganho!",
-          description: `+${xpAmount} XP adicionado ao seu progresso`,
-        });
-      }
+      // For now, generate mock names since we don't have user profiles
+      const leaderboardData = topUsers?.map((user, index) => ({
+        userId: user.user_id,
+        name: `Usuário ${index + 1}`,
+        level: user.current_level,
+        xp: user.total_xp
+      })) || [];
+
+      setLeaderboard(leaderboardData);
     } catch (error) {
-      console.error('Error adding XP:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Check for new achievements
-  const checkAchievements = async (progress: UserProgress) => {
-    if (!user) return;
-
-    try {
-      const unlockedAchievements = achievements.filter(a => a.unlocked);
-      const availableAchievements = achievements.filter(a => !a.unlocked);
-
-      for (const achievement of availableAchievements) {
-        let requirementMet = true;
-
-        for (const [key, value] of Object.entries(achievement.requirements)) {
-          if (progress[key as keyof UserProgress] < value) {
-            requirementMet = false;
-            break;
-          }
-        }
-
-        if (requirementMet) {
-          // Unlock achievement
-          await supabase
-            .from('user_achievements')
-            .insert({
-              user_id: user.id,
-              achievement_id: achievement.id
-            });
-
-          // Add XP reward
-          if (achievement.xp_reward > 0) {
-            await supabase
-              .from('user_progress')
-              .update({
-                total_xp: progress.total_xp + achievement.xp_reward
-              })
-              .eq('user_id', user.id);
-          }
-
-          toast({
-            title: "🏆 Conquista Desbloqueada!",
-            description: `${achievement.icon} ${achievement.name} - +${achievement.xp_reward} XP`,
-          });
-        }
-      }
-
-      // Reload achievements to update status
-      await loadAchievements();
-    } catch (error) {
-      console.error('Error checking achievements:', error);
+      console.error('Error fetching leaderboard:', error);
     }
   };
 
   useEffect(() => {
-    if (user) {
-      initializeUserProgress();
-      loadAchievements();
-      loadChallenges();
-    }
-  }, [user]);
+    const loadData = async () => {
+      setLoading(true);
+      await Promise.all([
+        fetchAchievements(),
+        fetchChallenges(),
+        fetchLeaderboard()
+      ]);
+      setLoading(false);
+    };
+
+    loadData();
+  }, [progress]); // Refresh when progress changes
 
   return {
-    userProgress,
     achievements,
     challenges,
+    leaderboard,
     loading,
-    addXP,
-    calculateLevel,
-    calculateXPForNextLevel,
-    initializeUserProgress,
-    loadAchievements,
-    loadChallenges
+    userProgress: progress,
+    calculateXPForNextLevel: (level: number) => level * 100,
+    refreshData: async () => {
+      await Promise.all([
+        fetchAchievements(),
+        fetchChallenges(),
+        fetchLeaderboard()
+      ]);
+    }
   };
 };
