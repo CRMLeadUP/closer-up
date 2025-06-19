@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
+import { OnboardingProvider } from "./contexts/OnboardingContext";
 import Index from "./pages/Index";
 import Training from "./pages/Training";
 import TrainingModule from "./pages/TrainingModule";
@@ -26,9 +27,10 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <TooltipProvider>
-      <Toaster />
-      <Sonner />
+      <OnboardingProvider>
+        <TooltipProvider>
+        <Toaster />
+        <Sonner />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
@@ -49,9 +51,10 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
-    </TooltipProvider>
-  </AuthProvider>
-</QueryClientProvider>
+        </TooltipProvider>
+      </OnboardingProvider>
+    </AuthProvider>
+  </QueryClientProvider>
 );
 
 export default App;
