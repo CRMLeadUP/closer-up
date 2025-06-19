@@ -24,24 +24,30 @@ import AppBottomNav from "@/components/AppBottomNav";
 import { EditProfileDialog } from "@/components/EditProfileDialog";
 import { ChangeEmailDialog } from "@/components/ChangeEmailDialog";
 import { ChangePasswordDialog } from "@/components/ChangePasswordDialog";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { SessionManager } from "@/components/SessionManager";
+import { PrivacySettings } from "@/components/PrivacySettings";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSettings } from "@/hooks/useSettings";
 
 const SettingsPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
+  const { 
+    settings, 
+    updateNotificationSettings, 
+    toggleDarkMode, 
+    exportUserData, 
+    clearCache 
+  } = useSettings();
+  
   const [editProfileOpen, setEditProfileOpen] = useState(false);
   const [changeEmailOpen, setChangeEmailOpen] = useState(false);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
-  const [notifications, setNotifications] = useState({
-    push: true,
-    email: false,
-    sounds: true
-  });
 
   const handleLogout = async () => {
     try {
@@ -60,6 +66,16 @@ const SettingsPage = () => {
     }
   };
 
+  const getCurrentLanguage = () => {
+    const languages = {
+      'pt-BR': 'Português (BR)',
+      'en-US': 'English (US)',
+      'es-ES': 'Español',
+      'fr-FR': 'Français'
+    };
+    return languages[settings.language as keyof typeof languages] || 'Português (BR)';
+  };
+
   const settingsSections = [
     {
       title: "Conta",
@@ -68,32 +84,67 @@ const SettingsPage = () => {
         { label: "Editar Perfil", icon: User, action: () => setEditProfileOpen(true) },
         { label: "Alterar Email", icon: Mail, action: () => setChangeEmailOpen(true) },
         { label: "Alterar Telefone", icon: Phone, action: () => setEditProfileOpen(true) },
-        { label: "Privacidade", icon: Eye, action: () => toast({ title: "Configurações de privacidade", description: "Suas informações estão protegidas" }) }
+        { 
+          label: "Privacidade", 
+          icon: Eye, 
+          component: (
+            <PrivacySettings>
+              <Button variant="ghost" size="sm" className="text-xs h-8">
+                Editar
+              </Button>
+            </PrivacySettings>
+          )
+        }
       ]
     },
     {
       title: "Notificações",
       icon: Bell,
       items: [
-        { label: "Notificações Push", toggle: true, enabled: notifications.push, onChange: (val: boolean) => setNotifications({...notifications, push: val}) },
-        { label: "Notificações por Email", toggle: true, enabled: notifications.email, onChange: (val: boolean) => setNotifications({...notifications, email: val}) },
-        { label: "Sons", toggle: true, enabled: notifications.sounds, onChange: (val: boolean) => setNotifications({...notifications, sounds: val}) }
+        { 
+          label: "Notificações Push", 
+          toggle: true, 
+          enabled: settings.notifications.push, 
+          onChange: (val: boolean) => updateNotificationSettings({ push: val })
+        },
+        { 
+          label: "Notificações por Email", 
+          toggle: true, 
+          enabled: settings.notifications.email, 
+          onChange: (val: boolean) => updateNotificationSettings({ email: val })
+        },
+        { 
+          label: "Sons", 
+          toggle: true, 
+          enabled: settings.notifications.sounds, 
+          onChange: (val: boolean) => updateNotificationSettings({ sounds: val })
+        }
       ]
     },
     {
       title: "Aparência",
       icon: Moon,
       items: [
-        { label: "Modo Escuro", toggle: true, enabled: darkMode, onChange: setDarkMode },
-        { label: "Idioma", value: "Português (BR)", action: () => {} }
+        { label: "Modo Escuro", toggle: true, enabled: settings.darkMode, onChange: toggleDarkMode },
+        { 
+          label: "Idioma", 
+          value: getCurrentLanguage(),
+          component: (
+            <LanguageSelector>
+              <Button variant="ghost" size="sm" className="text-xs h-8">
+                Editar
+              </Button>
+            </LanguageSelector>
+          )
+        }
       ]
     },
     {
       title: "Dados",
       icon: Download,
       items: [
-        { label: "Exportar Dados", icon: Download, action: () => toast({ title: "Exportação iniciada", description: "Seus dados serão enviados por email" }) },
-        { label: "Limpar Cache", icon: Trash2, action: () => toast({ title: "Cache limpo", description: "Cache do aplicativo foi limpo" }) }
+        { label: "Exportar Dados", icon: Download, action: exportUserData },
+        { label: "Limpar Cache", icon: Trash2, action: clearCache }
       ]
     }
   ];
@@ -156,6 +207,8 @@ const SettingsPage = () => {
                             onCheckedChange={item.onChange || (() => {})}
                             className="data-[state=checked]:bg-sales-primary"
                           />
+                        ) : item.component ? (
+                          item.component
                         ) : item.action && (
                           <Button
                             variant="ghost"
@@ -192,9 +245,11 @@ const SettingsPage = () => {
             </div>
             <div className="flex items-center justify-between py-2">
               <span className="text-sm">Sessões Ativas</span>
-              <Button variant="ghost" size="sm" className="text-xs h-8">
-                Gerenciar
-              </Button>
+              <SessionManager>
+                <Button variant="ghost" size="sm" className="text-xs h-8">
+                  Gerenciar
+                </Button>
+              </SessionManager>
             </div>
             <div className="flex items-center justify-between py-2">
               <span className="text-sm">Alterar Senha</span>
