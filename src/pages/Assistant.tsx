@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,7 +19,11 @@ import {
   Lightbulb,
   Zap,
   Brain,
-  PhoneCall
+  PhoneCall,
+  Sparkles,
+  ArrowRight,
+  Copy,
+  Check
 } from "lucide-react";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
@@ -34,6 +38,8 @@ const Assistant = () => {
   const [analysisText, setAnalysisText] = useState("");
   const [analysisResult, setAnalysisResult] = useState("");
   const [analysisLoading, setAnalysisLoading] = useState(false);
+  const [copiedAnalysis, setCopiedAnalysis] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const { toast } = useToast();
   
   const [conversation, setConversation] = useState([
@@ -166,22 +172,52 @@ const Assistant = () => {
     setMessage(action);
   };
 
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedAnalysis(true);
+      toast({
+        title: "Copiado!",
+        description: "Texto copiado para a área de transferência."
+      });
+      setTimeout(() => setCopiedAnalysis(false), 2000);
+    } catch (err) {
+      toast({
+        title: "Erro ao copiar",
+        description: "Não foi possível copiar o texto.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Efeito typing para simular digitação da IA
+  useEffect(() => {
+    if (isLoading) {
+      setIsTyping(true);
+      const timer = setTimeout(() => setIsTyping(false), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoading]);
+
   return (
     <div className="min-h-screen bg-background">
       <MobileHeader />
       
       <div className="pt-20 pb-24">
         {/* Header */}
-        <div className="px-4 mb-6">
+        <div className="px-4 mb-6 animate-fade-in">
           <div className="text-center mb-6">
-            <Badge className="mb-4 bg-sales-secondary/20 text-sales-secondary border-sales-secondary/30">
-              🤖 CloserAI Assistant
+            <Badge className="mb-4 bg-gradient-to-r from-sales-secondary/20 to-sales-accent/20 text-sales-secondary border-sales-secondary/30 
+                           hover:from-sales-secondary/30 hover:to-sales-accent/30 transition-all duration-300 
+                           shadow-lg hover:shadow-xl hover:scale-105">
+              <Sparkles className="h-3 w-3 mr-1 animate-pulse" />
+              CloserAI Assistant
             </Badge>
-            <h1 className="text-2xl font-bold gradient-text mb-2">
+            <h1 className="text-3xl font-bold gradient-text mb-3 animate-scale-in">
               Assistente IA Avançado
             </h1>
-            <p className="text-muted-foreground text-sm">
-              Seu consultor inteligente para vendas, análises e estratégias
+            <p className="text-muted-foreground text-sm max-w-xs mx-auto leading-relaxed">
+              Seu consultor inteligente para vendas, análises e estratégias comerciais
             </p>
           </div>
 
@@ -190,11 +226,18 @@ const Assistant = () => {
             {insights.map((insight, index) => {
               const IconComponent = insight.icon;
               return (
-                <Card key={index} className="card-glass">
-                  <CardContent className="p-3 text-center">
-                    <IconComponent className={`h-4 w-4 mx-auto mb-1 text-${insight.color}`} />
-                    <div className="text-lg font-bold gradient-text">{insight.value}</div>
-                    <div className="text-xs text-muted-foreground">{insight.label}</div>
+                <Card key={index} className="card-glass hover:scale-105 transition-all duration-300 
+                                          hover:shadow-lg group cursor-pointer border-0 
+                                          bg-gradient-to-br from-background/80 to-muted/30">
+                  <CardContent className="p-4 text-center">
+                    <div className="bg-gradient-to-r from-sales-primary/10 to-sales-accent/10 
+                                  rounded-full w-10 h-10 mx-auto mb-2 flex items-center justify-center
+                                  group-hover:from-sales-primary/20 group-hover:to-sales-accent/20 
+                                  transition-all duration-300">
+                      <IconComponent className="h-5 w-5 text-sales-primary group-hover:scale-110 transition-transform" />
+                    </div>
+                    <div className="text-xl font-bold gradient-text mb-1">{insight.value}</div>
+                    <div className="text-xs text-muted-foreground font-medium">{insight.label}</div>
                   </CardContent>
                 </Card>
               );
@@ -221,28 +264,40 @@ const Assistant = () => {
             </TabsList>
 
             {/* Chat Tab */}
-            <TabsContent value="chat" className="space-y-6">
+            <TabsContent value="chat" className="space-y-6 animate-fade-in">
               {/* Chat Area */}
-              <Card className="card-glass h-96 flex flex-col">
-                <CardHeader className="pb-4">
+              <Card className="card-glass h-96 flex flex-col shadow-xl border-0 
+                             bg-gradient-to-br from-background/90 to-muted/40">
+                <CardHeader className="pb-4 border-b border-border/50">
                   <CardTitle className="text-lg flex items-center gap-2">
-                    <Brain className="h-5 w-5 text-sales-secondary" />
+                    <div className="bg-gradient-to-r from-sales-secondary/20 to-sales-accent/20 
+                                  rounded-full p-2">
+                      <Brain className="h-5 w-5 text-sales-secondary" />
+                    </div>
                     Chat Inteligente
-                    {isLoading && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sales-primary"></div>}
+                    {isLoading && (
+                      <div className="flex items-center gap-2 ml-auto">
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-sales-primary border-t-transparent"></div>
+                        <span className="text-xs text-muted-foreground">Pensando...</span>
+                      </div>
+                    )}
                   </CardTitle>
                 </CardHeader>
                 
-                <CardContent className="flex-1 overflow-y-auto space-y-4">
+                <CardContent className="flex-1 overflow-y-auto space-y-4 p-4">
                   {conversation.map((msg, index) => (
                     <div 
                       key={index}
-                      className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                      className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'} 
+                                animate-scale-in`}
+                      style={{ animationDelay: `${index * 100}ms` }}
                     >
-                      <div className={`flex gap-2 max-w-[80%] ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                      <div className={`flex gap-3 max-w-[85%] ${msg.type === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shadow-lg 
+                                       transition-all duration-300 hover:scale-110 ${
                           msg.type === 'user' 
-                            ? 'bg-sales-primary' 
-                            : 'bg-sales-secondary'
+                            ? 'bg-gradient-to-r from-sales-primary to-sales-accent' 
+                            : 'bg-gradient-to-r from-sales-secondary to-sales-accent'
                         }`}>
                           {msg.type === 'user' ? (
                             <User className="h-4 w-4 text-white" />
@@ -250,55 +305,108 @@ const Assistant = () => {
                             <Brain className="h-4 w-4 text-white" />
                           )}
                         </div>
-                        <div className={`rounded-2xl px-4 py-2 ${
+                        <div className={`rounded-2xl px-4 py-3 shadow-md relative
+                                       transition-all duration-300 hover:shadow-lg ${
                           msg.type === 'user'
-                            ? 'bg-sales-primary text-white'
-                            : 'bg-muted text-foreground'
+                            ? 'bg-gradient-to-r from-sales-primary to-sales-accent text-white'
+                            : 'bg-gradient-to-r from-background to-muted text-foreground border border-border/50'
                         }`}>
-                          <p className="text-sm whitespace-pre-line">{msg.message}</p>
-                          <p className="text-xs opacity-70 mt-1">{msg.time}</p>
+                          <p className="text-sm whitespace-pre-line leading-relaxed">{msg.message}</p>
+                          <p className="text-xs opacity-70 mt-2 flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {msg.time}
+                          </p>
+                          {/* Message tail */}
+                          <div className={`absolute top-4 w-0 h-0 ${
+                            msg.type === 'user' 
+                              ? 'right-[-8px] border-l-8 border-l-sales-primary border-t-4 border-b-4 border-t-transparent border-b-transparent'
+                              : 'left-[-8px] border-r-8 border-r-background border-t-4 border-b-4 border-t-transparent border-b-transparent'
+                          }`}></div>
                         </div>
                       </div>
                     </div>
                   ))}
+                  
+                  {/* Typing Indicator */}
+                  {isTyping && (
+                    <div className="flex justify-start animate-fade-in">
+                      <div className="flex gap-3 max-w-[85%]">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center 
+                                      bg-gradient-to-r from-sales-secondary to-sales-accent shadow-lg">
+                          <Brain className="h-4 w-4 text-white" />
+                        </div>
+                        <div className="bg-gradient-to-r from-background to-muted rounded-2xl px-4 py-3 
+                                      border border-border/50 shadow-md">
+                          <div className="flex gap-1">
+                            <div className="w-2 h-2 bg-sales-secondary rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-sales-secondary rounded-full animate-bounce" 
+                                 style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-sales-secondary rounded-full animate-bounce" 
+                                 style={{ animationDelay: '0.2s' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
               {/* Quick Actions */}
-              <div>
-                <h3 className="text-sm font-semibold mb-3">Perguntas Inteligentes</h3>
-                <div className="grid grid-cols-2 gap-2">
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  <Lightbulb className="h-4 w-4 text-sales-accent" />
+                  <h3 className="text-sm font-semibold">Perguntas Inteligentes</h3>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
                   {quickActions.map((action, index) => (
                     <Button
                       key={index}
                       variant="outline"
                       size="sm"
-                      className="text-xs glass-effect h-auto py-2 px-3"
+                      className="text-xs h-auto py-3 px-4 text-left justify-start 
+                               bg-gradient-to-r from-background/80 to-muted/40 
+                               border-0 shadow-md hover:shadow-lg
+                               hover:scale-105 transition-all duration-300
+                               hover:from-sales-primary/10 hover:to-sales-accent/10"
                       onClick={() => handleQuickAction(action)}
                       disabled={isLoading}
                     >
-                      {action}
+                      <ArrowRight className="h-3 w-3 mr-2 opacity-50" />
+                      <span className="leading-tight">{action}</span>
                     </Button>
                   ))}
                 </div>
               </div>
 
               {/* Input Area */}
-              <Card className="card-glass">
+              <Card className="card-glass shadow-xl border-0 bg-gradient-to-r from-background/90 to-muted/40">
                 <CardContent className="p-4">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Faça qualquer pergunta sobre vendas, estratégias, negociação..."
-                      value={message}
-                      onChange={(e) => setMessage(e.target.value)}
-                      onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
-                      className="flex-1"
-                      disabled={isLoading}
-                    />
+                  <div className="flex gap-3">
+                    <div className="relative flex-1">
+                      <Input
+                        placeholder="Digite sua pergunta sobre vendas, estratégias, negociação..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                        className="pr-12 border-0 bg-background/50 focus:bg-background/80 
+                                 transition-all duration-300 shadow-inner
+                                 placeholder:text-muted-foreground/60"
+                        disabled={isLoading}
+                      />
+                      {message && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                          <div className="w-2 h-2 bg-sales-accent rounded-full animate-pulse"></div>
+                        </div>
+                      )}
+                    </div>
                     <Button
                       size="icon"
                       variant="outline"
-                      className={`glass-effect ${isListening ? 'bg-red-500 hover:bg-red-600' : ''}`}
+                      className={`shadow-lg border-0 transition-all duration-300 hover:scale-110 ${
+                        isListening 
+                          ? 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-red-500/50 animate-pulse' 
+                          : 'bg-gradient-to-r from-background to-muted hover:from-sales-secondary/20 hover:to-sales-accent/20'
+                      }`}
                       onClick={() => setIsListening(!isListening)}
                       disabled={isLoading}
                     >
@@ -306,11 +414,16 @@ const Assistant = () => {
                     </Button>
                     <Button
                       size="icon"
-                      className="btn-gradient"
+                      className="btn-gradient shadow-lg hover:scale-110 transition-all duration-300
+                               disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                       onClick={handleSendMessage}
                       disabled={isLoading || !message.trim()}
                     >
-                      <Send className="h-4 w-4" />
+                      {isLoading ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                      ) : (
+                        <Send className="h-4 w-4" />
+                      )}
                     </Button>
                   </div>
                 </CardContent>
@@ -318,35 +431,59 @@ const Assistant = () => {
             </TabsContent>
 
             {/* Analysis Tab */}
-            <TabsContent value="analysis" className="space-y-6">
-              <Card className="card-glass">
-                <CardHeader>
+            <TabsContent value="analysis" className="space-y-6 animate-fade-in">
+              <Card className="card-glass shadow-xl border-0 bg-gradient-to-br from-background/90 to-muted/40">
+                <CardHeader className="border-b border-border/50">
                   <CardTitle className="flex items-center gap-2">
-                    <BarChart3 className="h-5 w-5 text-sales-accent" />
+                    <div className="bg-gradient-to-r from-sales-accent/20 to-sales-secondary/20 
+                                  rounded-full p-2">
+                      <BarChart3 className="h-5 w-5 text-sales-accent" />
+                    </div>
                     Análise de Conversas e Scripts
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <Textarea
-                    placeholder="Cole aqui o texto da conversa, script ou qualquer conteúdo comercial que deseja analisar..."
-                    value={analysisText}
-                    onChange={(e) => setAnalysisText(e.target.value)}
-                    className="min-h-32"
-                  />
+                <CardContent className="space-y-6 p-6">
+                  <div className="relative">
+                    <Textarea
+                      placeholder="Cole aqui o texto da conversa, script ou qualquer conteúdo comercial para análise IA..."
+                      value={analysisText}
+                      onChange={(e) => setAnalysisText(e.target.value)}
+                      className="min-h-40 border-0 bg-background/50 focus:bg-background/80 
+                               transition-all duration-300 shadow-inner resize-none
+                               placeholder:text-muted-foreground/60"
+                    />
+                    {analysisText && (
+                      <div className="absolute bottom-3 right-3">
+                        <Badge variant="secondary" className="text-xs">
+                          {analysisText.length} caracteres
+                        </Badge>
+                      </div>
+                    )}
+                  </div>
                   
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 gap-3">
                     <Button
                       onClick={() => analyzeText('call_analysis')}
                       disabled={analysisLoading}
-                      className="btn-gradient"
+                      className="btn-gradient h-12 shadow-lg hover:shadow-xl 
+                               hover:scale-105 transition-all duration-300
+                               disabled:opacity-50 disabled:hover:scale-100"
                     >
-                      <PhoneCall className="h-4 w-4 mr-2" />
+                      {analysisLoading ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent mr-2"></div>
+                      ) : (
+                        <PhoneCall className="h-4 w-4 mr-2" />
+                      )}
                       Analisar Chamada
                     </Button>
                     <Button
                       onClick={() => analyzeText('script_generation')}
                       disabled={analysisLoading}
                       variant="outline"
+                      className="h-12 bg-gradient-to-r from-background/80 to-muted/40 
+                               border-0 shadow-lg hover:shadow-xl
+                               hover:scale-105 transition-all duration-300
+                               hover:from-sales-primary/10 hover:to-sales-accent/10"
                     >
                       <FileText className="h-4 w-4 mr-2" />
                       Gerar Script
@@ -355,6 +492,10 @@ const Assistant = () => {
                       onClick={() => analyzeText('objection_handling')}
                       disabled={analysisLoading}
                       variant="outline"
+                      className="h-12 bg-gradient-to-r from-background/80 to-muted/40 
+                               border-0 shadow-lg hover:shadow-xl
+                               hover:scale-105 transition-all duration-300
+                               hover:from-sales-primary/10 hover:to-sales-accent/10"
                     >
                       <Target className="h-4 w-4 mr-2" />
                       Tratar Objeção
@@ -363,6 +504,10 @@ const Assistant = () => {
                       onClick={() => analyzeText('general')}
                       disabled={analysisLoading}
                       variant="outline"
+                      className="h-12 bg-gradient-to-r from-background/80 to-muted/40 
+                               border-0 shadow-lg hover:shadow-xl
+                               hover:scale-105 transition-all duration-300
+                               hover:from-sales-primary/10 hover:to-sales-accent/10"
                     >
                       <Lightbulb className="h-4 w-4 mr-2" />
                       Análise Geral
@@ -370,13 +515,34 @@ const Assistant = () => {
                   </div>
 
                   {analysisResult && (
-                    <Card className="bg-muted/50">
-                      <CardContent className="p-4">
-                        <h4 className="font-semibold mb-2 flex items-center gap-2">
-                          <Brain className="h-4 w-4" />
-                          Resultado da Análise
-                        </h4>
-                        <div className="text-sm whitespace-pre-line">
+                    <Card className="bg-gradient-to-r from-muted/30 to-background/50 
+                                   border border-border/50 shadow-lg animate-scale-in">
+                      <CardContent className="p-6">
+                        <div className="flex items-center justify-between mb-4">
+                          <h4 className="font-semibold flex items-center gap-2">
+                            <div className="bg-gradient-to-r from-sales-accent/20 to-sales-secondary/20 
+                                          rounded-full p-1">
+                              <Brain className="h-4 w-4 text-sales-accent" />
+                            </div>
+                            Resultado da Análise IA
+                          </h4>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => copyToClipboard(analysisResult)}
+                            className="border-0 bg-gradient-to-r from-background to-muted 
+                                     hover:from-sales-primary/10 hover:to-sales-accent/10
+                                     transition-all duration-300 hover:scale-105"
+                          >
+                            {copiedAnalysis ? (
+                              <Check className="h-3 w-3 mr-1 text-green-500" />
+                            ) : (
+                              <Copy className="h-3 w-3 mr-1" />
+                            )}
+                            {copiedAnalysis ? 'Copiado!' : 'Copiar'}
+                          </Button>
+                        </div>
+                        <div className="text-sm whitespace-pre-line leading-relaxed">
                           {analysisResult}
                         </div>
                       </CardContent>
@@ -387,50 +553,90 @@ const Assistant = () => {
             </TabsContent>
 
             {/* Tools Tab */}
-            <TabsContent value="tools" className="space-y-6">
-              <div className="grid gap-4">
-                <Card className="card-glass">
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold mb-2 flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      Gerador de Scripts
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Crie scripts personalizados para diferentes situações de venda
-                    </p>
-                    <Button className="btn-gradient w-full">
-                      Criar Script Personalizado
-                    </Button>
+            <TabsContent value="tools" className="space-y-6 animate-fade-in">
+              <div className="grid gap-6">
+                <Card className="card-glass hover:scale-105 transition-all duration-300 
+                               hover:shadow-xl group border-0 
+                               bg-gradient-to-br from-background/80 to-muted/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-gradient-to-r from-sales-primary/10 to-sales-accent/10 
+                                    rounded-xl p-3 group-hover:from-sales-primary/20 
+                                    group-hover:to-sales-accent/20 transition-all duration-300">
+                        <FileText className="h-6 w-6 text-sales-primary group-hover:scale-110 transition-transform" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold mb-2 gradient-text">
+                          Gerador de Scripts
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                          Crie scripts personalizados e persuasivos para diferentes situações de venda com IA avançada
+                        </p>
+                        <Button className="btn-gradient w-full h-12 shadow-lg hover:shadow-xl 
+                                         hover:scale-105 transition-all duration-300">
+                          <Sparkles className="h-4 w-4 mr-2" />
+                          Criar Script Personalizado
+                        </Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card className="card-glass">
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold mb-2 flex items-center gap-2">
-                      <Target className="h-4 w-4" />
-                      Simulador de Vendas
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Pratique diferentes cenários com IA interativa
-                    </p>
-                    <Button variant="outline" className="w-full">
-                      Iniciar Simulação
-                    </Button>
+                <Card className="card-glass hover:scale-105 transition-all duration-300 
+                               hover:shadow-xl group border-0 
+                               bg-gradient-to-br from-background/80 to-muted/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-gradient-to-r from-sales-secondary/10 to-sales-accent/10 
+                                    rounded-xl p-3 group-hover:from-sales-secondary/20 
+                                    group-hover:to-sales-accent/20 transition-all duration-300">
+                        <Target className="h-6 w-6 text-sales-secondary group-hover:scale-110 transition-transform" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold mb-2 gradient-text">
+                          Simulador de Vendas
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                          Pratique diferentes cenários e técnicas de vendas com simulações realistas de IA
+                        </p>
+                        <Button variant="outline" className="w-full h-12 bg-gradient-to-r from-background/80 to-muted/40 
+                                                          border-0 shadow-lg hover:shadow-xl
+                                                          hover:scale-105 transition-all duration-300
+                                                          hover:from-sales-secondary/10 hover:to-sales-accent/10">
+                          <Brain className="h-4 w-4 mr-2" />
+                          Iniciar Simulação
+                        </Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
 
-                <Card className="card-glass">
-                  <CardContent className="p-4">
-                    <h3 className="font-semibold mb-2 flex items-center gap-2">
-                      <BarChart3 className="h-4 w-4" />
-                      Análise de Performance
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-3">
-                      Avalie suas métricas e receba insights personalizados
-                    </p>
-                    <Button variant="outline" className="w-full">
-                      Analisar Performance
-                    </Button>
+                <Card className="card-glass hover:scale-105 transition-all duration-300 
+                               hover:shadow-xl group border-0 
+                               bg-gradient-to-br from-background/80 to-muted/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="bg-gradient-to-r from-sales-accent/10 to-sales-primary/10 
+                                    rounded-xl p-3 group-hover:from-sales-accent/20 
+                                    group-hover:to-sales-primary/20 transition-all duration-300">
+                        <BarChart3 className="h-6 w-6 text-sales-accent group-hover:scale-110 transition-transform" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold mb-2 gradient-text">
+                          Análise de Performance
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                          Avalie suas métricas comerciais e receba insights personalizados para melhorar resultados
+                        </p>
+                        <Button variant="outline" className="w-full h-12 bg-gradient-to-r from-background/80 to-muted/40 
+                                                          border-0 shadow-lg hover:shadow-xl
+                                                          hover:scale-105 transition-all duration-300
+                                                          hover:from-sales-accent/10 hover:to-sales-primary/10">
+                          <TrendingUp className="h-4 w-4 mr-2" />
+                          Analisar Performance
+                        </Button>
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               </div>
