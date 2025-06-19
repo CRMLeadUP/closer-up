@@ -78,10 +78,10 @@ serve(async (req) => {
       for (const subscription of subscriptions.data) {
         const priceId = subscription.items.data[0].price.id;
         
-        if (priceId === "price_1RafmOCrRXCkk7rXLQ25h13B") {
+        if (priceId === "price_1Rb5oNE06ubkhHJygHtdcVJB") {
           subscriptionTier = "closerUp";
           hasActiveSub = true;
-        } else if (priceId === "price_1RafttCrRXCkk7rXz36XhhKI") {
+        } else if (priceId === "price_1Rb5oqE06ubkhHJyH7RW6SVC") {
           subscriptionTier = "closerAI";
           hasActiveSub = true;
         }
@@ -91,7 +91,8 @@ serve(async (req) => {
           logStep("Active subscription found", { 
             subscriptionId: subscription.id, 
             tier: subscriptionTier,
-            endDate: subscriptionEnd 
+            endDate: subscriptionEnd,
+            priceId: priceId
           });
           break;
         }

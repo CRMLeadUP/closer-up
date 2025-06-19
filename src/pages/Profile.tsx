@@ -20,12 +20,34 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const Profile = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
+  const { subscribed, subscription_tier, hasCloserUpAccess, hasCloserAIAccess, isLoading: subLoading } = useSubscription();
+
+  const getSubscriptionBadge = () => {
+    if (subLoading) {
+      return <Badge className="bg-muted/20 text-muted-foreground">Carregando...</Badge>;
+    }
+    
+    if (!subscribed) {
+      return <Badge className="bg-sales-accent/20 text-sales-accent border-sales-accent/30">Plano Gratuito</Badge>;
+    }
+    
+    if (subscription_tier === 'closerAI') {
+      return <Badge className="bg-sales-success/20 text-sales-success border-sales-success/30">CloserAI Premium</Badge>;
+    }
+    
+    if (subscription_tier === 'closerUp') {
+      return <Badge className="bg-sales-primary/20 text-sales-primary border-sales-primary/30">CloserUP Premium</Badge>;
+    }
+    
+    return <Badge className="bg-muted/20 text-muted-foreground">Plano Desconhecido</Badge>;
+  };
 
   const handleManageSubscription = async () => {
     setIsLoading(true);
@@ -85,9 +107,7 @@ const Profile = () => {
               {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Usuário'}
             </h2>
             <p className="text-muted-foreground text-sm mb-3">Vendedor Profissional</p>
-            <Badge className="bg-sales-accent/20 text-sales-accent border-sales-accent/30">
-              Plano Starter
-            </Badge>
+            {getSubscriptionBadge()}
           </CardContent>
         </Card>
 
@@ -140,24 +160,28 @@ const Profile = () => {
 
         {/* Quick Actions */}
         <div className="space-y-3">
-          <Button 
-            variant="outline" 
-            className="w-full justify-start glass-effect"
-            onClick={() => navigate('/plans')}
-          >
-            <Crown className="h-5 w-5 mr-3 text-sales-primary" />
-            Fazer Upgrade para Premium
-          </Button>
+          {!subscribed && (
+            <Button 
+              variant="outline" 
+              className="w-full justify-start glass-effect"
+              onClick={() => navigate('/plans')}
+            >
+              <Crown className="h-5 w-5 mr-3 text-sales-primary" />
+              Fazer Upgrade para Premium
+            </Button>
+          )}
           
-          <Button 
-            variant="outline" 
-            className="w-full justify-start glass-effect"
-            onClick={handleManageSubscription}
-            disabled={isLoading}
-          >
-            <CreditCard className="h-5 w-5 mr-3" />
-            {isLoading ? "Carregando..." : "Gerenciar Assinatura"}
-          </Button>
+          {subscribed && (
+            <Button 
+              variant="outline" 
+              className="w-full justify-start glass-effect"
+              onClick={handleManageSubscription}
+              disabled={isLoading}
+            >
+              <CreditCard className="h-5 w-5 mr-3" />
+              {isLoading ? "Carregando..." : "Gerenciar Assinatura"}
+            </Button>
+          )}
           
           <Button 
             variant="outline" 
@@ -190,20 +214,31 @@ const Profile = () => {
           </Button>
         </div>
 
-        {/* Upgrade CTA */}
-        <Card className="card-glass mt-8">
-          <CardContent className="p-6 text-center">
-            <h3 className="font-bold mb-2 gradient-text">
-              Acelere seu crescimento
-            </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Desbloqueie todos os recursos e turbine suas vendas
-            </p>
-            <Button className="w-full btn-gradient">
-              👑 Upgrade Premium - R$ 29,90/mês
-            </Button>
-          </CardContent>
-        </Card>
+        {/* Upgrade CTA - Só mostra se não estiver inscrito ou puder fazer upgrade */}
+        {(!subscribed || (subscription_tier === 'closerUp' && !hasCloserAIAccess())) && (
+          <Card className="card-glass mt-8">
+            <CardContent className="p-6 text-center">
+              <h3 className="font-bold mb-2 gradient-text">
+                {!subscribed ? 'Acelere seu crescimento' : 'Evolua para o máximo'}
+              </h3>
+              <p className="text-sm text-muted-foreground mb-4">
+                {!subscribed 
+                  ? 'Desbloqueie todos os recursos e turbine suas vendas'
+                  : 'Upgrade para CloserAI e tenha inteligência artificial completa'
+                }
+              </p>
+              <Button 
+                className="w-full btn-gradient"
+                onClick={() => navigate('/plans')}
+              >
+                {!subscribed 
+                  ? '👑 Upgrade Premium - R$ 17,90/mês'
+                  : '🤖 Upgrade CloserAI - R$ 34,90/mês'
+                }
+              </Button>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <AppBottomNav />
