@@ -20,6 +20,7 @@ import Settings from "./pages/Settings";
 import Analytics from "./pages/Analytics";
 import Success from "./pages/Success";
 import Auth from "./pages/Auth";
+import Gamification from "./pages/Gamification";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ const App = () => (
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/success" element={<Success />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/gamification" element={<Gamification />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
