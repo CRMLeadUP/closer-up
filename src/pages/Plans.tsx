@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Crown, Zap, Users, Brain } from "lucide-react";
+import { CheckCircle2, Crown, Zap, Users, Brain, Star, Sparkles, ArrowRight, Shield } from "lucide-react";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
 import { supabase } from "@/integrations/supabase/client";
@@ -126,28 +126,42 @@ const Plans = () => {
       
       <div className="pt-20 pb-24 px-4">
         {/* Header */}
-        <div className="text-center mb-8">
-          <Badge className="mb-4 bg-sales-success/20 text-sales-success border-sales-success/30">
-            💰 Planos e Preços
+        <div className="text-center mb-8 animate-fade-in">
+          <Badge className="mb-4 bg-gradient-to-r from-sales-success/20 to-sales-accent/20 
+                         text-sales-success border-sales-success/30 
+                         hover:from-sales-success/30 hover:to-sales-accent/30 
+                         transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+            <Sparkles className="h-3 w-3 mr-1 animate-pulse" />
+            Planos e Preços
           </Badge>
-          <h1 className="text-2xl font-bold gradient-text mb-2">
-            Escolha seu plano
+          <h1 className="text-3xl font-bold gradient-text mb-3 animate-scale-in">
+            Escolha seu plano ideal
           </h1>
-          <p className="text-muted-foreground">
-            Comece grátis e evolua conforme sua necessidade
+          <p className="text-muted-foreground text-sm max-w-sm mx-auto leading-relaxed">
+            Comece grátis e evolua suas vendas com nossos treinamentos especializados
           </p>
         </div>
 
         {/* Module Breakdown */}
-        <Card className="card-glass mb-6">
-          <CardHeader>
-            <CardTitle className="text-lg">O que cada plano inclui</CardTitle>
+        <Card className="card-glass mb-8 shadow-xl border-0 bg-gradient-to-br from-background/90 to-muted/40 animate-fade-in">
+          <CardHeader className="border-b border-border/50">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <div className="bg-gradient-to-r from-sales-primary/20 to-sales-accent/20 
+                            rounded-full p-2">
+                <Star className="h-5 w-5 text-sales-primary" />
+              </div>
+              O que você terá em cada plano
+            </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4 p-6">
             {moduleBreakdown.map((module, index) => (
-              <div key={index} className="flex items-center justify-between">
-                <span className="text-sm">{module.name}</span>
-                <Badge className={`text-xs bg-${module.color}/20 text-${module.color} border-${module.color}/30`}>
+              <div key={index} className="flex items-center justify-between p-3 
+                                       rounded-xl bg-gradient-to-r from-background/50 to-muted/30
+                                       hover:from-sales-primary/10 hover:to-sales-accent/10
+                                       transition-all duration-300 hover:scale-[1.02]">
+                <span className="text-sm font-medium">{module.name}</span>
+                <Badge className={`text-xs bg-gradient-to-r from-${module.color}/20 to-${module.color}/30 
+                                 text-${module.color} border-${module.color}/30 shadow-sm`}>
                   {module.plan}
                 </Badge>
               </div>
@@ -156,67 +170,98 @@ const Plans = () => {
         </Card>
 
         {/* Plans */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {plans.map((plan, index) => {
             const IconComponent = plan.icon;
             return (
               <Card 
                 key={index} 
-                className={`relative overflow-hidden transition-all duration-300 ${
-                  plan.highlight 
-                    ? 'card-glass ring-2 ring-sales-primary/50 success-glow' 
-                    : 'card-glass'
-                } ${plan.current ? 'opacity-75' : ''}`}
+                className={`relative overflow-hidden transition-all duration-500 hover:scale-[1.02] 
+                          animate-fade-in shadow-xl border-0 
+                          ${plan.highlight 
+                            ? 'bg-gradient-to-br from-sales-primary/5 via-background/90 to-sales-accent/5 ring-2 ring-sales-primary/30 shadow-sales-primary/20' 
+                            : 'bg-gradient-to-br from-background/90 to-muted/40'
+                          } ${plan.current ? 'opacity-80' : 'hover:shadow-2xl'}`}
+                style={{ animationDelay: `${index * 150}ms` }}
               >
+                {/* Popular Badge */}
                 {plan.highlight && (
-                  <div className="absolute top-0 left-0 w-full h-1 bg-gradient-primary"></div>
+                  <div className="absolute top-0 left-0 w-full">
+                    <div className="bg-gradient-to-r from-sales-primary via-sales-accent to-sales-primary h-1"></div>
+                    <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 
+                                  bg-gradient-to-r from-sales-primary to-sales-accent 
+                                  text-white text-xs font-bold px-4 py-1 rounded-b-lg shadow-lg">
+                      <Star className="h-3 w-3 inline mr-1" />
+                      MAIS POPULAR
+                    </div>
+                  </div>
                 )}
                 
-                <CardHeader className="pb-4">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${plan.badgeColor} to-${plan.badgeColor}/70 flex items-center justify-center`}>
-                      <IconComponent className="h-6 w-6 text-white" />
+                <CardHeader className={`pb-6 ${plan.highlight ? 'pt-8' : 'pt-6'}`}>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className={`relative w-16 h-16 rounded-2xl 
+                                   bg-gradient-to-br from-${plan.badgeColor} via-${plan.badgeColor}/80 to-${plan.badgeColor}/60 
+                                   flex items-center justify-center shadow-lg 
+                                   group-hover:scale-110 transition-transform duration-300`}>
+                      <IconComponent className="h-8 w-8 text-white" />
+                      <div className="absolute inset-0 rounded-2xl bg-white/20 blur-sm"></div>
                     </div>
                     <Badge 
-                      variant="outline" 
-                      className={`bg-${plan.badgeColor}/20 text-${plan.badgeColor} border-${plan.badgeColor}/30`}
+                      className={`bg-gradient-to-r from-${plan.badgeColor}/20 to-${plan.badgeColor}/30 
+                                text-${plan.badgeColor} border-${plan.badgeColor}/40 shadow-sm
+                                hover:scale-105 transition-transform duration-300`}
                     >
                       {plan.badge}
                     </Badge>
                   </div>
                   
-                  <CardTitle className="text-xl mb-1">{plan.name}</CardTitle>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    {plan.description}
-                  </p>
+                  <div className="space-y-2 mb-6">
+                    <CardTitle className="text-2xl gradient-text">{plan.name}</CardTitle>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {plan.description}
+                    </p>
+                  </div>
                   
-                  <div className="mb-4">
-                    <span className="text-3xl font-bold gradient-text">{plan.price}</span>
+                  <div className="mb-6">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-4xl font-bold gradient-text">{plan.price}</span>
+                      {plan.priceSubtext && (
+                        <span className="text-muted-foreground text-lg">{plan.priceSubtext}</span>
+                      )}
+                    </div>
                     {plan.priceSubtext && (
-                      <span className="text-muted-foreground ml-1">{plan.priceSubtext}</span>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Cancele quando quiser
+                      </p>
                     )}
                   </div>
                 </CardHeader>
 
-                <CardContent className="pt-0">
-                  <ul className="space-y-3 mb-6">
+                <CardContent className="pt-0 pb-8">
+                  <div className="space-y-4 mb-8">
                     {plan.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-center gap-3">
-                        <CheckCircle2 className="h-4 w-4 text-sales-success flex-shrink-0" />
-                        <span className="text-sm text-muted-foreground">{feature}</span>
-                      </li>
+                      <div key={featureIndex} 
+                           className="flex items-start gap-3 p-2 rounded-lg
+                                    hover:bg-muted/30 transition-all duration-200"
+                           style={{ animationDelay: `${(index * 150) + (featureIndex * 50)}ms` }}>
+                        <div className="bg-gradient-to-r from-sales-success/20 to-sales-success/30 
+                                      rounded-full p-1 mt-0.5">
+                          <CheckCircle2 className="h-3 w-3 text-sales-success" />
+                        </div>
+                        <span className="text-sm leading-relaxed flex-1">{feature}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                   
-                   <Button 
-                    className={`w-full ${
+                  <Button 
+                    className={`w-full h-12 text-sm font-semibold transition-all duration-300 ${
                       plan.current
                         ? 'bg-muted hover:bg-muted text-muted-foreground cursor-not-allowed'
                         : plan.highlight 
-                        ? 'btn-gradient' 
+                        ? 'btn-gradient shadow-lg hover:shadow-xl hover:scale-105' 
                         : plan.name === 'CloserAI' 
-                        ? 'btn-gradient'
-                        : 'bg-card hover:bg-muted border border-border'
+                        ? 'btn-gradient shadow-lg hover:shadow-xl hover:scale-105'
+                        : 'bg-gradient-to-r from-background/80 to-muted/60 border border-border hover:from-sales-primary/10 hover:to-sales-accent/10 hover:scale-105 shadow-md hover:shadow-lg'
                     }`}
                     disabled={plan.current || isLoading}
                     onClick={() => {
@@ -227,7 +272,22 @@ const Plans = () => {
                       }
                     }}
                   >
-                    {isLoading ? "Processando..." : plan.current ? '✓ Plano Atual' : plan.cta}
+                    {isLoading ? (
+                      <div className="flex items-center gap-2">
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                        Processando...
+                      </div>
+                    ) : plan.current ? (
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4" />
+                        Plano Atual
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        {plan.cta}
+                        <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    )}
                   </Button>
                 </CardContent>
               </Card>
@@ -236,33 +296,55 @@ const Plans = () => {
         </div>
 
         {/* Corporate Plan CTA */}
-        <Card className="card-glass mt-8">
-          <CardContent className="p-6 text-center">
-            <h3 className="font-bold mb-2 gradient-text">
+        <Card className="mt-10 shadow-xl border-0 bg-gradient-to-br from-background/90 to-muted/40 
+                       hover:scale-[1.02] transition-all duration-300 animate-fade-in">
+          <CardContent className="p-8 text-center">
+            <div className="bg-gradient-to-r from-sales-accent/20 to-sales-primary/20 
+                          rounded-full w-16 h-16 mx-auto mb-4 flex items-center justify-center">
+              <Users className="h-8 w-8 text-sales-accent" />
+            </div>
+            <h3 className="text-xl font-bold gradient-text mb-3">
               Plano Corporativo
             </h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Soluções personalizadas para equipes comerciais
+            <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto leading-relaxed">
+              Soluções personalizadas e treinamentos especializados para equipes comerciais de alto desempenho
             </p>
             <Button 
-              variant="outline" 
-              className="w-full glass-effect"
+              className="btn-gradient w-full h-12 shadow-lg hover:shadow-xl 
+                       hover:scale-105 transition-all duration-300"
               onClick={() => window.open('https://wa.me/5511999484196', '_blank')}
             >
-              📞 +5511999484196
+              <div className="flex items-center gap-2">
+                <span>Falar com Especialista</span>
+                <ArrowRight className="h-4 w-4" />
+              </div>
             </Button>
           </CardContent>
         </Card>
 
         {/* Guarantee */}
-        <div className="text-center mt-8 space-y-2">
-          <p className="text-sm text-muted-foreground">
-            🔒 Garantia de 30 dias ou seu dinheiro de volta
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Sem taxas ocultas • Cancele quando quiser
-          </p>
-        </div>
+        <Card className="mt-8 shadow-lg border-0 bg-gradient-to-r from-sales-success/5 to-sales-accent/5 
+                       animate-fade-in">
+          <CardContent className="p-6 text-center">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <div className="bg-gradient-to-r from-sales-success/20 to-sales-success/30 
+                            rounded-full p-2">
+                <Shield className="h-5 w-5 text-sales-success" />
+              </div>
+              <h4 className="font-semibold text-sales-success">Garantia Total</h4>
+            </div>
+            <p className="text-sm text-muted-foreground mb-2">
+              30 dias para testar sem riscos ou seu dinheiro de volta
+            </p>
+            <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
+              <span>✓ Sem taxas ocultas</span>
+              <span>•</span>
+              <span>✓ Cancele quando quiser</span>
+              <span>•</span>
+              <span>✓ Suporte especializado</span>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <AppBottomNav />
