@@ -74,7 +74,7 @@ const Assistant = () => {
       console.log('📡 Tentando webhook N8N...');
       
       // Primeiro tenta o webhook n8n
-      const response = await fetch('https://closerup.app.n8n.cloud/webhook/65aecc35-1b17-484c-a92f-b5b6701aff31', {
+      const response = await fetch('https://closerup.app.n8n.cloud/webhook-test/b9479712-00c3-455d-bbc7-86871fe97166', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
