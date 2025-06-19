@@ -65,96 +65,42 @@ const Assistant = () => {
     { label: "Análises Hoje", value: "3", icon: BarChart3, color: "sales-accent" }
   ];
 
-  // Função para enviar mensagem para IA com fallback aprimorado
+  // Função para enviar mensagem para IA
   const sendToAI = async (userMessage: string) => {
     setIsLoading(true);
     console.log('🚀 Iniciando sendToAI com mensagem:', userMessage);
     
     try {
-      console.log('📡 Tentando webhook N8N...');
-      
-      // Primeiro tenta o webhook n8n
-      const response = await fetch('https://closerup.app.n8n.cloud/webhook/b9479712-00c3-455d-bbc7-86871fe97166', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      // Chama Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke('closer-ai-chat', {
+        body: {
           message: userMessage,
           conversation: conversation,
-          timestamp: new Date().toISOString()
-        })
+          userId: null
+        }
       });
 
-      if (!response.ok) {
-        throw new Error(`N8N HTTP error! status: ${response.status}`);
-      }
+      console.log('📊 Supabase response:', { data, error });
 
-      const data = await response.json();
-      console.log('✅ N8N webhook respondeu:', data);
-      
-      // Extrai a resposta real do webhook N8N
-      let aiResponse = data.output || data.response || data.result;
-      
-      // Se data.message é um objeto (como da OpenAI), extrai o content
-      if (data.message && typeof data.message === 'object' && data.message.content) {
-        aiResponse = data.message.content;
-      } else if (data.message && typeof data.message === 'string') {
-        aiResponse = data.message;
+      if (error) {
+        console.error('❌ Supabase error:', error);
+        throw error;
       }
       
-      // Fallback se ainda não temos uma resposta válida
-      if (!aiResponse) {
-        aiResponse = "Resposta processada com sucesso.";
-      }
+      console.log('✅ Supabase funcionou:', data);
+      return data.response || "Resposta da IA processada com sucesso.";
       
-      // Se a resposta for apenas "Workflow was started", aguarda um pouco para a resposta real
-      if (aiResponse === "Workflow was started") {
-        // Retorna uma resposta indicando que o workflow foi iniciado
-        return `🤖 **CloserAI Processando...**
-
-Seu pedido foi enviado para processamento inteligente. A IA está analisando sua solicitação e gerando uma resposta personalizada.
-
-⚡ Status: Workflow ativo e processando sua consulta sobre vendas.`;
-      }
+    } catch (supabaseError) {
+      console.error('💥 Supabase falhou:', supabaseError);
       
-      return aiResponse;
+      toast({
+        title: "Erro na IA",
+        description: "Não foi possível conectar com a IA. Verifique o console para detalhes.",
+        variant: "destructive"
+      });
       
-    } catch (webhookError) {
-      console.log('❌ N8N webhook falhou:', webhookError);
-      console.log('🔄 Tentando Supabase Edge Function...');
-      
-      try {
-        // Fallback para Supabase Edge Function
-        const { data, error } = await supabase.functions.invoke('closer-ai-chat', {
-          body: {
-            message: userMessage,
-            conversation: conversation,
-            userId: null
-          }
-        });
-
-        console.log('📊 Supabase response:', { data, error });
-
-        if (error) {
-          console.error('❌ Supabase error:', error);
-          throw error;
-        }
-        
-        console.log('✅ Supabase funcionou:', data);
-        return data.response || "Resposta da IA processada com sucesso.";
-        
-      } catch (supabaseError) {
-        console.error('💥 Ambos os serviços falharam:', supabaseError);
-        
-        toast({
-          title: "Erro na IA",
-          description: "Ambos os serviços de IA falharam. Verifique o console para detalhes.",
-          variant: "destructive"
-        });
-        
-        // Resposta de exemplo para não deixar o usuário sem resposta
-        return `🔧 **Teste com Resposta Local**
+      // Resposta de exemplo para não deixar o usuário sem resposta
+      return `🔧 **Teste com Resposta Local**
 
 Olá! Recebi sua mensagem: "${userMessage}"
 
@@ -168,7 +114,6 @@ Olá! Recebi sua mensagem: "${userMessage}"
 Para objeção de preço: "Entendo sua preocupação. Vamos focar no valor que isso vai gerar para você..."
 
 🎯 **Status**: Sistema em modo de teste - funcionalidade básica ativa.`;
-      }
     } finally {
       setIsLoading(false);
     }
