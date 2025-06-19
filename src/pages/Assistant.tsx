@@ -65,24 +65,34 @@ const Assistant = () => {
     { label: "Análises Hoje", value: "3", icon: BarChart3, color: "sales-accent" }
   ];
 
-  // Função para enviar mensagem para IA real
+  // Função para enviar mensagem para IA via n8n webhook
   const sendToAI = async (userMessage: string) => {
     setIsLoading(true);
     
     try {
-      const { data, error } = await supabase.functions.invoke('closer-ai-chat', {
-        body: {
+      const response = await fetch('https://closerup.app.n8n.cloud/webhook/65aecc35-1b17-484c-a92f-b5b6701aff31', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           message: userMessage,
           conversation: conversation,
-          userId: null // TODO: integrar com auth quando implementado
-        }
+          timestamp: new Date().toISOString()
+        })
       });
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
-      return data.response;
+      const data = await response.json();
+      
+      // Retorna apenas o output do webhook response do n8n
+      return data.output || data.response || data.message || "Resposta processada com sucesso.";
+      
     } catch (error) {
-      console.error('Error calling AI:', error);
+      console.error('Error calling n8n webhook:', error);
       toast({
         title: "Erro na IA",
         description: "Não foi possível processar sua mensagem. Tente novamente.",
