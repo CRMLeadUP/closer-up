@@ -65,11 +65,12 @@ const Assistant = () => {
     { label: "Análises Hoje", value: "3", icon: BarChart3, color: "sales-accent" }
   ];
 
-  // Função para enviar mensagem para IA via n8n webhook
+  // Função para enviar mensagem para IA com fallback
   const sendToAI = async (userMessage: string) => {
     setIsLoading(true);
     
     try {
+      // Primeiro tenta o webhook n8n
       const response = await fetch('https://closerup.app.n8n.cloud/webhook/65aecc35-1b17-484c-a92f-b5b6701aff31', {
         method: 'POST',
         headers: {
@@ -87,20 +88,34 @@ const Assistant = () => {
       }
 
       const data = await response.json();
-      
-      // Retorna apenas o output do webhook response do n8n
       return data.output || data.response || data.message || "Resposta processada com sucesso.";
       
-    } catch (error) {
-      console.error('Error calling n8n webhook:', error);
-      toast({
-        title: "Erro na IA",
-        description: "Não foi possível processar sua mensagem. Tente novamente.",
-        variant: "destructive"
-      });
+    } catch (webhookError) {
+      console.error('N8N webhook failed, trying Supabase Edge Function fallback:', webhookError);
       
-      // Fallback para resposta local em caso de erro
-      return "🚫 **Sistema IA Temporariamente Indisponível**\n\nDesculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes.\n\n💡 **Enquanto isso:**\n• Verifique sua conexão com a internet\n• Reformule sua pergunta se necessário\n• Use as ações rápidas abaixo\n\n🔄 **Status**: Reconectando sistemas...";
+      try {
+        // Fallback para Supabase Edge Function
+        const { data, error } = await supabase.functions.invoke('closer-ai-chat', {
+          body: {
+            message: userMessage,
+            conversation: conversation,
+            userId: null
+          }
+        });
+
+        if (error) throw error;
+        return data.response;
+        
+      } catch (supabaseError) {
+        console.error('Both AI services failed:', supabaseError);
+        toast({
+          title: "Erro na IA",
+          description: "Não foi possível processar sua mensagem. Tente novamente.",
+          variant: "destructive"
+        });
+        
+        return "🚫 **Sistema IA Temporariamente Indisponível**\n\nDesculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes.\n\n💡 **Enquanto isso:**\n• Verifique sua conexão com a internet\n• Reformule sua pergunta se necessário\n• Use as ações rápidas abaixo\n\n🔄 **Status**: Reconectando sistemas...";
+      }
     } finally {
       setIsLoading(false);
     }
