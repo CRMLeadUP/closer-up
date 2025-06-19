@@ -24,23 +24,23 @@ const defaultSettings: UserSettings = {
 };
 
 export const useSettings = () => {
-  const [settings, setSettings] = useState<UserSettings>(defaultSettings);
-  const { toast } = useToast();
-
-  // Load settings from localStorage on mount
-  useEffect(() => {
+  const [settings, setSettings] = useState<UserSettings>(() => {
+    // Load settings from localStorage on initialization
     const savedSettings = localStorage.getItem('userSettings');
     if (savedSettings) {
       try {
         const parsed = JSON.parse(savedSettings);
-        setSettings({ ...defaultSettings, ...parsed });
+        return { ...defaultSettings, ...parsed };
       } catch (error) {
         console.error('Error loading settings:', error);
+        return defaultSettings;
       }
     }
-  }, []);
+    return defaultSettings;
+  });
+  const { toast } = useToast();
 
-  // Apply dark mode
+  // Apply dark mode when settings change
   useEffect(() => {
     if (settings.darkMode) {
       document.documentElement.classList.add('dark');

@@ -81,12 +81,44 @@ const SettingsPage = () => {
       title: "Conta",
       icon: User,
       items: [
-        { label: "Editar Perfil", icon: User, action: () => setEditProfileOpen(true) },
-        { label: "Alterar Email", icon: Mail, action: () => setChangeEmailOpen(true) },
-        { label: "Alterar Telefone", icon: Phone, action: () => setEditProfileOpen(true) },
+        { 
+          label: "Editar Perfil", 
+          icon: User, 
+          action: () => setEditProfileOpen(true),
+          component: undefined,
+          toggle: false,
+          enabled: false,
+          onChange: undefined,
+          value: undefined 
+        },
+        { 
+          label: "Alterar Email", 
+          icon: Mail, 
+          action: () => setChangeEmailOpen(true),
+          component: undefined,
+          toggle: false,
+          enabled: false,
+          onChange: undefined,
+          value: undefined 
+        },
+        { 
+          label: "Alterar Telefone", 
+          icon: Phone, 
+          action: () => setEditProfileOpen(true),
+          component: undefined,
+          toggle: false,
+          enabled: false,
+          onChange: undefined,
+          value: undefined 
+        },
         { 
           label: "Privacidade", 
           icon: Eye, 
+          action: undefined,
+          toggle: false,
+          enabled: false,
+          onChange: undefined,
+          value: undefined,
           component: (
             <PrivacySettings>
               <Button variant="ghost" size="sm" className="text-xs h-8">
@@ -105,19 +137,31 @@ const SettingsPage = () => {
           label: "Notificações Push", 
           toggle: true, 
           enabled: settings.notifications.push, 
-          onChange: (val: boolean) => updateNotificationSettings({ push: val })
+          onChange: (val: boolean) => updateNotificationSettings({ push: val }),
+          icon: undefined,
+          action: undefined,
+          component: undefined,
+          value: undefined
         },
         { 
           label: "Notificações por Email", 
           toggle: true, 
           enabled: settings.notifications.email, 
-          onChange: (val: boolean) => updateNotificationSettings({ email: val })
+          onChange: (val: boolean) => updateNotificationSettings({ email: val }),
+          icon: undefined,
+          action: undefined,
+          component: undefined,
+          value: undefined
         },
         { 
           label: "Sons", 
           toggle: true, 
           enabled: settings.notifications.sounds, 
-          onChange: (val: boolean) => updateNotificationSettings({ sounds: val })
+          onChange: (val: boolean) => updateNotificationSettings({ sounds: val }),
+          icon: undefined,
+          action: undefined,
+          component: undefined,
+          value: undefined
         }
       ]
     },
@@ -125,10 +169,24 @@ const SettingsPage = () => {
       title: "Aparência",
       icon: Moon,
       items: [
-        { label: "Modo Escuro", toggle: true, enabled: settings.darkMode, onChange: toggleDarkMode },
+        { 
+          label: "Modo Escuro", 
+          toggle: true, 
+          enabled: settings.darkMode, 
+          onChange: toggleDarkMode,
+          icon: undefined,
+          action: undefined,
+          component: undefined,
+          value: undefined
+        },
         { 
           label: "Idioma", 
           value: getCurrentLanguage(),
+          toggle: false,
+          enabled: false,
+          onChange: undefined,
+          icon: undefined,
+          action: undefined,
           component: (
             <LanguageSelector>
               <Button variant="ghost" size="sm" className="text-xs h-8">
@@ -143,8 +201,26 @@ const SettingsPage = () => {
       title: "Dados",
       icon: Download,
       items: [
-        { label: "Exportar Dados", icon: Download, action: exportUserData },
-        { label: "Limpar Cache", icon: Trash2, action: clearCache }
+        { 
+          label: "Exportar Dados", 
+          icon: Download, 
+          action: exportUserData,
+          component: undefined,
+          toggle: false,
+          enabled: false,
+          onChange: undefined,
+          value: undefined
+        },
+        { 
+          label: "Limpar Cache", 
+          icon: Trash2, 
+          action: clearCache,
+          component: undefined,
+          toggle: false,
+          enabled: false,
+          onChange: undefined,
+          value: undefined
+        }
       ]
     }
   ];
@@ -209,7 +285,7 @@ const SettingsPage = () => {
                           />
                         ) : item.component ? (
                           item.component
-                        ) : item.action && (
+                        ) : item.action ? (
                           <Button
                             variant="ghost"
                             size="sm"
@@ -218,7 +294,7 @@ const SettingsPage = () => {
                           >
                             Editar
                           </Button>
-                        )}
+                        ) : null}
                       </div>
                     </div>
                   ))}

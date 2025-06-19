@@ -23,7 +23,9 @@ interface LanguageSelectorProps {
 }
 
 export const LanguageSelector = ({ children }: LanguageSelectorProps) => {
-  const [selectedLanguage, setSelectedLanguage] = useState("pt-BR");
+  const [selectedLanguage, setSelectedLanguage] = useState(() => {
+    return localStorage.getItem('selectedLanguage') || "pt-BR";
+  });
   const [open, setOpen] = useState(false);
   const { toast } = useToast();
 
