@@ -94,7 +94,19 @@ const Assistant = () => {
       console.log('✅ N8N webhook respondeu:', data);
       
       // Extrai a resposta real do webhook N8N
-      let aiResponse = data.output || data.response || data.message || data.result;
+      let aiResponse = data.output || data.response || data.result;
+      
+      // Se data.message é um objeto (como da OpenAI), extrai o content
+      if (data.message && typeof data.message === 'object' && data.message.content) {
+        aiResponse = data.message.content;
+      } else if (data.message && typeof data.message === 'string') {
+        aiResponse = data.message;
+      }
+      
+      // Fallback se ainda não temos uma resposta válida
+      if (!aiResponse) {
+        aiResponse = "Resposta processada com sucesso.";
+      }
       
       // Se a resposta for apenas "Workflow was started", aguarda um pouco para a resposta real
       if (aiResponse === "Workflow was started") {
