@@ -92,7 +92,21 @@ const Assistant = () => {
 
       const data = await response.json();
       console.log('✅ N8N webhook respondeu:', data);
-      return data.output || data.response || data.message || "Resposta processada com sucesso.";
+      
+      // Extrai a resposta real do webhook N8N
+      let aiResponse = data.output || data.response || data.message || data.result;
+      
+      // Se a resposta for apenas "Workflow was started", aguarda um pouco para a resposta real
+      if (aiResponse === "Workflow was started") {
+        // Retorna uma resposta indicando que o workflow foi iniciado
+        return `🤖 **CloserAI Processando...**
+
+Seu pedido foi enviado para processamento inteligente. A IA está analisando sua solicitação e gerando uma resposta personalizada.
+
+⚡ Status: Workflow ativo e processando sua consulta sobre vendas.`;
+      }
+      
+      return aiResponse;
       
     } catch (webhookError) {
       console.log('❌ N8N webhook falhou:', webhookError);
