@@ -65,11 +65,14 @@ const Assistant = () => {
     { label: "Análises Hoje", value: "3", icon: BarChart3, color: "sales-accent" }
   ];
 
-  // Função para enviar mensagem para IA com fallback
+  // Função para enviar mensagem para IA com fallback aprimorado
   const sendToAI = async (userMessage: string) => {
     setIsLoading(true);
+    console.log('🚀 Iniciando sendToAI com mensagem:', userMessage);
     
     try {
+      console.log('📡 Tentando webhook N8N...');
+      
       // Primeiro tenta o webhook n8n
       const response = await fetch('https://closerup.app.n8n.cloud/webhook/65aecc35-1b17-484c-a92f-b5b6701aff31', {
         method: 'POST',
@@ -84,14 +87,16 @@ const Assistant = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`N8N HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
+      console.log('✅ N8N webhook respondeu:', data);
       return data.output || data.response || data.message || "Resposta processada com sucesso.";
       
     } catch (webhookError) {
-      console.error('N8N webhook failed, trying Supabase Edge Function fallback:', webhookError);
+      console.log('❌ N8N webhook falhou:', webhookError);
+      console.log('🔄 Tentando Supabase Edge Function...');
       
       try {
         // Fallback para Supabase Edge Function
@@ -103,18 +108,40 @@ const Assistant = () => {
           }
         });
 
-        if (error) throw error;
-        return data.response;
+        console.log('📊 Supabase response:', { data, error });
+
+        if (error) {
+          console.error('❌ Supabase error:', error);
+          throw error;
+        }
+        
+        console.log('✅ Supabase funcionou:', data);
+        return data.response || "Resposta da IA processada com sucesso.";
         
       } catch (supabaseError) {
-        console.error('Both AI services failed:', supabaseError);
+        console.error('💥 Ambos os serviços falharam:', supabaseError);
+        
         toast({
           title: "Erro na IA",
-          description: "Não foi possível processar sua mensagem. Tente novamente.",
+          description: "Ambos os serviços de IA falharam. Verifique o console para detalhes.",
           variant: "destructive"
         });
         
-        return "🚫 **Sistema IA Temporariamente Indisponível**\n\nDesculpe, estou com dificuldades técnicas no momento. Por favor, tente novamente em alguns instantes.\n\n💡 **Enquanto isso:**\n• Verifique sua conexão com a internet\n• Reformule sua pergunta se necessário\n• Use as ações rápidas abaixo\n\n🔄 **Status**: Reconectando sistemas...";
+        // Resposta de exemplo para não deixar o usuário sem resposta
+        return `🔧 **Teste com Resposta Local**
+
+Olá! Recebi sua mensagem: "${userMessage}"
+
+💡 **Dicas de Vendas Rápidas:**
+• Use a técnica SPIN (Situação, Problema, Implicação, Necessidade)
+• Crie urgência mostrando benefícios únicos
+• Escute mais do que fale (proporção 70/30)
+• Sempre confirme o entendimento antes de avançar
+
+⚡ **Scripts Básicos:**
+Para objeção de preço: "Entendo sua preocupação. Vamos focar no valor que isso vai gerar para você..."
+
+🎯 **Status**: Sistema em modo de teste - funcionalidade básica ativa.`;
       }
     } finally {
       setIsLoading(false);
