@@ -4,25 +4,25 @@ import { TrendingUp, Users, Award, Target } from "lucide-react";
 const StatsSection = () => {
   const stats = [
     {
-      value: "+50.000",
-      label: "Vendedores Treinados",
+      value: "+5.200",
+      label: "Usuários Ativos",
       icon: Users,
       color: "sales-primary"
     },
     {
-      value: "+300%",
-      label: "Aumento em Conversão",
+      value: "+35%",
+      label: "Crescimento Médio",
       icon: TrendingUp,
       color: "sales-success"
     },
     {
-      value: "4.9/5",
+      value: "4.8/5",
       label: "Avaliação dos Usuários",
       icon: Award,
       color: "sales-accent"
     },
     {
-      value: "98%",
+      value: "92%",
       label: "Taxa de Conclusão",
       icon: Target,
       color: "sales-secondary"

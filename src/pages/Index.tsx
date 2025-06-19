@@ -38,10 +38,10 @@ const Index = () => {
   const userPlan = "free" as "free" | "premium" | "ai"; // Can be changed to "premium" or "ai" for testing
 
   const quickStats = [
-    { value: "+50K", label: "Vendedores", icon: Users },
-    { value: "+300%", label: "Conversão", icon: TrendingUp },
-    { value: "4.9/5", label: "Avaliação", icon: Award },
-    { value: "98%", label: "Conclusão", icon: Target }
+    { value: "+5.2K", label: "Usuários", icon: Users },
+    { value: "+35%", label: "Crescimento", icon: TrendingUp },
+    { value: "4.8/5", label: "Avaliação", icon: Award },
+    { value: "92%", label: "Conclusão", icon: Target }
   ];
 
   const handleCloserAIClick = () => {

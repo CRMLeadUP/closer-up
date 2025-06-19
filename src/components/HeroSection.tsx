@@ -40,15 +40,15 @@ const HeroSection = () => {
         <div className="flex flex-wrap justify-center gap-8 text-sm text-muted-foreground">
           <div className="flex items-center gap-2">
             <Users className="h-4 w-4 text-sales-success" />
-            <span>+50.000 vendedores</span>
+            <span>+5.200 usuários ativos</span>
           </div>
           <div className="flex items-center gap-2">
             <TrendingUp className="h-4 w-4 text-sales-success" />
-            <span>+300% em conversão média</span>
+            <span>+35% crescimento médio</span>
           </div>
           <div className="flex items-center gap-2">
             <Badge className="bg-sales-success/20 text-sales-success border-sales-success/30" variant="outline">
-              ⭐ 4.9/5
+              ⭐ 4.8/5
             </Badge>
             <span>Avaliação dos usuários</span>
           </div>
