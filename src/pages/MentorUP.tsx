@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -16,14 +18,30 @@ const MentorUP = () => {
   const [selectedPlan] = useState("mentorup");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { user, session } = useAuth();
+  const navigate = useNavigate();
 
   const handleCheckout = async () => {
+    // Check if user is authenticated
+    if (!user || !session) {
+      toast({
+        title: "Login necessário",
+        description: "Faça login para agendar sua mentoria",
+        variant: "destructive"
+      });
+      navigate('/auth');
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           plan: 'mentorup'
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
         }
       });
 
