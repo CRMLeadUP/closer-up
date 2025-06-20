@@ -38,12 +38,31 @@ export const BookingTab = () => {
     setIsLoading(true);
 
     try {
+      // Create Google Calendar event
+      const eventTitle = "MentorUP - Sessão de Mentoria Personalizada";
+      const eventDescription = `Sessão de mentoria exclusiva de 1 hora com entrega de:
+- Mapa mental personalizado
+- Script de vendas exclusivo
+- Gravação da sessão para consulta futura
+- Estratégias personalizadas para seu perfil`;
+      
+      const startDateTime = new Date(`${selectedDate}T${selectedTime}:00`);
+      const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // +1 hour
+      
+      const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE` +
+        `&text=${encodeURIComponent(eventTitle)}` +
+        `&dates=${startDateTime.toISOString().replace(/[-:]/g, '').split('.')[0]}Z/${endDateTime.toISOString().replace(/[-:]/g, '').split('.')[0]}Z` +
+        `&details=${encodeURIComponent(eventDescription)}` +
+        `&location=${encodeURIComponent('Google Meet (link será enviado por email)')}` +
+        `&ctz=America/Sao_Paulo`;
+
       // Create Stripe checkout session for MentorUP
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           plan: 'mentorup',
           session_date: selectedDate,
-          session_time: selectedTime
+          session_time: selectedTime,
+          google_calendar_url: googleCalendarUrl
         }
       });
 
@@ -54,7 +73,7 @@ export const BookingTab = () => {
       
       toast({
         title: "Redirecionando para pagamento",
-        description: "Complete o pagamento para confirmar sua sessão"
+        description: "Após o pagamento, você receberá o link do Google Meet"
       });
 
     } catch (error) {
@@ -67,6 +86,11 @@ export const BookingTab = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGoogleCalendarDirect = () => {
+    // Open mentor's Google Calendar directly
+    window.open('https://calendar.google.com/calendar/u/0?cid=anVuaW9yemluaG8xMUBnbWFpbC5jb20', '_blank');
   };
 
   const steps = [
@@ -180,10 +204,28 @@ export const BookingTab = () => {
         </Card>
       )}
 
+      {/* Google Calendar Integration */}
+      <Card className="card-glass border-sales-secondary/50">
+        <CardContent className="p-4 text-center">
+          <h4 className="font-semibold mb-2">📅 Ver Agenda Completa</h4>
+          <p className="text-sm text-muted-foreground mb-3">
+            Consulte todos os horários disponíveis na agenda do mentor
+          </p>
+          <Button 
+            variant="outline" 
+            className="w-full glass-effect"
+            onClick={handleGoogleCalendarDirect}
+          >
+            🗓️ Abrir Google Calendar
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Guarantee */}
       <div className="text-center text-sm text-muted-foreground">
         <p>🔒 Pagamento 100% seguro via Stripe</p>
         <p>💯 Garantia de satisfação ou reembolso</p>
+        <p>📧 Link do Google Meet enviado por email após confirmação</p>
       </div>
     </div>
   );
