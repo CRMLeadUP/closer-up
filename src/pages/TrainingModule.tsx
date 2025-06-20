@@ -17,6 +17,7 @@ import {
   Crown
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
 
@@ -48,7 +49,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Entenda os 4 perfis principais: Dominante, Influenciador, Estável e Cauteloso",
           isFree: true,
-          videoUrl: "https://youtu.be/abDCOXYrWsA?si=Dd1Zmu6zwuqdr7DX"
+          videoUrl: "modulo1-introducao-perfis.mp4"
         },
         {
           id: 2,
@@ -57,7 +58,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Características e técnicas de vendas para clientes dominantes",
           isFree: true,
-          videoUrl: "https://youtu.be/ZPV9pC-T2dE?si=Vc87bTQrnYcsHpAb"
+          videoUrl: "modulo1-perfil-dominante.mp4"
         },
         {
           id: 3,
@@ -74,7 +75,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como vender para pessoas extrovertidas e sociáveis",
           isFree: true,
-          videoUrl: "https://youtu.be/kxf6LqAYK_U"
+          videoUrl: "modulo1-perfil-influenciador.mp4"
         },
         {
           id: 5,
@@ -91,7 +92,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Estratégias para clientes estáveis, confiáveis e orientados a relacionamentos",
           isFree: true,
-          videoUrl: "https://youtu.be/pHVmimdbg5E"
+          videoUrl: "modulo1-perfil-estavel.mp4"
         },
         {
           id: 7,
@@ -108,7 +109,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como lidar com clientes analíticos, detalhistas e mais conservadores",
           isFree: true,
-          videoUrl: "https://youtu.be/ndgiMFrVvds"
+          videoUrl: "modulo1-perfil-cauteloso.mp4"
         },
         {
           id: 9,
@@ -510,10 +511,13 @@ const TrainingModule = () => {
     }
   };
 
-  // Convert YouTube URL to embed format
-  const getEmbedUrl = (url: string) => {
-    const videoId = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=|youtube\.com\/embed\/)([^&\n?#]+)/);
-    return videoId ? `https://www.youtube.com/embed/${videoId[1]}` : url;
+  // Get video URL from Supabase Storage
+  const getVideoUrl = (fileName: string) => {
+    if (!fileName) return '';
+    const { data } = supabase.storage
+      .from('training-videos')
+      .getPublicUrl(fileName);
+    return data.publicUrl;
   };
 
   const startLesson = (lessonId: number, type: string, isFree: boolean, videoUrl?: string) => {
@@ -542,8 +546,8 @@ const TrainingModule = () => {
         alert("Complete todas as aulas anteriores para acessar o certificado!");
       }
     } else if (type === 'video' && videoUrl) {
-      // Open video in modal
-      setCurrentVideoUrl(getEmbedUrl(videoUrl));
+      // Open video in modal - videoUrl is now a filename
+      setCurrentVideoUrl(getVideoUrl(videoUrl));
       setIsVideoModalOpen(true);
       // Mark as completed
       if (!completedLessons.includes(lessonId)) {
@@ -763,14 +767,28 @@ const TrainingModule = () => {
             <DialogTitle>Vídeo da Aula</DialogTitle>
           </DialogHeader>
           <div className="p-6 pt-0">
-            <div className="aspect-video w-full">
-              <iframe
-                src={currentVideoUrl}
-                className="w-full h-full rounded-lg"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+            <div className="aspect-video w-full bg-black rounded-lg overflow-hidden">
+              {currentVideoUrl ? (
+                <video
+                  src={currentVideoUrl}
+                  className="w-full h-full"
+                  controls
+                  autoPlay
+                  preload="metadata"
+                  style={{ objectFit: 'contain' }}
+                >
+                  <p className="text-white p-4">
+                    Seu navegador não suporta reprodução de vídeo.
+                  </p>
+                </video>
+              ) : (
+                <div className="flex items-center justify-center h-full text-white">
+                  <div className="text-center">
+                    <PlayCircle className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                    <p>Carregando vídeo...</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </DialogContent>
