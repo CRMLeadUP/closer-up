@@ -27,7 +27,7 @@ const Profile = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
-  const { subscribed, subscription_tier, hasCloserUpAccess, hasCloserAIAccess, isLoading: subLoading } = useSubscription();
+  const { subscribed, subscription_tier, hasCloserUpAccess, hasMentorUpAccess, isLoading: subLoading } = useSubscription();
 
   const getSubscriptionBadge = () => {
     if (subLoading) {
@@ -38,8 +38,8 @@ const Profile = () => {
       return <Badge className="bg-sales-accent/20 text-sales-accent border-sales-accent/30">Plano Gratuito</Badge>;
     }
     
-    if (subscription_tier === 'closerAI') {
-      return <Badge className="bg-sales-success/20 text-sales-success border-sales-success/30">CloserAI Premium</Badge>;
+    if (subscription_tier === 'mentorup') {
+      return <Badge className="bg-sales-success/20 text-sales-success border-sales-success/30">MentorUP Premium</Badge>;
     }
     
     if (subscription_tier === 'closerUp') {
@@ -215,25 +215,25 @@ const Profile = () => {
         </div>
 
         {/* Upgrade CTA - Só mostra se não estiver inscrito ou puder fazer upgrade */}
-        {(!subscribed || (subscription_tier === 'closerUp' && !hasCloserAIAccess())) && (
+        {(!subscribed || (subscription_tier === 'closerUp' && !hasMentorUpAccess())) && (
           <Card className="card-glass mt-8">
             <CardContent className="p-6 text-center">
               <h3 className="font-bold mb-2 gradient-text">
-                {!subscribed ? 'Acelere seu crescimento' : 'Evolua para o máximo'}
+                {!subscribed ? 'Acelere seu crescimento' : 'Evolua para o MentorUP'}
               </h3>
               <p className="text-sm text-muted-foreground mb-4">
                 {!subscribed 
                   ? 'Desbloqueie todos os recursos e turbine suas vendas'
-                  : 'Upgrade para CloserAI e tenha inteligência artificial completa'
+                  : 'Upgrade para MentorUP e tenha mentoria personalizada exclusiva'
                 }
               </p>
               <Button 
                 className="w-full btn-gradient"
-                onClick={() => navigate('/plans')}
+                onClick={() => navigate(!subscribed ? '/plans' : '/mentorup')}
               >
                 {!subscribed 
                   ? '👑 Upgrade Premium - R$ 17,90/mês'
-                  : '🤖 Upgrade CloserAI - R$ 34,90/mês'
+                  : '📅 Upgrade MentorUP - R$ 47,90/sessão'
                 }
               </Button>
             </CardContent>

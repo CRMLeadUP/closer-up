@@ -56,13 +56,12 @@ export const useSubscription = () => {
 
   const hasCloserUpAccess = () => {
     return subscriptionData.subscribed && 
-           (subscriptionData.subscription_tier === 'closerUp' || 
-            subscriptionData.subscription_tier === 'closerAI');
+           subscriptionData.subscription_tier === 'closerUp';
   };
 
-  const hasCloserAIAccess = () => {
+  const hasMentorUpAccess = () => {
     return subscriptionData.subscribed && 
-           subscriptionData.subscription_tier === 'closerAI';
+           subscriptionData.subscription_tier === 'mentorup';
   };
 
   return {
@@ -71,6 +70,6 @@ export const useSubscription = () => {
     error,
     checkSubscription,
     hasCloserUpAccess,
-    hasCloserAIAccess
+    hasMentorUpAccess
   };
 };

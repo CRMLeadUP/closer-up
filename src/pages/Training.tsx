@@ -23,11 +23,11 @@ import { useSubscription } from "@/hooks/useSubscription";
 
 const Training = () => {
   const navigate = useNavigate();
-  const { hasCloserUpAccess, hasCloserAIAccess, subscription_tier, isLoading: subLoading } = useSubscription();
+  const { hasCloserUpAccess, hasMentorUpAccess, subscription_tier, isLoading: subLoading } = useSubscription();
 
   // Determine user plan based on subscription
   const getUserPlan = () => {
-    if (hasCloserAIAccess()) return "ai";
+    if (hasMentorUpAccess()) return "mentor";
     if (hasCloserUpAccess()) return "premium";
     return "free";
   };
@@ -160,16 +160,16 @@ const Training = () => {
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-full bg-sales-accent/20 flex items-center justify-center">
                     <span className="text-sales-accent text-sm">
-                      {userPlan === "free" ? "🆓" : userPlan === "premium" ? "👑" : "🤖"}
+                      {userPlan === "free" ? "🆓" : userPlan === "premium" ? "👑" : "📅"}
                     </span>
                   </div>
                   <div>
                     <h3 className="font-semibold">
-                      Plano {userPlan === "free" ? "Gratuito" : userPlan === "premium" ? "Premium" : "CloserAI"}
+                      Plano {userPlan === "free" ? "Gratuito" : userPlan === "premium" ? "Premium" : "MentorUP"}
                       {subLoading && " (Verificando...)"}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {userPlan === "free" ? "1 módulo disponível" : userPlan === "premium" ? "Todo conteúdo CloserUP disponível" : "Acesso completo + CloserAI"}
+                      {userPlan === "free" ? "1 módulo disponível" : userPlan === "premium" ? "Todo conteúdo CloserUP disponível" : "Acesso completo + MentorUP"}
                     </p>
                   </div>
                 </div>
@@ -298,19 +298,19 @@ const Training = () => {
           </div>
         </div>
 
-        {/* CloserAI Module */}
+        {/* MentorUP Module */}
         <div className="px-4 mb-8">
-          <h2 className="text-xl font-bold mb-4">CloserAI - Assistente Inteligente</h2>
+          <h2 className="text-xl font-bold mb-4">MentorUP - Mentoria Personalizada</h2>
           <Card className={`card-glass transition-all duration-200 ${
-            userPlan !== "ai" ? 'opacity-75 cursor-pointer hover:scale-105' : 'hover:scale-105 cursor-pointer'
+            userPlan !== "mentor" ? 'opacity-75 cursor-pointer hover:scale-105' : 'hover:scale-105 cursor-pointer'
           }`}
-          onClick={() => userPlan !== "ai" ? navigate('/plans') : navigate('/assistant')}
+          onClick={() => userPlan !== "mentor" ? navigate('/mentorup') : navigate('/mentorup')}
           >
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sales-success to-sales-success/70 flex items-center justify-center relative">
-                  <Brain className="h-6 w-6 text-white" />
-                  {userPlan !== "ai" && (
+                  <MessageSquare className="h-6 w-6 text-white" />
+                  {userPlan !== "mentor" && (
                     <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
                       <Lock className="h-4 w-4 text-white" />
                     </div>
@@ -318,35 +318,35 @@ const Training = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold">CloserAI</h3>
+                    <h3 className="font-semibold">MentorUP</h3>
                     <Badge className="text-xs bg-gradient-to-r from-sales-success to-sales-primary text-white">
-                      🤖 IA Avançada
+                      📅 Mentoria 1:1
                     </Badge>
-                    {userPlan !== "ai" && (
+                    {userPlan !== "mentor" && (
                       <Badge className="text-xs bg-sales-success/20 text-sales-success border-sales-success/30">
-                        R$ 34,90
+                        R$ 47,90
                       </Badge>
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground mb-2">
-                    Assistente de vendas com IA que analisa conversas em tempo real
+                    Sessões personalizadas de 1 hora com estratégias exclusivas para seu perfil
                   </p>
                   <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span>Análise em tempo real</span>
-                    <span>Sugestões personalizadas</span>
-                    <span>Relatórios detalhados</span>
+                    <span>Live personalizada</span>
+                    <span>Mapa mental exclusivo</span>
+                    <span>Script de vendas</span>
                   </div>
                 </div>
-                <Button size="sm" className={userPlan !== "ai" ? "border border-sales-success text-sales-success hover:bg-sales-success hover:text-white" : "btn-gradient"}>
-                  {userPlan !== "ai" ? (
+                <Button size="sm" className={userPlan !== "mentor" ? "border border-sales-success text-sales-success hover:bg-sales-success hover:text-white" : "btn-gradient"}>
+                  {userPlan !== "mentor" ? (
                     <>
                       <Lock className="h-4 w-4 mr-1" />
-                      Desbloquear
+                      Agendar
                     </>
                   ) : (
                     <>
-                      <Brain className="h-4 w-4 mr-1" />
-                      Usar CloserAI
+                      <MessageSquare className="h-4 w-4 mr-1" />
+                      Usar MentorUP
                     </>
                   )}
                 </Button>

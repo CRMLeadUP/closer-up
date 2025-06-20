@@ -7,11 +7,13 @@ import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 
 const Plans = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleCheckout = async (plan: string) => {
     setIsLoading(true);
@@ -88,24 +90,24 @@ const Plans = () => {
       current: false
     },
     {
-      name: "CloserAI",
-      price: "R$ 34,90",
-      priceSubtext: "/mês",
-      description: "Assistente de IA avançado para vendas",
+      name: "MentorUP",
+      price: "R$ 47,90",
+      priceSubtext: "/sessão",
+      description: "Mentoria personalizada 1:1 com estratégias exclusivas",
       icon: Brain,
-      badge: "IA Avançada",
+      badge: "Mentoria Premium",
       badgeColor: "sales-success",
       features: [
-        "CloserAI - Assistente inteligente completo",
-        "Análise de conversas em tempo real",
-        "Sugestões personalizadas de resposta",
-        "Relatórios de IA detalhados",
-        "Coaching automatizado",
-        "Integração com CRMs",
-        "Automação de follow-ups",
-        "Suporte 24/7 especializado"
+        "MentorUP - Sessão personalizada de 1 hora",
+        "Mapa mental criado ao vivo",
+        "Script de vendas personalizado",
+        "Gravação da sessão para consulta",
+        "Estratégias exclusivas para seu perfil",
+        "Google Meet com link por email",
+        "Suporte direto via WhatsApp",
+        "Garantia de satisfação total"
       ],
-      cta: "Ativar CloserAI",
+      cta: "Agendar MentorUP",
       highlight: false,
       current: false
     }
@@ -117,7 +119,7 @@ const Plans = () => {
     { name: "Rapport e Conexão", plan: "Premium", color: "sales-primary" },
     { name: "Quebra de Objeções", plan: "Premium", color: "sales-primary" },
     { name: "Estratégias de Fechamento", plan: "Premium", color: "sales-primary" },
-    { name: "CloserAI", plan: "CloserAI", color: "sales-success" }
+    { name: "MentorUP", plan: "MentorUP", color: "sales-success" }
   ];
 
   return (
@@ -259,19 +261,19 @@ const Plans = () => {
                         ? 'bg-muted hover:bg-muted text-muted-foreground cursor-not-allowed'
                         : plan.highlight 
                         ? 'btn-gradient shadow-lg hover:shadow-xl hover:scale-105' 
-                        : plan.name === 'CloserAI' 
-                        ? 'btn-gradient shadow-lg hover:shadow-xl hover:scale-105'
-                        : 'bg-gradient-to-r from-background/80 to-muted/60 border border-border hover:from-sales-primary/10 hover:to-sales-accent/10 hover:scale-105 shadow-md hover:shadow-lg'
-                    }`}
-                    disabled={plan.current || isLoading}
-                    onClick={() => {
-                      if (plan.name === "Premium") {
-                        handleCheckout("closerUp");
-                      } else if (plan.name === "CloserAI") {
-                        handleCheckout("closerAI");
-                      }
-                    }}
-                  >
+                         : plan.name === 'MentorUP' 
+                         ? 'btn-gradient shadow-lg hover:shadow-xl hover:scale-105'
+                         : 'bg-gradient-to-r from-background/80 to-muted/60 border border-border hover:from-sales-primary/10 hover:to-sales-accent/10 hover:scale-105 shadow-md hover:shadow-lg'
+                     }`}
+                     disabled={plan.current || isLoading}
+                     onClick={() => {
+                       if (plan.name === "Premium") {
+                         handleCheckout("closerUp");
+                       } else if (plan.name === "MentorUP") {
+                         navigate('/mentorup');
+                       }
+                     }}
+                   >
                     {isLoading ? (
                       <div className="flex items-center gap-2">
                         <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
