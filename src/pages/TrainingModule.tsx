@@ -49,7 +49,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Entenda os 4 perfis principais: Dominante, Influenciador, Estável e Cauteloso",
           isFree: true,
-          videoUrl: "modulo1-introducao-perfis.mp4"
+          videoUrl: "JaUp/PerfilDominante.mp4"
         },
         {
           id: 2,
@@ -58,7 +58,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Características e técnicas de vendas para clientes dominantes",
           isFree: true,
-          videoUrl: "modulo1-perfil-dominante.mp4"
+          videoUrl: "JaUp/PerfilDominante.mp4"
         },
         {
           id: 3,
@@ -75,7 +75,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como vender para pessoas extrovertidas e sociáveis",
           isFree: true,
-          videoUrl: "modulo1-perfil-influenciador.mp4"
+          videoUrl: "JaUp/PerfilInfluente.mp4"
         },
         {
           id: 5,
@@ -92,7 +92,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Estratégias para clientes estáveis, confiáveis e orientados a relacionamentos",
           isFree: true,
-          videoUrl: "modulo1-perfil-estavel.mp4"
+          videoUrl: "JaUp/PerfilEstavel.mp4"
         },
         {
           id: 7,
@@ -109,7 +109,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como lidar com clientes analíticos, detalhistas e mais conservadores",
           isFree: true,
-          videoUrl: "modulo1-perfil-cauteloso.mp4"
+          videoUrl: "JaUp/PerfilConforme.mp4"
         },
         {
           id: 9,
