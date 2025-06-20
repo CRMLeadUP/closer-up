@@ -22,7 +22,7 @@ const PersonalizationStep = () => {
   ];
 
   return (
-    <div className="space-y-6 animate-scale-in">
+    <div className="space-y-6 animate-scale-in pb-4">
       <div className="text-center space-y-2">
         <h2 className="text-2xl font-bold gradient-text">
           Vamos personalizar sua jornada

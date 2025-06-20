@@ -65,9 +65,11 @@ const OnboardingOverlay = () => {
         </div>
 
         {/* Step Content */}
-        <div className="flex-1 flex items-center justify-center px-4">
-          <div className="w-full max-w-md">
-            {renderStep()}
+        <div className="flex-1 overflow-y-auto px-4 py-4">
+          <div className="w-full max-w-md mx-auto min-h-full flex items-center">
+            <div className="w-full py-8">
+              {renderStep()}
+            </div>
           </div>
         </div>
 
