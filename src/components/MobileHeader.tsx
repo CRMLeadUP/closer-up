@@ -13,11 +13,13 @@ const MobileHeader = () => {
       <header className="fixed top-0 w-full z-50 glass-effect border-b border-white/10">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
-            <img 
-              src="/lovable-uploads/f4316b18-3c15-4ee4-b740-f265a9014917.png" 
-              alt="CloserUP Logo" 
-              className="w-8 h-8 object-contain"
-            />
+            <div className="w-8 h-8 rounded-lg bg-gradient-primary/10 p-1.5 flex items-center justify-center">
+              <img 
+                src="/lovable-uploads/f4316b18-3c15-4ee4-b740-f265a9014917.png" 
+                alt="CloserUP Logo" 
+                className="w-full h-full object-contain"
+              />
+            </div>
             <span className="text-lg font-bold gradient-text">CloserUP</span>
           </div>
           
