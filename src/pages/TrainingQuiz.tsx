@@ -31,37 +31,37 @@ const TrainingQuiz = () => {
     description: "Teste seus conhecimentos sobre vendas para perfis dominantes",
     questions: [
       {
-        question: "Qual é a principal característica de um cliente com perfil dominante?",
+        question: "Principal característica do perfil dominante?",
         options: [
-          "Fala devagar e analisa muito",
-          "É direto, objetivo e toma decisões rápidas",
-          "Gosta de conversar sobre a vida pessoal",
-          "Precisa de muito tempo para decidir"
+          "Analisa muito antes de decidir",
+          "Direto e toma decisões rápidas",
+          "Gosta de conversar pessoalmente",
+          "Precisa de muito tempo"
         ],
         correct: 1,
-        explanation: "Clientes dominantes são diretos, objetivos e preferem informações concisas. Eles tomam decisões rapidamente e não gostam de perder tempo."
+        explanation: "Clientes dominantes são diretos, objetivos e preferem informações concisas. Eles tomam decisões rapidamente."
       },
       {
-        question: "Como você deve abordar um cliente dominante?",
+        question: "Como abordar um cliente dominante?",
         options: [
-          "Conte histórias pessoais para criar rapport",
-          "Seja direto, mostre resultados e benefícios",
-          "Apresente muitos detalhes técnicos",
-          "Fale sobre as funcionalidades do produto"
+          "Conte histórias pessoais",
+          "Seja direto, mostre resultados",
+          "Apresente detalhes técnicos",
+          "Fale das funcionalidades"
         ],
         correct: 1,
-        explanation: "Para clientes dominantes, foque nos resultados e benefícios. Seja objetivo e mostre como sua solução pode ajudá-los a alcançar seus objetivos."
+        explanation: "Para clientes dominantes, foque nos resultados e benefícios. Seja objetivo e mostre valor."
       },
       {
-        question: "Qual frase seria mais eficaz com um perfil dominante?",
+        question: "Frase mais eficaz com perfil dominante?",
         options: [
-          "Este produto tem muitas funcionalidades interessantes...",
-          "Isso vai economizar 30% do seu tempo e aumentar sua produtividade",
-          "Vamos conversar sobre como você está se sentindo...",
-          "Preciso explicar todos os detalhes técnicos primeiro"
+          "Tem funcionalidades interessantes...",
+          "Economiza 30% do tempo",
+          "Como você está se sentindo?",
+          "Vou explicar os detalhes técnicos"
         ],
         correct: 1,
-        explanation: "Perfis dominantes respondem bem a afirmações diretas sobre resultados concretos, como economia de tempo e aumento de produtividade."
+        explanation: "Perfis dominantes respondem bem a resultados concretos, como economia de tempo e produtividade."
       }
     ]
   };
