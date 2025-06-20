@@ -56,28 +56,20 @@ export const BookingTab = () => {
         `&location=${encodeURIComponent('Google Meet (link será enviado por email)')}` +
         `&ctz=America/Sao_Paulo`;
 
-      // Create Stripe checkout session for MentorUP
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: {
-          plan: 'mentorup',
-          session_date: selectedDate,
-          session_time: selectedTime,
-          google_calendar_url: googleCalendarUrl
-        }
-      });
-
-      if (error) throw error;
-
-      // Open Stripe checkout in a new tab
-      window.open(data.url, '_blank');
+      // Open Google Calendar with the event details
+      window.open(googleCalendarUrl, '_blank');
       
       toast({
-        title: "Redirecionando para pagamento",
-        description: "Após o pagamento, você receberá o link do Google Meet"
+        title: "Agendamento confirmado!",
+        description: "Sua sessão foi agendada. Verifique seu Google Calendar e aguarde o link do Meet por email."
       });
 
+      // Reset form
+      setSelectedDate("");
+      setSelectedTime("");
+
     } catch (error) {
-      console.error('Error creating checkout:', error);
+      console.error('Error creating calendar event:', error);
       toast({
         title: "Erro no agendamento",
         description: "Tente novamente ou entre em contato",
@@ -94,8 +86,8 @@ export const BookingTab = () => {
   };
 
   const steps = [
-    { number: 1, title: "Escolha data e horário", description: "Selecione o melhor momento" },
-    { number: 2, title: "Realize o pagamento", description: "R$ 47,90 via cartão" },
+    { number: 1, title: "Pagamento realizado ✅", description: "Sessão já paga e confirmada" },
+    { number: 2, title: "Escolha data e horário", description: "Selecione o melhor momento" },
     { number: 3, title: "Receba confirmação", description: "Link do Meet por email" }
   ];
 
@@ -198,7 +190,7 @@ export const BookingTab = () => {
               onClick={handleBooking}
               disabled={isLoading}
             >
-              {isLoading ? "Processando..." : "🚀 Confirmar Agendamento - R$ 47,90"}
+              {isLoading ? "Processando..." : "📅 Confirmar Data e Horário"}
             </Button>
           </CardContent>
         </Card>

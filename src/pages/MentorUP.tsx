@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -12,6 +14,40 @@ import { BenefitsTab } from "@/components/mentor/BenefitsTab";
 
 const MentorUP = () => {
   const [selectedPlan] = useState("mentorup");
+  const [isLoading, setIsLoading] = useState(false);
+  const { toast } = useToast();
+
+  const handleCheckout = async () => {
+    setIsLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: {
+          plan: 'mentorup'
+        }
+      });
+
+      if (error) throw error;
+
+      // Open Stripe checkout in a new tab
+      window.open(data.url, '_blank');
+      
+      toast({
+        title: "Redirecionando para pagamento",
+        description: "Após o pagamento, você poderá escolher data e horário"
+      });
+
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      toast({
+        title: "Erro no checkout",
+        description: "Tente novamente ou entre em contato",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const features = [
     {
@@ -144,8 +180,12 @@ const MentorUP = () => {
                 <p className="text-sm text-muted-foreground mb-4">
                   Agende sua sessão personalizada agora
                 </p>
-                <Button className="w-full btn-gradient mb-3">
-                  🚀 Agendar Mentoria - R$ 47,90
+                <Button 
+                  className="w-full btn-gradient mb-3"
+                  onClick={handleCheckout}
+                  disabled={isLoading}
+                >
+                  {isLoading ? "Processando..." : "🚀 Agendar Mentoria - R$ 47,90"}
                 </Button>
                 <Button 
                   variant="outline" 
