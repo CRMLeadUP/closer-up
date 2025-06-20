@@ -146,7 +146,7 @@ const TrainingModule = () => {
           type: "video",
           description: "O que são gatilhos mentais e como usá-los eticamente nas vendas",
           isFree: true,
-          videoUrl: "https://youtu.be/AFCwxwH9uzU"
+          videoUrl: "JaUp/GatilhodaEscassez.mp4"
         },
         {
           id: 2,
@@ -155,7 +155,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como criar urgência através da escassez de produto, tempo ou oportunidade",
           isFree: true,
-          videoUrl: "https://youtu.be/esYPR8Qnolw"
+          videoUrl: "JaUp/GatilhodaEscassez.mp4"
         },
         {
           id: 3,
@@ -172,7 +172,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como estabelecer autoridade e credibilidade para influenciar decisões",
           isFree: true,
-          videoUrl: "https://youtu.be/mSzHxcNUWqY"
+          videoUrl: "JaUp/GatilhodaAutoridade.mp4"
         },
         {
           id: 5,
@@ -189,7 +189,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Use depoimentos, cases e números para validar sua proposta",
           isFree: true,
-          videoUrl: "https://youtu.be/scot3SZwYYQ"
+          videoUrl: "JaUp/GatilhodaProvaSocial.mp4"
         },
         {
           id: 7,
@@ -198,7 +198,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como oferecer valor primeiro para criar obrigação de retorno",
           isFree: true,
-          videoUrl: "https://youtu.be/KSIxkjR6V78"
+          videoUrl: "JaUp/GatilhodaProvaSocial.mp4"
         },
         {
           id: 8,
@@ -215,7 +215,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como usar o novo, o exclusivo e o inovador para despertar interesse",
           isFree: true,
-          videoUrl: "https://youtu.be/SpBP1VxJthQ"
+          videoUrl: "JaUp/GatilhodaNovidade.mp4"
         },
         {
           id: 10,
@@ -260,7 +260,7 @@ const TrainingModule = () => {
           type: "video",
           description: "O que é rapport e por que é essencial nas vendas",
           isFree: true,
-          videoUrl: "https://youtu.be/41Kts8QKies"
+          videoUrl: "JaUp/FundamentosRapport.mp4"
         },
         {
           id: 2,
@@ -269,7 +269,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como usar a linguagem corporal para criar conexão",
           isFree: true,
-          videoUrl: "https://youtu.be/xfpJJ0VHP08"
+          videoUrl: "JaUp/FundamentosRapport.mp4"
         },
         {
           id: 3,
@@ -286,7 +286,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Técnicas para demonstrar interesse genuíno pelo cliente",
           isFree: true,
-          videoUrl: "https://youtu.be/mQzgkdJqQwk"
+          videoUrl: "JaUp/EscutaATIVA.mp4"
         },
         {
           id: 5,
@@ -323,7 +323,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Entenda a psicologia por trás das objeções e como respondê-las",
           isFree: true,
-          videoUrl: "https://youtu.be/CNnRe4dZ1Io"
+          videoUrl: "JaUp/FundamentosRapport.mp4"
         },
         {
           id: 2,
@@ -332,7 +332,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Técnicas para superar a objeção mais comum nas vendas",
           isFree: true,
-          videoUrl: "https://youtu.be/GXzzh028J2Q"
+          videoUrl: "JaUp/GatilhodaEscassez.mp4"
         },
         {
           id: 3,
@@ -349,7 +349,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como responder quando o cliente quer 'pensar melhor'",
           isFree: true,
-          videoUrl: "https://youtu.be/DI30Xix_9yI"
+          videoUrl: "JaUp/GatilhodaEscassez.mp4"
         },
         {
           id: 5,
@@ -366,7 +366,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Estratégias quando o cliente não é o decisor final",
           isFree: true,
-          videoUrl: "https://youtu.be/-ho5law40Mw"
+          videoUrl: "JaUp/GatilhodaAutoridade.mp4"
         },
         {
           id: 7,
@@ -375,7 +375,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como construir credibilidade e superar desconfiança",
           isFree: true,
-          videoUrl: "https://youtu.be/Mcz1RXL8W4g"
+          videoUrl: "JaUp/GatilhodaAutoridade.mp4"
         },
         {
           id: 8,
@@ -420,7 +420,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Entenda quando e como finalizar uma venda de forma natural",
           isFree: true,
-          videoUrl: "https://youtu.be/T4mtgtxye9E"
+          videoUrl: "JaUp/FundamentosFECHAMENTO.mp4"
         },
         {
           id: 2,
@@ -429,7 +429,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como usar a técnica do fechamento assumido sem ser invasivo",
           isFree: true,
-          videoUrl: "https://youtu.be/DR8cXuGt57I"
+          videoUrl: "JaUp/FechamentoASSUMIDO.mp4"
         },
         {
           id: 3,
@@ -446,7 +446,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como criar urgência genuína para acelerar a decisão",
           isFree: true,
-          videoUrl: "https://youtu.be/IPOL2QwjQEQ"
+          videoUrl: "JaUp/FechamentoESCASSEZ.mp4"
         },
         {
           id: 5,
@@ -463,7 +463,7 @@ const TrainingModule = () => {
           type: "video",
           description: "A abordagem consultiva para fechar vendas complexas",
           isFree: true,
-          videoUrl: "https://youtu.be/7QFAyLqZzso"
+          videoUrl: "JaUp/FechamentoCONSULTIVO.mp4"
         },
         {
           id: 7,
