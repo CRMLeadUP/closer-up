@@ -61,7 +61,7 @@ serve(async (req) => {
     const priceIds = {
       closerUp: "price_1Rb5oNE06ubkhHJygHtdcVJB",
       closerAI: "price_1Rb5oqE06ubkhHJyH7RW6SVC",
-      mentorup: "price_1RbMentorUP123456789" // This needs to be created in Stripe
+      mentorup: "price_1Rc6srE06ubkhHJyYqZD2ko7"
     };
 
     const priceId = priceIds[plan as keyof typeof priceIds];
