@@ -118,7 +118,7 @@ const TrainingQuiz = () => {
       <div className="min-h-screen bg-background">
         <MobileHeader />
         
-        <div className="pt-20 pb-24 px-4">
+        <div className="pt-20 pb-24 px-3">
           <Card className="card-glass text-center">
             <CardHeader>
               <div className={`w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4 ${
@@ -195,7 +195,7 @@ const TrainingQuiz = () => {
     <div className="min-h-screen bg-background">
       <MobileHeader />
       
-      <div className="pt-20 pb-24 px-4">
+      <div className="pt-20 pb-24 px-3 max-w-full overflow-hidden">
         <Button 
           variant="ghost" 
           className="mb-4"
@@ -220,15 +220,15 @@ const TrainingQuiz = () => {
 
         {/* Question Card */}
         <Card className="card-glass mb-6">
-          <CardHeader>
-            <CardTitle className="text-lg">{question.question}</CardTitle>
+          <CardHeader className="pb-4">
+            <CardTitle className="text-lg leading-tight">{question.question}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2">
             {question.options.map((option, index) => (
               <Button
                 key={index}
                 variant="outline"
-                className={`w-full p-4 h-auto text-left justify-start ${
+                className={`w-full p-3 h-auto text-left justify-start rounded-xl transition-all duration-200 ${
                   selectedAnswer === index 
                     ? showResult
                       ? index === question.correct
@@ -237,13 +237,13 @@ const TrainingQuiz = () => {
                       : 'border-sales-primary bg-sales-primary/20'
                     : showResult && index === question.correct
                     ? 'border-sales-success bg-sales-success/20 text-sales-success'
-                    : ''
+                    : 'hover:bg-muted/30'
                 }`}
                 onClick={() => !showResult && handleAnswerSelect(index)}
                 disabled={showResult}
               >
-                <div className="flex items-center gap-3">
-                  <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                <div className="flex items-start gap-3 w-full min-w-0">
+                  <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 ${
                     selectedAnswer === index && showResult
                       ? index === question.correct
                         ? 'border-sales-success bg-sales-success'
@@ -256,12 +256,12 @@ const TrainingQuiz = () => {
                   }`}>
                     {showResult && (
                       <>
-                        {index === question.correct && <CheckCircle2 className="h-4 w-4 text-white" />}
-                        {selectedAnswer === index && index !== question.correct && <XCircle className="h-4 w-4 text-white" />}
+                        {index === question.correct && <CheckCircle2 className="h-3 w-3 text-white" />}
+                        {selectedAnswer === index && index !== question.correct && <XCircle className="h-3 w-3 text-white" />}
                       </>
                     )}
                   </div>
-                  <span className="flex-1">{option}</span>
+                  <span className="text-sm leading-relaxed break-words flex-1 min-w-0 text-left">{option}</span>
                 </div>
               </Button>
             ))}
@@ -270,23 +270,23 @@ const TrainingQuiz = () => {
 
         {/* Explanation */}
         {showResult && (
-          <Card className="card-glass mb-6">
+          <Card className="card-glass mb-6 animate-fade-in">
             <CardContent className="p-4">
               <div className="flex items-start gap-3">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 ${
                   selectedAnswer === question.correct ? 'bg-sales-success' : 'bg-sales-warning'
                 }`}>
                   {selectedAnswer === question.correct ? (
-                    <CheckCircle2 className="h-5 w-5 text-white" />
+                    <CheckCircle2 className="h-4 w-4 text-white" />
                   ) : (
-                    <Brain className="h-5 w-5 text-white" />
+                    <Brain className="h-4 w-4 text-white" />
                   )}
                 </div>
-                <div>
-                  <h3 className="font-semibold mb-2">
-                    {selectedAnswer === question.correct ? "Correto!" : "Explicação:"}
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-semibold mb-2 text-sm">
+                    {selectedAnswer === question.correct ? "Correto! 🎉" : "Explicação 💡"}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground leading-relaxed">
                     {question.explanation}
                   </p>
                 </div>

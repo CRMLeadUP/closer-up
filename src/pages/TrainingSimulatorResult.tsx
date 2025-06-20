@@ -58,7 +58,7 @@ const TrainingSimulatorResult = () => {
     <div className="min-h-screen bg-background">
       <MobileHeader />
       
-      <div className="pt-20 pb-24 px-4">
+      <div className="pt-20 pb-24 px-3">
         <Button 
           variant="ghost" 
           className="mb-4"

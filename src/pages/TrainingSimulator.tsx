@@ -134,7 +134,7 @@ const TrainingSimulator = () => {
     <div className="min-h-screen bg-background">
       <MobileHeader />
       
-      <div className="pt-20 pb-24 px-4">
+      <div className="pt-20 pb-24 px-3 max-w-full overflow-hidden">
         <Button 
           variant="ghost" 
           className="mb-4"
@@ -176,12 +176,12 @@ const TrainingSimulator = () => {
                   <Card className="card-glass">
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-sales-accent flex items-center justify-center">
+                        <div className="w-7 h-7 rounded-full bg-sales-accent flex items-center justify-center flex-shrink-0">
                           <User className="h-4 w-4 text-white" />
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <div className="text-sm font-semibold mb-1">Maria (Cliente)</div>
-                          <p className="text-sm">{item.message}</p>
+                          <p className="text-sm leading-relaxed break-words">{item.message}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -191,12 +191,12 @@ const TrainingSimulator = () => {
                   <Card className="card-glass ml-8">
                     <CardContent className="p-4">
                       <div className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-sales-primary flex items-center justify-center">
+                        <div className="w-7 h-7 rounded-full bg-sales-primary flex items-center justify-center flex-shrink-0">
                           <Bot className="h-4 w-4 text-white" />
                         </div>
-                        <div className="flex-1">
+                        <div className="flex-1 min-w-0">
                           <div className="text-sm font-semibold mb-1">Você (Vendedor)</div>
-                          <p className="text-sm">{item.message}</p>
+                          <p className="text-sm leading-relaxed break-words">{item.message}</p>
                         </div>
                       </div>
                     </CardContent>
@@ -214,9 +214,9 @@ const TrainingSimulator = () => {
               <div className="w-10 h-10 rounded-full bg-sales-accent flex items-center justify-center">
                 <User className="h-5 w-5 text-white" />
               </div>
-              <div className="flex-1">
-                <div className="font-semibold mb-2">Maria diz:</div>
-                <p className="text-sm bg-sales-accent/20 p-3 rounded-lg">
+              <div className="flex-1 min-w-0">
+                <div className="font-semibold mb-2 text-sm">Maria diz:</div>
+                <p className="text-sm bg-sales-accent/20 p-3 rounded-lg leading-relaxed break-words">
                   {currentStepData.clientMessage}
                 </p>
               </div>
@@ -232,25 +232,25 @@ const TrainingSimulator = () => {
               Como você responde?
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-2">
             {currentStepData.options.map((option, index) => (
               <Button
                 key={index}
                 variant="outline"
-                className={`w-full p-4 h-auto text-left justify-start ${
+                className={`w-full p-3 h-auto text-left justify-start rounded-xl transition-all duration-200 ${
                   selectedOption === index 
                     ? 'border-sales-primary bg-sales-primary/20' 
-                    : ''
+                    : 'hover:bg-muted/30'
                 }`}
                 onClick={() => handleOptionSelect(index)}
               >
-                <div className="flex items-center gap-3">
-                  <div className={`w-6 h-6 rounded-full border-2 ${
+                <div className="flex items-start gap-3 w-full min-w-0">
+                  <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 mt-0.5 ${
                     selectedOption === index
                       ? 'border-sales-primary bg-sales-primary'
                       : 'border-muted-foreground'
                   }`} />
-                  <span className="flex-1 text-sm">{option}</span>
+                  <span className="text-sm leading-relaxed break-words flex-1 min-w-0 text-left">{option}</span>
                 </div>
               </Button>
             ))}
