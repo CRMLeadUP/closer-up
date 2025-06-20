@@ -10,7 +10,7 @@ const AppBottomNav = () => {
     { path: '/', icon: Home, label: 'Início' },
     { path: '/training', icon: Brain, label: 'Treinar' },
     { path: '/gamification', icon: Trophy, label: 'Ranking' },
-    { path: '/assistant', icon: MessageSquare, label: 'Assistente' },
+    { path: '/mentorup', icon: MessageSquare, label: 'MentorUP' },
     { path: '/profile', icon: User, label: 'Perfil' }
   ];
 

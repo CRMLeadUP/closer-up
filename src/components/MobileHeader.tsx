@@ -55,7 +55,7 @@ const MobileHeader = () => {
               <a 
                 href="#" 
                 className="text-foreground hover:text-sales-primary transition-colors py-2"
-                onClick={() => { navigate('/assistant'); setIsMenuOpen(false); }}
+                onClick={() => { navigate('/mentorup'); setIsMenuOpen(false); }}
               >
                 Assistente IA
               </a>

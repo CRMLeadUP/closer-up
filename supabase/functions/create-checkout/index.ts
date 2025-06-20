@@ -39,9 +39,9 @@ serve(async (req) => {
     if (!user?.email) throw new Error("User not authenticated or email not available");
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const { plan } = await req.json();
-    if (!plan || (plan !== "closerUp" && plan !== "closerAI")) {
-      throw new Error("Invalid plan specified. Must be 'closerUp' or 'closerAI'");
+    const { plan, session_date, session_time } = await req.json();
+    if (!plan || (plan !== "closerUp" && plan !== "closerAI" && plan !== "mentorup")) {
+      throw new Error("Invalid plan specified. Must be 'closerUp', 'closerAI', or 'mentorup'");
     }
     logStep("Plan specified", { plan });
 
@@ -60,7 +60,8 @@ serve(async (req) => {
     // Price IDs for different plans
     const priceIds = {
       closerUp: "price_1Rb5oNE06ubkhHJygHtdcVJB",
-      closerAI: "price_1Rb5oqE06ubkhHJyH7RW6SVC"
+      closerAI: "price_1Rb5oqE06ubkhHJyH7RW6SVC",
+      mentorup: "price_1RbMentorUP123456789" // This needs to be created in Stripe
     };
 
     const priceId = priceIds[plan as keyof typeof priceIds];
@@ -77,7 +78,7 @@ serve(async (req) => {
           quantity: 1,
         },
       ],
-      mode: "subscription",
+      mode: plan === "mentorup" ? "payment" : "subscription",
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/plans`,
       metadata: {

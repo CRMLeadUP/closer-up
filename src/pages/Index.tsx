@@ -44,12 +44,8 @@ const Index = () => {
     { value: "92%", label: "Conclusão", icon: Target }
   ];
 
-  const handleCloserAIClick = () => {
-    if (userPlan === "ai") {
-      navigate('/assistant');
-    } else {
-      navigate('/plans');
-    }
+  const handleMentorUPClick = () => {
+    navigate('/mentorup');
   };
 
   const handleStartOnboarding = () => {
@@ -106,11 +102,11 @@ const Index = () => {
           </Badge>
           
           <h1 className="text-3xl font-bold gradient-text">
-            CloserUP + CloserAI
+            CloserUP + MentorUP
           </h1>
           
           <p className="text-muted-foreground text-lg">
-            Treine como um profissional e tenha um consultor de vendas IA no seu bolso
+            Treine como um profissional e tenha mentoria personalizada exclusiva
           </p>
         </div>
       </section>
@@ -164,10 +160,10 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          {/* CloserAI Card */}
+          {/* MentorUP Card */}
           <Card 
             className="card-glass hover:scale-105 transition-all duration-300 cursor-pointer"
-            onClick={handleCloserAIClick}
+            onClick={handleMentorUPClick}
           >
             <CardHeader className="pb-4">
               <div className="flex items-center gap-4">
@@ -176,29 +172,21 @@ const Index = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-lg">CloserAI</CardTitle>
-                    {userPlan !== "ai" && (
-                      <Badge className="text-xs bg-sales-secondary/20 text-sales-secondary border-sales-secondary/30">
-                        R$ 34,90
-                      </Badge>
-                    )}
+                    <CardTitle className="text-lg">MentorUP</CardTitle>
+                    <Badge className="text-xs bg-sales-secondary/20 text-sales-secondary border-sales-secondary/30">
+                      R$ 47,90
+                    </Badge>
                   </div>
-                  <p className="text-sm text-muted-foreground">Assistente em Tempo Real</p>
+                  <p className="text-sm text-muted-foreground">Mentoria Personalizada</p>
                 </div>
               </div>
             </CardHeader>
             <CardContent className="pt-0">
               <p className="text-sm text-muted-foreground mb-4">
-                Seu consultor de vendas pessoal que analisa conversas e sugere estratégias
+                1 hora de mentoria exclusiva + mapa mental + script personalizado
               </p>
-              <Button 
-                className={`w-full ${
-                  userPlan === "ai" 
-                    ? "bg-sales-secondary hover:bg-sales-secondary/80 text-white"
-                    : "btn-gradient"
-                }`}
-              >
-                {userPlan === "ai" ? "💬 Ativar Suporte" : "🔓 Desbloquear CloserAI"}
+              <Button className="w-full btn-gradient">
+                🎯 Agendar Mentoria
               </Button>
             </CardContent>
           </Card>
