@@ -1,3 +1,4 @@
+
 @import url('./mobile.css');
 @tailwind base;
 @tailwind components;
@@ -70,7 +71,6 @@
     --radius: 0.5rem;
   }
 }
-}
  
 @layer base {
   * {
@@ -118,7 +118,6 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* Adicionar ao final do arquivo */
 /* Mobile app specific styles */
 .capacitor-app {
   overflow-x: hidden;
