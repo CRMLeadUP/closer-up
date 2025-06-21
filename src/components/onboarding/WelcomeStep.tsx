@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Brain, MessageSquare } from 'lucide-react';
@@ -6,6 +7,16 @@ const WelcomeStep = () => {
   return (
     <div className="text-center space-y-6 animate-scale-in">
       <div className="space-y-4">
+        <div className="flex justify-center mb-4">
+          <div className="w-20 h-20 rounded-3xl bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden">
+            <img 
+              src="/lovable-uploads/dd697459-b2b7-4b82-bcfa-21c96aea0ed0.png" 
+              alt="CloserUP Logo" 
+              className="w-full h-full object-cover rounded-3xl"
+            />
+          </div>
+        </div>
+        
         <Badge className="bg-sales-primary/20 text-sales-primary border-sales-primary/30">
           🚀 Bem-vindo ao seu novo parceiro de vendas
         </Badge>
