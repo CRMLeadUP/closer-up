@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -162,8 +161,7 @@ const Plans = () => {
                                        hover:from-sales-primary/10 hover:to-sales-accent/10
                                        transition-all duration-300 hover:scale-[1.02]">
                 <span className="text-sm font-medium">{module.name}</span>
-                <Badge className={`text-xs bg-gradient-to-r from-${module.color}/20 to-${module.color}/30 
-                                 text-${module.color} border-${module.color}/30 shadow-sm`}>
+                <Badge className="text-xs btn-gradient text-white border-0 shadow-sm">
                   {module.plan}
                 </Badge>
               </div>
