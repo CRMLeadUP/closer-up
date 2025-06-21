@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User } from "lucide-react";
@@ -14,9 +13,9 @@ const MobileHeader = () => {
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
             <div className="w-32 h-12 bg-gradient-primary/10 p-1 flex items-center justify-center overflow-hidden"
-                 style={{ borderRadius: '24px' }}>
+                 style={{ borderRadius: '20px' }}>
               <img 
-                src="/lovable-uploads/5dc23589-3819-4c57-a459-2db9dcea3222.png" 
+                src="/lovable-uploads/e9155ab4-dd1b-4db0-8b43-2580c8aeb581.png" 
                 alt="CloserUP Logo" 
                 className="w-full h-full object-contain"
               />

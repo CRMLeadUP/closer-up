@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
@@ -12,15 +11,16 @@ const Header = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 cursor-pointer">
             <div className="w-40 h-16 bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden"
-                 style={{ borderRadius: '32px' }}>
+                 style={{ borderRadius: '24px' }}>
               <img 
-                src="/lovable-uploads/5dc23589-3819-4c57-a459-2db9dcea3222.png" 
+                src="/lovable-uploads/e9155ab4-dd1b-4db0-8b43-2580c8aeb581.png" 
                 alt="CloserUP Logo" 
                 className="w-full h-full object-contain"
               />
             </div>
             <span className="text-2xl font-bold gradient-text">CloserUP</span>
           </div>
+          
           
           <nav className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-foreground hover:text-sales-primary transition-colors">
