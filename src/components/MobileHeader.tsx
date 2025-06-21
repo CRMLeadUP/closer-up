@@ -47,39 +47,39 @@ const MobileHeader = () => {
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)}>
-          <div className="fixed top-0 right-0 h-full w-64 glass-effect border-l border-white/10 p-6">
+          <div className="fixed top-0 right-0 h-full w-64 glass-effect border-l border-white/20 p-6 bg-gradient-to-b from-background/95 to-background/90">
             <nav className="flex flex-col space-y-4 mt-16">
               <a 
                 href="#" 
-                className="text-foreground hover:text-sales-primary transition-colors py-2"
+                className="text-foreground/90 hover:text-sales-primary hover:bg-white/5 transition-all duration-200 py-3 px-4 rounded-lg font-medium"
                 onClick={() => { navigate('/training'); setIsMenuOpen(false); }}
               >
-                Treinamento
+                📚 Treinamento
               </a>
               <a 
                 href="#" 
-                className="text-foreground hover:text-sales-primary transition-colors py-2"
+                className="text-foreground/90 hover:text-sales-primary hover:bg-white/5 transition-all duration-200 py-3 px-4 rounded-lg font-medium"
                 onClick={() => { navigate('/mentorup'); setIsMenuOpen(false); }}
               >
-                Assistente IA
+                🤖 Assistente IA
               </a>
               <a 
                 href="#" 
-                className="text-foreground hover:text-sales-primary transition-colors py-2"
+                className="text-foreground/90 hover:text-sales-primary hover:bg-white/5 transition-all duration-200 py-3 px-4 rounded-lg font-medium"
                 onClick={() => { navigate('/plans'); setIsMenuOpen(false); }}
               >
-                Planos
+                💎 Planos
               </a>
               <a 
                 href="#" 
-                className="text-foreground hover:text-sales-primary transition-colors py-2"
+                className="text-foreground/90 hover:text-sales-primary hover:bg-white/5 transition-all duration-200 py-3 px-4 rounded-lg font-medium"
                 onClick={() => { navigate('/profile'); setIsMenuOpen(false); }}
               >
-                Perfil
+                👤 Perfil
               </a>
-              <div className="pt-4 border-t border-white/10">
+              <div className="pt-6 border-t border-white/20">
                 <Button 
-                  className="w-full btn-gradient justify-start"
+                  className="w-full btn-gradient text-white font-semibold py-3 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
                   onClick={() => { navigate('/plans'); setIsMenuOpen(false); }}
                 >
                   👑 Upgrade Premium
