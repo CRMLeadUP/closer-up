@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -277,7 +278,13 @@ const Training = () => {
                           </div>
                         )}
                       </div>
-                      <Button size="sm" className={module.isLocked ? "border border-sales-primary text-sales-primary hover:bg-sales-primary hover:text-white" : "btn-gradient"}>
+                      <Button 
+                        size="sm" 
+                        className={module.isLocked 
+                          ? "btn-gradient opacity-75 hover:opacity-100" 
+                          : "btn-gradient"
+                        }
+                      >
                         {module.isLocked ? (
                           <>
                             <Lock className="h-4 w-4 mr-1" />
@@ -337,7 +344,13 @@ const Training = () => {
                     <span>Script de vendas</span>
                   </div>
                 </div>
-                <Button size="sm" className={userPlan !== "mentor" ? "border border-sales-success text-sales-success hover:bg-sales-success hover:text-white" : "btn-gradient"}>
+                <Button 
+                  size="sm" 
+                  className={userPlan !== "mentor" 
+                    ? "btn-gradient opacity-75 hover:opacity-100" 
+                    : "btn-gradient"
+                  }
+                >
                   {userPlan !== "mentor" ? (
                     <>
                       <Lock className="h-4 w-4 mr-1" />
