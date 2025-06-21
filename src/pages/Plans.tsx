@@ -1,4 +1,5 @@
 
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -202,7 +203,6 @@ const Plans = () => {
                                    flex items-center justify-center shadow-lg 
                                    group-hover:scale-110 transition-transform duration-300`}>
                       <IconComponent className="h-8 w-8 text-white" />
-                      <div className="absolute inset-0 rounded-2xl bg-white/20 blur-sm"></div>
                     </div>
                     <Badge className="btn-gradient text-white border-0 shadow-sm hover:scale-105 transition-transform duration-300">
                       {plan.badge}
@@ -347,3 +347,4 @@ const Plans = () => {
 };
 
 export default Plans;
+
