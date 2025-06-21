@@ -39,38 +39,8 @@ const Plans = () => {
       if (data?.url) {
         console.log('URL do checkout recebida:', data.url);
         
-        // Tentar redirecionar diretamente primeiro
-        try {
-          window.location.href = data.url;
-        } catch (redirectError) {
-          console.warn('Redirecionamento direto falhou, tentando nova aba:', redirectError);
-          
-          // Se falhar, tentar abrir em nova aba
-          const newWindow = window.open(data.url, '_blank');
-          
-          // Verificar se a nova aba foi bloqueada
-          if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
-            console.warn('Pop-up bloqueado, mostrando mensagem ao usuário');
-            toast({
-              title: "Pop-up bloqueado",
-              description: "Por favor, permita pop-ups e tente novamente, ou clique no link para prosseguir",
-              variant: "default"
-            });
-            
-            // Como último recurso, criar um link clicável
-            const linkElement = document.createElement('a');
-            linkElement.href = data.url;
-            linkElement.target = '_blank';
-            linkElement.rel = 'noopener noreferrer';
-            linkElement.click();
-          } else {
-            console.log('Nova aba aberta com sucesso');
-            toast({
-              title: "Redirecionando...",
-              description: "Abrindo página de pagamento em nova aba"
-            });
-          }
-        }
+        // Redirecionar diretamente na mesma aba
+        window.location.href = data.url;
       } else {
         console.error('URL não recebida da função');
         toast({
@@ -306,6 +276,7 @@ const Plans = () => {
                      }`}
                      disabled={plan.current || isLoading}
                      onClick={() => {
+                       console.log('Botão clicado para plano:', plan.name);
                        if (plan.name === "Premium") {
                          handleCheckout("closerUp");
                        } else if (plan.name === "MentorUP") {
