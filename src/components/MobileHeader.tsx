@@ -15,7 +15,7 @@ const MobileHeader = () => {
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
             <div className="w-12 h-12 rounded-2xl bg-gradient-primary/10 p-1 flex items-center justify-center overflow-hidden">
               <img 
-                src="/lovable-uploads/dd697459-b2b7-4b82-bcfa-21c96aea0ed0.png" 
+                src="/lovable-uploads/9d13b2a2-83b5-4666-ba26-943dde3d2bf4.png" 
                 alt="CloserUP Logo" 
                 className="w-full h-full object-cover rounded-2xl"
               />

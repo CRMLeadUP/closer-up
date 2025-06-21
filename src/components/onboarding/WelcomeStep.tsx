@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Brain, MessageSquare } from 'lucide-react';
@@ -10,7 +9,7 @@ const WelcomeStep = () => {
         <div className="flex justify-center mb-4">
           <div className="w-20 h-20 rounded-3xl bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden">
             <img 
-              src="/lovable-uploads/dd697459-b2b7-4b82-bcfa-21c96aea0ed0.png" 
+              src="/lovable-uploads/9d13b2a2-83b5-4666-ba26-943dde3d2bf4.png" 
               alt="CloserUP Logo" 
               className="w-full h-full object-cover rounded-3xl"
             />
