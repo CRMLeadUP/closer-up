@@ -48,6 +48,7 @@ const Plans = () => {
       setIsLoading(false);
     }
   };
+
   const plans = [
     {
       name: "Gratuito",
@@ -198,10 +199,14 @@ const Plans = () => {
                 
                 <CardHeader className={`pb-6 ${plan.highlight ? 'pt-8' : 'pt-6'}`}>
                   <div className="flex items-center justify-between mb-6">
-                    <div className={`relative w-16 h-16 rounded-2xl 
-                                   bg-gradient-to-br from-${plan.badgeColor} via-${plan.badgeColor}/80 to-${plan.badgeColor}/60 
-                                   flex items-center justify-center shadow-lg 
-                                   group-hover:scale-110 transition-transform duration-300`}>
+                    <div className={`relative w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg 
+                                   group-hover:scale-110 transition-transform duration-300
+                                   ${plan.name === 'Gratuito' 
+                                     ? 'bg-gradient-to-br from-green-500 to-green-600' 
+                                     : plan.name === 'Premium'
+                                     ? 'bg-gradient-to-br from-blue-500 to-blue-600'
+                                     : 'bg-gradient-to-br from-purple-500 to-purple-600'
+                                   }`}>
                       <IconComponent className="h-8 w-8 text-white" />
                     </div>
                     <Badge className="btn-gradient text-white border-0 shadow-sm hover:scale-105 transition-transform duration-300">
@@ -347,4 +352,3 @@ const Plans = () => {
 };
 
 export default Plans;
-
