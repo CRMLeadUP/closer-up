@@ -1,13 +1,12 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { 
-  Brain, 
-  Target, 
   Users, 
-  MessageSquare,
+  Zap,
+  Heart,
+  Target,
   TrendingUp,
   Star,
   Trophy,
@@ -15,7 +14,8 @@ import {
   Play,
   CheckCircle2,
   Lock,
-  Crown
+  Crown,
+  MessageSquare
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
@@ -40,7 +40,7 @@ const Training = () => {
       id: "1",
       title: "Perfis Comportamentais",
       description: "Identifique e adapte estratégias ao perfil do cliente",
-      icon: Brain,
+      icon: Users,
       totalLessons: 10,
       completedLessons: 7,
       duration: "3h 15min",
@@ -55,7 +55,7 @@ const Training = () => {
       id: "2",
       title: "Gatilhos Mentais",
       description: "Técnicas de persuasão e construção de urgência",
-      icon: Target,
+      icon: Zap,
       totalLessons: 12,
       completedLessons: 4,
       duration: "3h 45min",
@@ -70,7 +70,7 @@ const Training = () => {
       id: "3",
       title: "Rapport e Conexão",
       description: "Como criar conexão e confiança com o cliente",
-      icon: Users,
+      icon: Heart,
       totalLessons: 6,
       completedLessons: 2,
       duration: "2h 15min",
@@ -85,7 +85,7 @@ const Training = () => {
       id: "4",
       title: "Quebra de Objeções",
       description: "Respostas práticas para situações comuns",
-      icon: MessageSquare,
+      icon: Target,
       totalLessons: 10,
       completedLessons: 0,
       duration: "4h 20min",
