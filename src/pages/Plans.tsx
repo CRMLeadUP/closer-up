@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -35,7 +34,8 @@ const Plans = () => {
     setIsLoading(true);
     
     try {
-      console.log('Chamando função create-checkout com sessão:', session.access_token ? 'Token presente' : 'Token ausente');
+      console.log('Chamando função create-checkout com plano:', plan);
+      console.log('Token de sessão presente:', !!session.access_token);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { plan },
@@ -44,7 +44,7 @@ const Plans = () => {
         }
       });
 
-      console.log('Resposta da função:', { data, error });
+      console.log('Resposta da função create-checkout:', { data, error });
 
       if (error) {
         console.error('Erro na função create-checkout:', error);

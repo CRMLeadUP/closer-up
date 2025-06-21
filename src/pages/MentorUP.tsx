@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,8 +22,11 @@ const MentorUP = () => {
   const navigate = useNavigate();
 
   const handleCheckout = async () => {
+    console.log('Iniciando checkout MentorUP');
+    
     // Check if user is authenticated
     if (!user || !session) {
+      console.log('Usuário não autenticado, redirecionando para login');
       toast({
         title: "Login necessário",
         description: "Faça login para agendar sua mentoria",
@@ -37,6 +39,9 @@ const MentorUP = () => {
     setIsLoading(true);
 
     try {
+      console.log('Chamando função create-checkout para mentorup');
+      console.log('Token de sessão presente:', !!session.access_token);
+      
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           plan: 'mentorup'
@@ -46,9 +51,21 @@ const MentorUP = () => {
         }
       });
 
-      if (error) throw error;
+      console.log('Resposta da função create-checkout:', { data, error });
+
+      if (error) {
+        console.error('Erro na função create-checkout:', error);
+        toast({
+          title: "Erro no checkout",
+          description: error.message || "Tente novamente ou entre em contato",
+          variant: "destructive"
+        });
+        return;
+      }
 
       if (data?.url) {
+        console.log('URL do checkout recebida:', data.url);
+        
         // Redirecionar na mesma aba
         window.location.href = data.url;
         
@@ -56,10 +73,17 @@ const MentorUP = () => {
           title: "Redirecionando para pagamento",
           description: "Após o pagamento, você poderá escolher data e horário"
         });
+      } else {
+        console.error('URL não recebida da função');
+        toast({
+          title: "Erro no checkout",
+          description: "Não foi possível obter a URL de pagamento",
+          variant: "destructive"
+        });
       }
 
     } catch (error) {
-      console.error('Error creating checkout:', error);
+      console.error('Erro geral no checkout MentorUP:', error);
       toast({
         title: "Erro no checkout",
         description: "Tente novamente ou entre em contato",
