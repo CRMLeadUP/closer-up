@@ -11,7 +11,8 @@ import {
   HelpCircle,
   LogOut,
   Crown,
-  CreditCard
+  CreditCard,
+  Shield
 } from "lucide-react";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
@@ -26,7 +27,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const { subscribed, subscription_tier, hasCloserUpAccess, hasMentorUpAccess, isLoading: subLoading } = useSubscription();
 
   const getSubscriptionBadge = () => {
@@ -106,8 +107,18 @@ const Profile = () => {
             <h2 className="text-xl font-bold gradient-text mb-1">
               {user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Usuário'}
             </h2>
-            <p className="text-muted-foreground text-sm mb-3">Vendedor Profissional</p>
-            {getSubscriptionBadge()}
+            <p className="text-muted-foreground text-sm mb-3">
+              {isAdmin ? 'Administrador' : 'Vendedor Profissional'}
+            </p>
+            <div className="flex justify-center gap-2">
+              {getSubscriptionBadge()}
+              {isAdmin && (
+                <Badge className="bg-sales-primary/20 text-sales-primary border-sales-primary/30">
+                  <Shield className="h-3 w-3 mr-1" />
+                  Admin
+                </Badge>
+              )}
+            </div>
           </CardContent>
         </Card>
 
@@ -160,6 +171,17 @@ const Profile = () => {
 
         {/* Quick Actions */}
         <div className="space-y-3">
+          {isAdmin && (
+            <Button 
+              variant="outline" 
+              className="w-full justify-start glass-effect border-sales-primary/30 text-sales-primary hover:bg-sales-primary/10"
+              onClick={() => navigate('/admin')}
+            >
+              <Shield className="h-5 w-5 mr-3" />
+              Painel Administrativo
+            </Button>
+          )}
+          
           {!subscribed && (
             <Button 
               variant="outline" 
