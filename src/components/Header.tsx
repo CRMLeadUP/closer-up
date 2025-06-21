@@ -11,8 +11,8 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 cursor-pointer">
-            <div className="w-24 h-16 bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden"
-                 style={{ borderRadius: '20px' }}>
+            <div className="w-32 h-16 bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden"
+                 style={{ borderRadius: '24px' }}>
               <img 
                 src="/lovable-uploads/5dc23589-3819-4c57-a459-2db9dcea3222.png" 
                 alt="CloserUP Logo" 
