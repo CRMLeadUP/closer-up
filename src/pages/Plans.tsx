@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,20 +9,39 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Plans = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { session, user } = useAuth();
 
   const handleCheckout = async (plan: string) => {
     console.log('Iniciando checkout para plano:', plan);
+    
+    // Verificar se o usuário está autenticado
+    if (!session || !user) {
+      console.log('Usuário não autenticado, redirecionando para login');
+      toast({
+        title: "Login necessário",
+        description: "Faça login para continuar com a compra",
+        variant: "destructive"
+      });
+      navigate('/auth');
+      return;
+    }
+
     setIsLoading(true);
     
     try {
-      console.log('Chamando função create-checkout...');
+      console.log('Chamando função create-checkout com sessão:', session.access_token ? 'Token presente' : 'Token ausente');
+      
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { plan }
+        body: { plan },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`
+        }
       });
 
       console.log('Resposta da função:', { data, error });

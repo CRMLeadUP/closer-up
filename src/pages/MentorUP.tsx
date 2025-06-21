@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -47,13 +48,15 @@ const MentorUP = () => {
 
       if (error) throw error;
 
-      // Open Stripe checkout in a new tab
-      window.open(data.url, '_blank');
-      
-      toast({
-        title: "Redirecionando para pagamento",
-        description: "Após o pagamento, você poderá escolher data e horário"
-      });
+      if (data?.url) {
+        // Redirecionar na mesma aba
+        window.location.href = data.url;
+        
+        toast({
+          title: "Redirecionando para pagamento",
+          description: "Após o pagamento, você poderá escolher data e horário"
+        });
+      }
 
     } catch (error) {
       console.error('Error creating checkout:', error);
