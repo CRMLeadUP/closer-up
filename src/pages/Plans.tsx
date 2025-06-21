@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -128,10 +129,7 @@ const Plans = () => {
       <div className="pt-20 pb-24 px-4">
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
-          <Badge className="mb-4 bg-gradient-to-r from-sales-success/20 to-sales-accent/20 
-                         text-sales-success border-sales-success/30 
-                         hover:from-sales-success/30 hover:to-sales-accent/30 
-                         transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
+          <Badge className="mb-4 btn-gradient text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
             <Sparkles className="h-3 w-3 mr-1 animate-pulse" />
             Planos e Preços
           </Badge>
@@ -206,11 +204,7 @@ const Plans = () => {
                       <IconComponent className="h-8 w-8 text-white" />
                       <div className="absolute inset-0 rounded-2xl bg-white/20 blur-sm"></div>
                     </div>
-                    <Badge 
-                      className={`bg-gradient-to-r from-${plan.badgeColor}/20 to-${plan.badgeColor}/30 
-                                text-${plan.badgeColor} border-${plan.badgeColor}/40 shadow-sm
-                                hover:scale-105 transition-transform duration-300`}
-                    >
+                    <Badge className="btn-gradient text-white border-0 shadow-sm hover:scale-105 transition-transform duration-300">
                       {plan.badge}
                     </Badge>
                   </div>
