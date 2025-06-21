@@ -49,7 +49,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Entenda os 4 perfis principais: Dominante, Influenciador, Estável e Cauteloso",
           isFree: true,
-          videoUrl: "JaUp/PerfilDominante.mp4"
+          videoUrl: "https://vimeo.com/1095273308"
         },
         {
           id: 2,
@@ -146,7 +146,7 @@ const TrainingModule = () => {
           type: "video",
           description: "O que são gatilhos mentais e como usá-los eticamente nas vendas",
           isFree: true,
-          videoUrl: "JaUp/GatilhodaEscassez.mp4"
+          videoUrl: "https://vimeo.com/1095273370"
         },
         {
           id: 2,
@@ -323,7 +323,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Entenda a psicologia por trás das objeções e como respondê-las",
           isFree: true,
-          videoUrl: "JaUp/FundamentosRapport.mp4"
+          videoUrl: "https://vimeo.com/1095273392"
         },
         {
           id: 2,
@@ -332,7 +332,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Técnicas para superar a objeção mais comum nas vendas",
           isFree: true,
-          videoUrl: "JaUp/GatilhodaEscassez.mp4"
+          videoUrl: "https://vimeo.com/1095274073"
         },
         {
           id: 3,
@@ -375,7 +375,7 @@ const TrainingModule = () => {
           type: "video",
           description: "Como construir credibilidade e superar desconfiança",
           isFree: true,
-          videoUrl: "JaUp/GatilhodaAutoridade.mp4"
+          videoUrl: "https://vimeo.com/1095274102"
         },
         {
           id: 8,
@@ -511,9 +511,16 @@ const TrainingModule = () => {
     }
   };
 
-  // Get video URL from Supabase Storage
+  // Get video URL - handle both Supabase and Vimeo URLs
   const getVideoUrl = (fileName: string) => {
     if (!fileName) return '';
+    
+    // If it's a Vimeo URL, return it directly
+    if (fileName.startsWith('https://vimeo.com/')) {
+      return fileName;
+    }
+    
+    // Otherwise, get from Supabase Storage
     const { data } = supabase.storage
       .from('training-videos')
       .getPublicUrl(fileName);
@@ -546,7 +553,7 @@ const TrainingModule = () => {
         alert("Complete todas as aulas anteriores para acessar o certificado!");
       }
     } else if (type === 'video' && videoUrl) {
-      // Open video in modal - videoUrl is now a filename
+      // Open video in modal
       setCurrentVideoUrl(getVideoUrl(videoUrl));
       setIsVideoModalOpen(true);
       // Mark as completed
@@ -769,18 +776,28 @@ const TrainingModule = () => {
           <div className="p-6 pt-0">
             <div className="aspect-video w-full bg-black rounded-lg overflow-hidden">
               {currentVideoUrl ? (
-                <video
-                  src={currentVideoUrl}
-                  className="w-full h-full"
-                  controls
-                  autoPlay
-                  preload="metadata"
-                  style={{ objectFit: 'contain' }}
-                >
-                  <p className="text-white p-4">
-                    Seu navegador não suporta reprodução de vídeo.
-                  </p>
-                </video>
+                currentVideoUrl.startsWith('https://vimeo.com/') ? (
+                  <iframe
+                    src={`https://player.vimeo.com/video/${currentVideoUrl.split('/').pop()}?badge=0&autopause=0&quality_selector=1&player_id=0&app_id=58479`}
+                    className="w-full h-full"
+                    frameBorder="0"
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write"
+                    title="Vídeo da Aula"
+                  />
+                ) : (
+                  <video
+                    src={currentVideoUrl}
+                    className="w-full h-full"
+                    controls
+                    autoPlay
+                    preload="metadata"
+                    style={{ objectFit: 'contain' }}
+                  >
+                    <p className="text-white p-4">
+                      Seu navegador não suporta reprodução de vídeo.
+                    </p>
+                  </video>
+                )
               ) : (
                 <div className="flex items-center justify-center h-full text-white">
                   <div className="text-center">
