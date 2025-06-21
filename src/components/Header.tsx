@@ -11,11 +11,12 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 cursor-pointer">
-            <div className="w-16 h-16 rounded-3xl bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden">
+            <div className="w-16 h-12 rounded-3xl bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden"
+                 style={{ borderRadius: '24px' }}>
               <img 
-                src="/lovable-uploads/8c3108da-f24c-42a0-8b27-f673bdf2ad7e.png" 
+                src="/lovable-uploads/5dc23589-3819-4c57-a459-2db9dcea3222.png" 
                 alt="CloserUP Logo" 
-                className="w-full h-full object-cover rounded-3xl"
+                className="w-full h-full object-contain"
               />
             </div>
             <span className="text-2xl font-bold gradient-text">CloserUP</span>
