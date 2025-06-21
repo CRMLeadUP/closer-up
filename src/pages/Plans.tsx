@@ -1,5 +1,3 @@
-
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,14 +15,19 @@ const Plans = () => {
   const navigate = useNavigate();
 
   const handleCheckout = async (plan: string) => {
+    console.log('Iniciando checkout para plano:', plan);
     setIsLoading(true);
     
     try {
+      console.log('Chamando função create-checkout...');
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { plan }
       });
 
+      console.log('Resposta da função:', { data, error });
+
       if (error) {
+        console.error('Erro na função create-checkout:', error);
         toast({
           title: "Erro no checkout",
           description: error.message || "Ocorreu um erro ao processar o pagamento",
@@ -34,14 +37,53 @@ const Plans = () => {
       }
 
       if (data?.url) {
-        // Open Stripe checkout in a new tab
-        window.open(data.url, '_blank');
+        console.log('URL do checkout recebida:', data.url);
+        
+        // Tentar redirecionar diretamente primeiro
+        try {
+          window.location.href = data.url;
+        } catch (redirectError) {
+          console.warn('Redirecionamento direto falhou, tentando nova aba:', redirectError);
+          
+          // Se falhar, tentar abrir em nova aba
+          const newWindow = window.open(data.url, '_blank');
+          
+          // Verificar se a nova aba foi bloqueada
+          if (!newWindow || newWindow.closed || typeof newWindow.closed == 'undefined') {
+            console.warn('Pop-up bloqueado, mostrando mensagem ao usuário');
+            toast({
+              title: "Pop-up bloqueado",
+              description: "Por favor, permita pop-ups e tente novamente, ou clique no link para prosseguir",
+              variant: "default"
+            });
+            
+            // Como último recurso, criar um link clicável
+            const linkElement = document.createElement('a');
+            linkElement.href = data.url;
+            linkElement.target = '_blank';
+            linkElement.rel = 'noopener noreferrer';
+            linkElement.click();
+          } else {
+            console.log('Nova aba aberta com sucesso');
+            toast({
+              title: "Redirecionando...",
+              description: "Abrindo página de pagamento em nova aba"
+            });
+          }
+        }
+      } else {
+        console.error('URL não recebida da função');
+        toast({
+          title: "Erro no checkout",
+          description: "Não foi possível obter a URL de pagamento",
+          variant: "destructive"
+        });
       }
     } catch (error) {
-      console.error('Checkout error:', error);
+      console.error('Erro geral no checkout:', error);
       toast({
         title: "Erro no checkout",
-        description: "Não foi possível iniciar o processo de pagamento",
+        description: "Não foi possível iniciar o processo de pagamento. Tente novamente.",
         variant: "destructive"
       });
     } finally {
