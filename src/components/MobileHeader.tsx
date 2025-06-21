@@ -78,8 +78,11 @@ const MobileHeader = () => {
                 Perfil
               </a>
               <div className="pt-4 border-t border-white/10">
-                <Button className="w-full btn-gradient justify-start">
-                  Upgrade Premium
+                <Button 
+                  className="w-full btn-gradient justify-start"
+                  onClick={() => { navigate('/plans'); setIsMenuOpen(false); }}
+                >
+                  👑 Upgrade Premium
                 </Button>
               </div>
             </nav>
