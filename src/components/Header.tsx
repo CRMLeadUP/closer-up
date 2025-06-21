@@ -13,7 +13,7 @@ const Header = () => {
           <div className="flex items-center space-x-3 cursor-pointer">
             <div className="w-16 h-16 rounded-3xl bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden">
               <img 
-                src="/lovable-uploads/9d13b2a2-83b5-4666-ba26-943dde3d2bf4.png" 
+                src="/lovable-uploads/8c3108da-f24c-42a0-8b27-f673bdf2ad7e.png" 
                 alt="CloserUP Logo" 
                 className="w-full h-full object-cover rounded-3xl"
               />
