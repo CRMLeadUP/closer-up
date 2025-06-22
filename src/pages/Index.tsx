@@ -28,16 +28,6 @@ const Index = () => {
   const { user, loading } = useAuth();
   const { startOnboarding } = useOnboarding();
   const { shouldShowOnboarding } = useAppFlow();
-  const [isComponentReady, setIsComponentReady] = useState(false);
-
-  useEffect(() => {
-    // Small delay to ensure everything is properly initialized
-    const timer = setTimeout(() => {
-      setIsComponentReady(true);
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   const quickStats = [
     { value: "+5.2K", label: "Usuários", icon: Users },
@@ -50,8 +40,8 @@ const Index = () => {
     navigate('/mentorup');
   };
 
-  // Show loading while auth is loading or component is not ready
-  if (loading || !isComponentReady) {
+  // Show loading only while auth is loading
+  if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="card-glass">
@@ -64,7 +54,7 @@ const Index = () => {
     );
   }
 
-  // Se deve mostrar onboarding, mostra o overlay
+  // Show onboarding overlay if needed
   if (shouldShowOnboarding) {
     return <OnboardingOverlay />;
   }

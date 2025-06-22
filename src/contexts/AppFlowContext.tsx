@@ -31,14 +31,10 @@ export const AppFlowProvider = ({ children }: { children: React.ReactNode }) => 
   const location = useLocation();
   const [isFirstTime, setIsFirstTime] = useState(true);
   const [shouldShowOnboarding, setShouldShowOnboarding] = useState(false);
-  const [hasProcessedAuth, setHasProcessedAuth] = useState(false);
 
   useEffect(() => {
-    // Don't do anything while auth is still loading
+    // Only process after auth loading is complete
     if (loading) return;
-
-    // Prevent multiple navigation calls
-    if (hasProcessedAuth) return;
 
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
     const isAuthPage = location.pathname === '/auth';
@@ -48,51 +44,40 @@ export const AppFlowProvider = ({ children }: { children: React.ReactNode }) => 
     console.log('AppFlow processing:', { 
       user: !!user, 
       hasSeenOnboarding: !!hasSeenOnboarding, 
-      currentPath: location.pathname 
+      currentPath: location.pathname,
+      loading 
     });
     
     // If user is not logged in and not on auth/success page, redirect to auth
     if (!user && !isAuthPage && !isSuccessPage) {
       console.log('User not logged in, redirecting to auth');
       navigate('/auth', { replace: true });
-      setHasProcessedAuth(true);
       return;
     }
 
-    // If user is logged in
-    if (user) {
-      // If user is on auth page and logged in, redirect to home
-      if (isAuthPage) {
-        console.log('User logged in on auth page, redirecting to home');
-        navigate('/', { replace: true });
-        setHasProcessedAuth(true);
-        return;
-      }
-
-      // If user never saw onboarding and is on home page, show onboarding
-      if (!hasSeenOnboarding && isHomePage) {
-        console.log('User logged in but first time on home, showing onboarding');
-        setShouldShowOnboarding(true);
-        setIsFirstTime(true);
-        setHasProcessedAuth(true);
-        return;
-      }
+    // If user is logged in and on auth page, redirect to home
+    if (user && isAuthPage) {
+      console.log('User logged in on auth page, redirecting to home');
+      navigate('/', { replace: true });
+      return;
     }
 
-    setIsFirstTime(!hasSeenOnboarding);
-    setHasProcessedAuth(true);
-  }, [user, loading, navigate, location.pathname, hasProcessedAuth]);
+    // Handle onboarding for logged in users on home page
+    if (user && isHomePage && !hasSeenOnboarding) {
+      console.log('User logged in but first time on home, showing onboarding');
+      setShouldShowOnboarding(true);
+      setIsFirstTime(true);
+      return;
+    }
 
-  // Reset processing flag when location changes significantly
-  useEffect(() => {
-    setHasProcessedAuth(false);
-  }, [location.pathname]);
+    // Set first time status
+    setIsFirstTime(!hasSeenOnboarding);
+  }, [user, loading, navigate, location.pathname]);
 
   const completeOnboarding = () => {
     localStorage.setItem('hasSeenOnboarding', 'true');
     setShouldShowOnboarding(false);
     setIsFirstTime(false);
-    // Don't navigate here - let the component handle it
   };
 
   return (

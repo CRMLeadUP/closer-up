@@ -99,65 +99,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     let mounted = true;
 
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (!mounted) return;
-
-        console.log('Auth state change:', event, session?.user?.email);
-        
-        if (event === 'SIGNED_OUT' || !session) {
-          setSession(null);
-          setUser(null);
-          setIsAdmin(false);
-          setLoading(false);
-          return;
-        }
-
-        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-          setSession(session);
-          setUser(session.user);
-          
-          // Show welcome message for new Google users
-          if (event === 'SIGNED_IN' && session.user?.app_metadata?.provider === 'google') {
-            const isNewUser = new Date(session.user.created_at).getTime() > (Date.now() - 60000); // Within last minute
-            if (isNewUser) {
-              setTimeout(() => {
-                toast({
-                  title: "Bem-vindo ao CloserUP!",
-                  description: `Olá, ${session.user?.user_metadata?.full_name || session.user?.email}! Conta criada com sucesso via Google.`
-                });
-              }, 1000);
-            } else {
-              setTimeout(() => {
-                toast({
-                  title: "Login realizado com sucesso!",
-                  description: `Bem-vindo de volta, ${session.user?.user_metadata?.full_name || session.user?.email}!`
-                });
-              }, 1000);
-            }
-          }
-          
-          if (session.user) {
-            // Use setTimeout to avoid blocking the auth state update
-            setTimeout(() => {
-              checkAdminStatus(session.user.id);
-            }, 0);
-          }
-          
-          // Set loading to false immediately after setting user data
-          setLoading(false);
-        }
-      }
-    );
-
-    // THEN check for existing session
+    // Get initial session first
     const getInitialSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
           console.error('Error getting session:', error);
-          if (mounted) setLoading(false);
+          if (mounted) {
+            setUser(null);
+            setSession(null);
+            setLoading(false);
+          }
           return;
         }
 
@@ -168,6 +120,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
+          // Check admin status without blocking
           setTimeout(() => {
             checkAdminStatus(session.user.id);
           }, 0);
@@ -176,10 +129,60 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setLoading(false);
       } catch (error) {
         console.error('Error in getInitialSession:', error);
-        if (mounted) setLoading(false);
+        if (mounted) {
+          setUser(null);
+          setSession(null);
+          setLoading(false);
+        }
       }
     };
 
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (!mounted) return;
+
+        console.log('Auth state change:', event, session?.user?.email);
+        
+        if (event === 'SIGNED_OUT' || !session) {
+          setSession(null);
+          setUser(null);
+          setIsAdmin(false);
+          return;
+        }
+
+        if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          setSession(session);
+          setUser(session.user);
+          
+          // Show welcome message for Google users
+          if (event === 'SIGNED_IN' && session.user?.app_metadata?.provider === 'google') {
+            const isNewUser = new Date(session.user.created_at).getTime() > (Date.now() - 60000);
+            setTimeout(() => {
+              if (isNewUser) {
+                toast({
+                  title: "Bem-vindo ao CloserUP!",
+                  description: `Olá, ${session.user?.user_metadata?.full_name || session.user?.email}! Conta criada com sucesso via Google.`
+                });
+              } else {
+                toast({
+                  title: "Login realizado com sucesso!",
+                  description: `Bem-vindo de volta, ${session.user?.user_metadata?.full_name || session.user?.email}!`
+                });
+              }
+            }, 1000);
+          }
+          
+          if (session.user) {
+            setTimeout(() => {
+              checkAdminStatus(session.user.id);
+            }, 0);
+          }
+        }
+      }
+    );
+
+    // Get initial session
     getInitialSession();
 
     return () => {
