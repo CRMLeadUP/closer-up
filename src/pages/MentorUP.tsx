@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,18 +16,19 @@ import { BookingTab } from "@/components/mentor/BookingTab";
 import { BenefitsTab } from "@/components/mentor/BenefitsTab";
 
 const MentorUP = () => {
-  const [selectedPlan] = useState("mentorup");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { user, session } = useAuth();
   const navigate = useNavigate();
 
   const handleCheckout = async () => {
-    console.log('Iniciando checkout MentorUP');
+    console.log('=== INICIANDO CHECKOUT MENTORUP ===');
+    console.log('Usuário autenticado:', !!user);
+    console.log('Sessão presente:', !!session);
     
     // Check if user is authenticated
     if (!user || !session) {
-      console.log('Usuário não autenticado, redirecionando para login');
+      console.log('ERRO: Usuário não autenticado');
       toast({
         title: "Login necessário",
         description: "Faça login para agendar sua mentoria",
@@ -36,11 +38,11 @@ const MentorUP = () => {
       return;
     }
 
+    console.log('Token de acesso presente:', !!session.access_token);
     setIsLoading(true);
 
     try {
-      console.log('Chamando função create-checkout para mentorup');
-      console.log('Token de sessão presente:', !!session.access_token);
+      console.log('Chamando edge function create-checkout para mentorup...');
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
@@ -54,10 +56,10 @@ const MentorUP = () => {
       console.log('Resposta da função create-checkout:', { data, error });
 
       if (error) {
-        console.error('Erro na função create-checkout:', error);
+        console.error('ERRO na função create-checkout:', error);
         toast({
           title: "Erro no checkout",
-          description: error.message || "Tente novamente ou entre em contato",
+          description: `Erro: ${error.message}`,
           variant: "destructive"
         });
         return;
@@ -66,15 +68,17 @@ const MentorUP = () => {
       if (data?.url) {
         console.log('URL do checkout recebida:', data.url);
         
-        // Redirecionar na mesma aba
-        window.location.href = data.url;
-        
         toast({
           title: "Redirecionando para pagamento",
           description: "Após o pagamento, você poderá escolher data e horário"
         });
+        
+        // Aguardar um momento para o usuário ver o toast
+        setTimeout(() => {
+          window.location.href = data.url;
+        }, 1000);
       } else {
-        console.error('URL não recebida da função');
+        console.error('ERRO: URL não recebida da função');
         toast({
           title: "Erro no checkout",
           description: "Não foi possível obter a URL de pagamento",
@@ -83,7 +87,7 @@ const MentorUP = () => {
       }
 
     } catch (error) {
-      console.error('Erro geral no checkout MentorUP:', error);
+      console.error('ERRO geral no checkout MentorUP:', error);
       toast({
         title: "Erro no checkout",
         description: "Tente novamente ou entre em contato",
@@ -230,7 +234,14 @@ const MentorUP = () => {
                   onClick={handleCheckout}
                   disabled={isLoading}
                 >
-                  {isLoading ? "Processando..." : "🚀 Agendar Mentoria - R$ 47,90"}
+                  {isLoading ? (
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
+                      Processando...
+                    </div>
+                  ) : (
+                    "🚀 Agendar Mentoria - R$ 47,90"
+                  )}
                 </Button>
                 <Button 
                   variant="outline" 

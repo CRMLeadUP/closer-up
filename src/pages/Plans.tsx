@@ -17,11 +17,14 @@ const Plans = () => {
   const { session, user } = useAuth();
 
   const handleCheckout = async (plan: string) => {
-    console.log('Iniciando checkout para plano:', plan);
+    console.log('=== INICIANDO CHECKOUT ===');
+    console.log('Plano:', plan);
+    console.log('Usuário autenticado:', !!user);
+    console.log('Sessão presente:', !!session);
     
     // Verificar se o usuário está autenticado
     if (!session || !user) {
-      console.log('Usuário não autenticado, redirecionando para login');
+      console.log('ERRO: Usuário não autenticado');
       toast({
         title: "Login necessário",
         description: "Faça login para continuar com a compra",
@@ -31,26 +34,26 @@ const Plans = () => {
       return;
     }
 
+    console.log('Token de acesso presente:', !!session.access_token);
     setIsLoading(true);
     
     try {
-      console.log('Chamando função create-checkout com plano:', plan);
-      console.log('Token de sessão presente:', !!session.access_token);
+      console.log('Chamando edge function create-checkout...');
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: { plan },
         headers: {
-          Authorization: `Bearer ${session.access_token}`
+          Authorization: `Bearer ${session.access_token}`,
         }
       });
 
-      console.log('Resposta da função create-checkout:', { data, error });
+      console.log('Resposta da função:', { data, error });
 
       if (error) {
-        console.error('Erro na função create-checkout:', error);
+        console.error('ERRO na função create-checkout:', error);
         toast({
           title: "Erro no checkout",
-          description: error.message || "Ocorreu um erro ao processar o pagamento",
+          description: `Erro: ${error.message}`,
           variant: "destructive"
         });
         return;
@@ -58,11 +61,17 @@ const Plans = () => {
 
       if (data?.url) {
         console.log('URL do checkout recebida:', data.url);
+        toast({
+          title: "Redirecionando para pagamento",
+          description: "Você será redirecionado para o Stripe..."
+        });
         
-        // Redirecionar diretamente na mesma aba
-        window.location.href = data.url;
+        // Aguardar um momento para o usuário ver o toast
+        setTimeout(() => {
+          window.location.href = data.url;
+        }, 1000);
       } else {
-        console.error('URL não recebida da função');
+        console.error('ERRO: URL não recebida');
         toast({
           title: "Erro no checkout",
           description: "Não foi possível obter a URL de pagamento",
@@ -70,7 +79,7 @@ const Plans = () => {
         });
       }
     } catch (error) {
-      console.error('Erro geral no checkout:', error);
+      console.error('ERRO geral no checkout:', error);
       toast({
         title: "Erro no checkout",
         description: "Não foi possível iniciar o processo de pagamento. Tente novamente.",
