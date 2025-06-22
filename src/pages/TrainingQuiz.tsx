@@ -1,9 +1,7 @@
-
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { useUserProgress } from "@/hooks/useUserProgress";
 import { useToast } from "@/hooks/use-toast";
 import { 
   ArrowLeft, 
@@ -17,7 +15,6 @@ import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
 
 const TrainingQuiz = () => {
-  const { updateProgress } = useUserProgress();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { moduleId, lessonId } = useParams();
@@ -85,11 +82,11 @@ const TrainingQuiz = () => {
         setShowResult(false);
       } else {
         setQuizCompleted(true);
-        
-        // Update user progress
-        const score = Math.round((newAnswers.filter(Boolean).length / quizData.questions.length) * 100);
-        const perfectScore = score === 100;
-        updateProgress('quiz', score, perfectScore);
+        // Simple toast notification instead of progress tracking
+        toast({
+          title: "Quiz Concluído!",
+          description: `Você acertou ${newAnswers.filter(Boolean).length} de ${quizData.questions.length} perguntas.`,
+        });
       }
     }, 2000);
   };
@@ -157,7 +154,7 @@ const TrainingQuiz = () => {
               {passed && (
                 <div className="p-4 bg-sales-success/20 rounded-lg border border-sales-success/30">
                   <p className="text-sm text-sales-success">
-                    🎉 +50 XP adicionados ao seu perfil!
+                    🎉 Parabéns! Você concluiu o quiz com sucesso!
                   </p>
                 </div>
               )}
