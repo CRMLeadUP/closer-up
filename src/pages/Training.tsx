@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -46,7 +47,7 @@ const Training = () => {
       duration: "3h 15min",
       level: "Iniciante",
       xpReward: 250,
-      color: "sales-primary",
+      color: "from-blue-500 to-blue-600",
       isLocked: false,
       price: "Grátis",
       planRequired: "free" as const
@@ -61,7 +62,7 @@ const Training = () => {
       duration: "3h 45min",
       level: "Intermediário",
       xpReward: 300,
-      color: "sales-secondary",
+      color: "from-purple-500 to-purple-600",
       isLocked: userPlan === "free",
       price: "R$ 17,90",
       planRequired: "premium" as const
@@ -76,7 +77,7 @@ const Training = () => {
       duration: "2h 15min",
       level: "Iniciante",
       xpReward: 200,
-      color: "sales-accent",
+      color: "from-pink-500 to-pink-600",
       isLocked: userPlan === "free",
       price: "R$ 17,90",
       planRequired: "premium" as const
@@ -91,7 +92,7 @@ const Training = () => {
       duration: "4h 20min",
       level: "Avançado",
       xpReward: 350,
-      color: "sales-warning",
+      color: "from-orange-500 to-orange-600",
       isLocked: userPlan === "free",
       price: "R$ 17,90",
       planRequired: "premium" as const
@@ -106,7 +107,7 @@ const Training = () => {
       duration: "2h 50min",
       level: "Intermediário",
       xpReward: 280,
-      color: "sales-success",
+      color: "from-green-500 to-green-600",
       isLocked: userPlan === "free",
       price: "R$ 17,90",
       planRequired: "premium" as const
@@ -128,7 +129,6 @@ const Training = () => {
 
   const handleModuleClick = (module: any) => {
     if (module.isLocked) {
-      // Redirect to plans page if module is locked
       navigate('/plans');
     } else {
       navigate(`/training/module/${module.id}`);
@@ -139,83 +139,84 @@ const Training = () => {
     <div className="min-h-screen bg-background">
       <MobileHeader />
       
-      <div className="pt-20 pb-24">
-        {/* Header */}
-        <div className="px-4 mb-6">
-          <div className="text-center mb-6">
-            <Badge className="mb-4 bg-sales-primary/20 text-sales-primary border-sales-primary/30">
-              🎓 Plataforma de Treinamento
-            </Badge>
-            <h1 className="text-3xl font-bold gradient-text mb-2">
-              Treinamento CloserUP
-            </h1>
-            <p className="text-muted-foreground">
-              Desenvolva suas habilidades de vendas com nossos módulos especializados
-            </p>
-          </div>
+      <div className="pt-16 pb-20">
+        {/* Header Section */}
+        <div className="px-4 py-6 text-center">
+          <Badge className="mb-3 bg-sales-primary/20 text-sales-primary border-sales-primary/30 text-xs">
+            🎓 Plataforma de Treinamento
+          </Badge>
+          <h1 className="text-2xl font-bold gradient-text mb-2">
+            Treinamento CloserUP
+          </h1>
+          <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+            Desenvolva suas habilidades de vendas com nossos módulos especializados
+          </p>
+        </div>
 
-          {/* Current Plan Notice */}
-          <Card className="card-glass mb-4 border border-sales-accent/30">
+        {/* Current Plan */}
+        <div className="px-4 mb-6">
+          <Card className="card-glass border border-sales-accent/20">
             <CardContent className="p-4">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-sales-accent/20 flex items-center justify-center">
-                    <span className="text-sales-accent text-sm">
+                  <div className="w-10 h-10 rounded-full bg-sales-accent/10 flex items-center justify-center">
+                    <span className="text-sm">
                       {userPlan === "free" ? "🆓" : userPlan === "premium" ? "👑" : "📅"}
                     </span>
                   </div>
                   <div>
-                    <h3 className="font-semibold">
+                    <h3 className="font-semibold text-sm">
                       Plano {userPlan === "free" ? "Gratuito" : userPlan === "premium" ? "Premium" : "MentorUP"}
-                      {subLoading && " (Verificando...)"}
                     </h3>
-                    <p className="text-sm text-muted-foreground">
-                      {userPlan === "free" ? "1 módulo disponível" : userPlan === "premium" ? "Todo conteúdo CloserUP disponível" : "Acesso completo + MentorUP"}
+                    <p className="text-xs text-muted-foreground">
+                      {userPlan === "free" ? "1 módulo disponível" : userPlan === "premium" ? "Acesso completo" : "Acesso + MentorUP"}
                     </p>
                   </div>
                 </div>
                 {userPlan === "free" && (
-                  <Button size="sm" className="btn-gradient" onClick={() => navigate('/plans')}>
-                    Fazer Upgrade
+                  <Button size="sm" className="btn-gradient text-xs px-3 py-1.5 h-auto" onClick={() => navigate('/plans')}>
+                    Upgrade
                   </Button>
                 )}
               </div>
             </CardContent>
           </Card>
+        </div>
 
-          {/* Stats Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        {/* Stats Grid */}
+        <div className="px-4 mb-8">
+          <div className="grid grid-cols-4 gap-2">
             <Card className="card-glass">
               <CardContent className="p-3 text-center">
-                <div className="text-2xl font-bold gradient-text">{stats.totalXP}</div>
-                <div className="text-xs text-muted-foreground">XP Total</div>
+                <div className="text-lg font-bold gradient-text">{stats.totalXP}</div>
+                <div className="text-xs text-muted-foreground">XP</div>
               </CardContent>
             </Card>
             <Card className="card-glass">
               <CardContent className="p-3 text-center">
-                <div className="text-2xl font-bold text-sales-warning">{stats.streak}</div>
-                <div className="text-xs text-muted-foreground">Dias Seguidos</div>
+                <div className="text-lg font-bold text-sales-warning">{stats.streak}</div>
+                <div className="text-xs text-muted-foreground">Dias</div>
               </CardContent>
             </Card>
             <Card className="card-glass">
               <CardContent className="p-3 text-center">
-                <div className="text-2xl font-bold text-sales-success">{stats.coursesCompleted}</div>
-                <div className="text-xs text-muted-foreground">Concluídos</div>
+                <div className="text-lg font-bold text-sales-success">{stats.coursesCompleted}</div>
+                <div className="text-xs text-muted-foreground">Completos</div>
               </CardContent>
             </Card>
             <Card className="card-glass">
               <CardContent className="p-3 text-center">
-                <div className="text-2xl font-bold text-sales-accent">{stats.averageScore}%</div>
+                <div className="text-lg font-bold text-sales-accent">{stats.averageScore}%</div>
                 <div className="text-xs text-muted-foreground">Média</div>
               </CardContent>
             </Card>
           </div>
         </div>
 
-        {/* Modules */}
+        {/* Modules Section */}
         <div className="px-4 mb-8">
-          <h2 className="text-xl font-bold mb-4">Módulos de Treinamento</h2>
-          <div className="space-y-4">
+          <h2 className="text-lg font-bold mb-4">Módulos de Treinamento</h2>
+          <div className="space-y-3">
             {modules.map((module) => {
               const progress = (module.completedLessons / module.totalLessons) * 100;
               const IconComponent = module.icon;
@@ -223,80 +224,79 @@ const Training = () => {
               return (
                 <Card 
                   key={module.id}
-                  className={`card-glass transition-all duration-200 ${
-                    module.isLocked 
-                      ? 'opacity-75 cursor-pointer hover:scale-105' 
-                      : 'hover:scale-105 cursor-pointer'
-                  }`}
+                  className="card-glass hover:scale-[1.02] transition-all duration-200 cursor-pointer"
                   onClick={() => handleModuleClick(module)}
                 >
                   <CardContent className="p-4">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center relative">
-                        <IconComponent className="h-6 w-6 text-white" />
+                    <div className="flex gap-3">
+                      {/* Icon */}
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${module.color} flex items-center justify-center relative flex-shrink-0`}>
+                        <IconComponent className="h-5 w-5 text-white" />
                         {module.isLocked && (
                           <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
-                            <Lock className="h-4 w-4 text-white" />
+                            <Lock className="h-3 w-3 text-white" />
                           </div>
                         )}
                       </div>
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold">{module.title}</h3>
-                          <Badge variant="outline" className="text-xs">
-                            {module.level}
-                          </Badge>
-                          {module.isLocked && (
-                            <Badge className="text-xs bg-sales-warning/20 text-sales-warning border-sales-warning/30">
-                              {module.price}
-                            </Badge>
-                          )}
-                          {!module.isLocked && progress === 100 && (
-                            <CheckCircle2 className="h-4 w-4 text-sales-success" />
-                          )}
-                          {module.planRequired === "premium" && (
-                            <Crown className="h-3 w-3 text-sales-primary" />
-                          )}
-                        </div>
-                        <p className="text-sm text-muted-foreground mb-2">
-                          {module.description}
-                        </p>
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                            <span>{module.totalLessons} aulas</span>
-                            <span>{module.duration}</span>
-                            <span>+{module.xpReward} XP</span>
-                          </div>
-                        </div>
-                        {!module.isLocked && (
-                          <div className="space-y-1">
-                            <div className="flex justify-between text-xs">
-                              <span>Progresso</span>
-                              <span>{module.completedLessons}/{module.totalLessons}</span>
+                      
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between mb-1">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <h3 className="font-semibold text-sm truncate">{module.title}</h3>
+                              <Badge variant="outline" className="text-xs px-1.5 py-0.5 h-auto">
+                                {module.level}
+                              </Badge>
                             </div>
-                            <Progress value={progress} className="h-2" />
+                            <p className="text-xs text-muted-foreground leading-relaxed mb-2">
+                              {module.description}
+                            </p>
+                            
+                            {/* Module Info */}
+                            <div className="flex items-center gap-3 text-xs text-muted-foreground mb-2">
+                              <span>{module.totalLessons} aulas</span>
+                              <span>{module.duration}</span>
+                              <span>+{module.xpReward} XP</span>
+                            </div>
+                            
+                            {/* Progress or Lock Info */}
+                            {module.isLocked ? (
+                              <div className="flex items-center gap-2">
+                                <Badge className="text-xs bg-sales-warning/20 text-sales-warning border-sales-warning/30 px-2 py-1">
+                                  {module.price}
+                                </Badge>
+                                <Crown className="h-3 w-3 text-sales-primary" />
+                              </div>
+                            ) : (
+                              <div className="space-y-1">
+                                <div className="flex justify-between text-xs">
+                                  <span className="text-muted-foreground">Progresso</span>
+                                  <span className="font-medium">{module.completedLessons}/{module.totalLessons}</span>
+                                </div>
+                                <Progress value={progress} className="h-1.5" />
+                              </div>
+                            )}
                           </div>
-                        )}
+                        </div>
                       </div>
-                      <Button 
-                        size="sm" 
-                        className={module.isLocked 
-                          ? "btn-gradient opacity-75 hover:opacity-100" 
-                          : "btn-gradient"
-                        }
-                      >
-                        {module.isLocked ? (
-                          <>
-                            <Lock className="h-4 w-4 mr-1" />
-                            Desbloquear
-                          </>
-                        ) : (
-                          <>
-                            <Play className="h-4 w-4 mr-1" />
-                            {progress > 0 ? "Continuar" : "Começar"}
-                          </>
-                        )}
-                      </Button>
+                      
+                      {/* Action Button */}
+                      <div className="flex-shrink-0 self-start">
+                        <Button size="sm" className="btn-gradient text-xs px-3 py-1.5 h-auto">
+                          {module.isLocked ? (
+                            <>
+                              <Lock className="h-3 w-3 mr-1" />
+                              Desbloquear
+                            </>
+                          ) : (
+                            <>
+                              <Play className="h-3 w-3 mr-1" />
+                              {progress > 0 ? "Continuar" : "Começar"}
+                            </>
+                          )}
+                        </Button>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -305,64 +305,59 @@ const Training = () => {
           </div>
         </div>
 
-        {/* MentorUP Module */}
+        {/* MentorUP Section */}
         <div className="px-4 mb-8">
-          <h2 className="text-xl font-bold mb-4">MentorUP - Mentoria Personalizada</h2>
-          <Card className={`card-glass transition-all duration-200 ${
-            userPlan !== "mentor" ? 'opacity-75 cursor-pointer hover:scale-105' : 'hover:scale-105 cursor-pointer'
-          }`}
-          onClick={() => userPlan !== "mentor" ? navigate('/mentorup') : navigate('/mentorup')}
-          >
+          <h2 className="text-lg font-bold mb-4">MentorUP - Mentoria Personalizada</h2>
+          <Card className="card-glass hover:scale-[1.02] transition-all duration-200 cursor-pointer"
+                onClick={() => userPlan !== "mentor" ? navigate('/mentorup') : navigate('/mentorup')}>
             <CardContent className="p-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center relative">
-                  <MessageSquare className="h-6 w-6 text-white" />
+              <div className="flex gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center relative flex-shrink-0">
+                  <MessageSquare className="h-5 w-5 text-white" />
                   {userPlan !== "mentor" && (
                     <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
-                      <Lock className="h-4 w-4 text-white" />
+                      <Lock className="h-3 w-3 text-white" />
                     </div>
                   )}
                 </div>
-                <div className="flex-1">
+                
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold">MentorUP</h3>
-                    <Badge className="text-xs bg-gradient-to-r from-sales-success to-sales-primary text-white">
-                      📅 Mentoria 1:1
+                    <h3 className="font-semibold text-sm">MentorUP</h3>
+                    <Badge className="text-xs bg-gradient-to-r from-sales-success to-sales-primary text-white px-2 py-1">
+                      📅 1:1
                     </Badge>
                     {userPlan !== "mentor" && (
-                      <Badge className="text-xs bg-sales-success/20 text-sales-success border-sales-success/30">
+                      <Badge className="text-xs bg-sales-success/20 text-sales-success border-sales-success/30 px-2 py-1">
                         R$ 47,90
                       </Badge>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    Sessões personalizadas de 1 hora com estratégias exclusivas para seu perfil
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-2">
+                    Sessões personalizadas de 1 hora com estratégias exclusivas
                   </p>
-                  <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                    <span>Live personalizada</span>
-                    <span>Mapa mental exclusivo</span>
-                    <span>Script de vendas</span>
+                  <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                    <span>• Live personalizada</span>
+                    <span>• Mapa mental</span>
+                    <span>• Script exclusivo</span>
                   </div>
                 </div>
-                <Button 
-                  size="sm" 
-                  className={userPlan !== "mentor" 
-                    ? "btn-gradient opacity-75 hover:opacity-100" 
-                    : "btn-gradient"
-                  }
-                >
-                  {userPlan !== "mentor" ? (
-                    <>
-                      <Lock className="h-4 w-4 mr-1" />
-                      Agendar
-                    </>
-                  ) : (
-                    <>
-                      <MessageSquare className="h-4 w-4 mr-1" />
-                      Usar MentorUP
-                    </>
-                  )}
-                </Button>
+                
+                <div className="flex-shrink-0 self-start">
+                  <Button size="sm" className="btn-gradient text-xs px-3 py-1.5 h-auto">
+                    {userPlan !== "mentor" ? (
+                      <>
+                        <Lock className="h-3 w-3 mr-1" />
+                        Agendar
+                      </>
+                    ) : (
+                      <>
+                        <MessageSquare className="h-3 w-3 mr-1" />
+                        Usar
+                      </>
+                    )}
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -370,17 +365,17 @@ const Training = () => {
 
         {/* Achievements */}
         <div className="px-4">
-          <h2 className="text-xl font-bold mb-4">Conquistas</h2>
+          <h2 className="text-lg font-bold mb-4">Conquistas</h2>
           <div className="grid grid-cols-3 gap-3">
             {achievements.map((achievement, index) => {
               const IconComponent = achievement.icon;
               return (
                 <Card key={index} className={`card-glass ${achievement.unlocked ? '' : 'opacity-50'}`}>
                   <CardContent className="p-3 text-center">
-                    <IconComponent className={`h-6 w-6 mx-auto mb-2 ${
+                    <IconComponent className={`h-5 w-5 mx-auto mb-2 ${
                       achievement.unlocked ? 'text-sales-warning' : 'text-muted-foreground'
                     }`} />
-                    <div className="text-xs font-semibold">{achievement.title}</div>
+                    <div className="text-xs font-medium">{achievement.title}</div>
                   </CardContent>
                 </Card>
               );
