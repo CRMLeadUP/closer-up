@@ -38,9 +38,10 @@ const Plans = () => {
 
     try {
       console.log('Calling create-checkout function...');
+      console.log('Request payload:', { plan });
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify({ plan }),
+        body: { plan: plan },
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
@@ -53,7 +54,7 @@ const Plans = () => {
         console.error('Function error:', error);
         toast({
           title: "Erro no checkout",
-          description: "Erro ao processar pagamento. Tente novamente.",
+          description: error.message || "Erro ao processar pagamento. Tente novamente.",
           variant: "destructive"
         });
         return;

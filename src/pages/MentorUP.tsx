@@ -41,9 +41,10 @@ const MentorUP = () => {
 
     try {
       console.log('Calling create-checkout function for MentorUP...');
+      console.log('Request payload:', { plan: 'mentorup' });
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify({ plan: 'mentorup' }),
+        body: { plan: 'mentorup' },
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
@@ -56,7 +57,7 @@ const MentorUP = () => {
         console.error('Function error:', error);
         toast({
           title: "Erro no checkout",
-          description: "Erro ao processar pagamento. Tente novamente.",
+          description: error.message || "Erro ao processar pagamento. Tente novamente.",
           variant: "destructive"
         });
         return;
