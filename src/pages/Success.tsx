@@ -11,7 +11,7 @@ const Success = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
-  const { subscriptionData, checkSubscription } = useSubscription();
+  const { subscribed, subscription_tier, subscription_end, checkSubscription } = useSubscription();
   
   const sessionId = searchParams.get('session_id');
 
@@ -38,9 +38,9 @@ const Success = () => {
   }, [checkSubscription]);
 
   const getSubscriptionDetails = () => {
-    if (!subscriptionData?.subscription_tier) return null;
+    if (!subscription_tier) return null;
     
-    if (subscriptionData.subscription_tier === 'closerUp') {
+    if (subscription_tier === 'closerUp') {
       return {
         name: 'CloserUP Premium',
         price: 'R$ 17,90/mês',
@@ -48,7 +48,7 @@ const Success = () => {
         color: 'sales-primary',
         description: 'Acesso completo a todos os módulos do CloserUP'
       };
-    } else if (subscriptionData.subscription_tier === 'mentorup') {
+    } else if (subscription_tier === 'mentorup') {
       return {
         name: 'MentorUP',
         price: 'R$ 47,90/sessão',
@@ -112,7 +112,7 @@ const Success = () => {
                 </p>
               </div>
             </div>
-          ) : subscriptionData?.subscribed ? (
+          ) : subscribed ? (
             <div className="space-y-4">
               <div className="bg-sales-success/10 border border-sales-success/30 rounded-lg p-4">
                 <p className="text-sm font-medium text-sales-success">
