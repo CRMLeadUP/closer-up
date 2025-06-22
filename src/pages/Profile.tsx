@@ -26,9 +26,37 @@ import { useSubscription } from "@/hooks/useSubscription";
 const Profile = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const { toast } = useToast();
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const { subscribed, subscription_tier, hasCloserUpAccess, hasMentorUpAccess, isLoading: subLoading } = useSubscription();
+
+  const handleSignOut = async () => {
+    if (isSigningOut) return;
+
+    try {
+      setIsSigningOut(true);
+      console.log('Profile: Starting logout process...');
+      
+      await signOut();
+      
+      toast({
+        title: "Logout realizado",
+        description: "Você saiu da sua conta com sucesso."
+      });
+      
+      navigate('/auth');
+    } catch (error) {
+      console.error('Profile: Logout error:', error);
+      toast({
+        title: "Erro ao sair",
+        description: "Não foi possível sair da conta. Tente novamente.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSigningOut(false);
+    }
+  };
 
   const getSubscriptionBadge = () => {
     if (subLoading) {
@@ -226,13 +254,11 @@ const Profile = () => {
           <Button 
             variant="outline" 
             className="w-full justify-start glass-effect text-red-400 border-red-400/30 hover:bg-red-400/10"
-            onClick={async () => {
-              await supabase.auth.signOut();
-              navigate('/auth');
-            }}
+            onClick={handleSignOut}
+            disabled={isSigningOut}
           >
             <LogOut className="h-5 w-5 mr-3" />
-            Sair da Conta
+            {isSigningOut ? "Saindo..." : "Sair da Conta"}
           </Button>
         </div>
 

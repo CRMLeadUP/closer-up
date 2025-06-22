@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Badge } from '@/components/ui/badge';
-import { Brain, Target } from 'lucide-react';
+import { Brain, MessageSquare } from 'lucide-react';
 
 const WelcomeStep = () => {
   return (
@@ -10,23 +9,23 @@ const WelcomeStep = () => {
         <div className="flex justify-center mb-4">
           <div className="w-20 h-20 rounded-3xl bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden">
             <img 
-              src="/lovable-uploads/8c3108da-f24c-42a0-8b27-f673bdf2ad7e.png" 
+              src="/lovable-uploads/6ccdb0c9-8b1a-454a-b181-9ff8d320f7e7.png" 
               alt="CloserUP Logo" 
-              className="w-full h-full object-cover rounded-3xl"
+              className="w-full h-full object-contain rounded-3xl"
             />
           </div>
         </div>
         
         <Badge className="bg-sales-primary/20 text-sales-primary border-sales-primary/30">
-          🚀 Bem-vindo ao seu treinamento de vendas
+          🚀 Bem-vindo ao seu novo parceiro de vendas
         </Badge>
         
         <h1 className="text-3xl font-bold gradient-text">
-          CloserUP
+          CloserUP + CloserAI
         </h1>
         
         <p className="text-muted-foreground text-lg leading-relaxed">
-          Sua plataforma para <strong>treinar</strong> e <strong>vender mais</strong>
+          Sua dupla perfeita para <strong>treinar</strong> e <strong>vender mais</strong>
         </p>
       </div>
 
@@ -36,18 +35,18 @@ const WelcomeStep = () => {
             <Brain className="h-6 w-6 text-white" />
           </div>
           <div className="text-left">
-            <h3 className="font-semibold">Treinamento Completo</h3>
-            <p className="text-sm text-muted-foreground">Módulos interativos e gamificados</p>
+            <h3 className="font-semibold">CloserUP</h3>
+            <p className="text-sm text-muted-foreground">Treinamento gamificado</p>
           </div>
         </div>
 
         <div className="flex items-center gap-4 p-4 rounded-lg bg-gradient-card border border-border/50">
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sales-secondary to-sales-secondary/70 flex items-center justify-center">
-            <Target className="h-6 w-6 text-white" />
+            <MessageSquare className="h-6 w-6 text-white" />
           </div>
           <div className="text-left">
-            <h3 className="font-semibold">Resultados Reais</h3>
-            <p className="text-sm text-muted-foreground">Técnicas comprovadas de vendas</p>
+            <h3 className="font-semibold">CloserAI</h3>
+            <p className="text-sm text-muted-foreground">Consultor IA pessoal</p>
           </div>
         </div>
       </div>

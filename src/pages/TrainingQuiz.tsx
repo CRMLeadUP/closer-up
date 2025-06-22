@@ -82,10 +82,12 @@ const TrainingQuiz = () => {
         setShowResult(false);
       } else {
         setQuizCompleted(true);
-        // Simple toast notification instead of progress tracking
+        
+        // Show completion toast
+        const score = Math.round((newAnswers.filter(Boolean).length / quizData.questions.length) * 100);
         toast({
-          title: "Quiz Concluído!",
-          description: `Você acertou ${newAnswers.filter(Boolean).length} de ${quizData.questions.length} perguntas.`,
+          title: score >= 70 ? "Quiz Concluído!" : "Tente Novamente",
+          description: `Você acertou ${score}% das questões.`,
         });
       }
     }, 2000);
@@ -154,7 +156,7 @@ const TrainingQuiz = () => {
               {passed && (
                 <div className="p-4 bg-sales-success/20 rounded-lg border border-sales-success/30">
                   <p className="text-sm text-sales-success">
-                    🎉 Parabéns! Você concluiu o quiz com sucesso!
+                    🎉 Quiz concluído com sucesso!
                   </p>
                 </div>
               )}
