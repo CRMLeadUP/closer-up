@@ -60,13 +60,6 @@ const MobileHeader = () => {
               <a 
                 href="#" 
                 className="text-foreground/90 hover:text-sales-primary hover:bg-white/5 transition-all duration-200 py-3 px-4 rounded-lg font-medium"
-                onClick={() => { navigate('/mentorup'); setIsMenuOpen(false); }}
-              >
-                🤖 Assistente IA
-              </a>
-              <a 
-                href="#" 
-                className="text-foreground/90 hover:text-sales-primary hover:bg-white/5 transition-all duration-200 py-3 px-4 rounded-lg font-medium"
                 onClick={() => { navigate('/plans'); setIsMenuOpen(false); }}
               >
                 💎 Planos

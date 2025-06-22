@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,14 +26,6 @@ const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { startOnboarding } = useOnboarding();
-  const [showOnboardingPrompt, setShowOnboardingPrompt] = useState(false);
-
-  useEffect(() => {
-    const hasCompletedOnboarding = localStorage.getItem('onboarding_completed');
-    if (!hasCompletedOnboarding && user) {
-      setShowOnboardingPrompt(true);
-    }
-  }, [user]);
 
   // Simulating user's current plan - in real app this would come from user context/auth
   const userPlan = "free" as "free" | "premium" | "ai"; // Can be changed to "premium" or "ai" for testing
@@ -46,11 +39,6 @@ const Index = () => {
 
   const handleMentorUPClick = () => {
     navigate('/mentorup');
-  };
-
-  const handleStartOnboarding = () => {
-    setShowOnboardingPrompt(false);
-    startOnboarding();
   };
 
   return (
@@ -67,42 +55,6 @@ const Index = () => {
           onAdError={(error) => console.error('Banner ad error:', error)}
         />
       </div>
-      
-      {/* Onboarding Prompt */}
-      {showOnboardingPrompt && (
-        <div className="fixed bottom-20 left-4 right-4 z-40 animate-slide-in-right">
-          <Card className="card-glass border-sales-primary/50">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-primary flex items-center justify-center">
-                  <span className="text-white text-sm">👋</span>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-sm">Novo por aqui?</h4>
-                  <p className="text-xs text-muted-foreground">Configure sua experiência em 2 minutos</p>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button 
-                  size="sm" 
-                  className="btn-gradient flex-1"
-                  onClick={handleStartOnboarding}
-                >
-                  Começar
-                </Button>
-                <Button 
-                  size="sm" 
-                  variant="outline" 
-                  className="flex-1"
-                  onClick={() => setShowOnboardingPrompt(false)}
-                >
-                  Depois
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
       
       {/* Hero Section */}
       <section className="px-4 pt-4 pb-8">
