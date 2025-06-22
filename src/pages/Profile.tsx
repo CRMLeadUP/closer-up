@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,8 +26,29 @@ const Profile = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const { subscribed, subscription_tier, hasCloserUpAccess, hasMentorUpAccess, isLoading: subLoading } = useSubscription();
+
+  const handleSignOut = async () => {
+    try {
+      console.log('Iniciando logout...');
+      await signOut();
+      
+      toast({
+        title: "Logout realizado",
+        description: "Você saiu da sua conta com sucesso."
+      });
+      
+      navigate('/auth');
+    } catch (error) {
+      console.error('Erro no logout:', error);
+      toast({
+        title: "Erro ao sair",
+        description: "Não foi possível sair da conta. Tente novamente.",
+        variant: "destructive"
+      });
+    }
+  };
 
   const getSubscriptionBadge = () => {
     if (subLoading) {
@@ -226,10 +246,7 @@ const Profile = () => {
           <Button 
             variant="outline" 
             className="w-full justify-start glass-effect text-red-400 border-red-400/30 hover:bg-red-400/10"
-            onClick={async () => {
-              await supabase.auth.signOut();
-              navigate('/auth');
-            }}
+            onClick={handleSignOut}
           >
             <LogOut className="h-5 w-5 mr-3" />
             Sair da Conta

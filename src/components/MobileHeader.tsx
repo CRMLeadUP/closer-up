@@ -13,11 +13,12 @@ const MobileHeader = () => {
       <header className="fixed top-0 w-full z-50 glass-effect border-b border-white/10">
         <div className="flex items-center justify-between px-4 py-3">
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => navigate('/')}>
-            <div className="w-12 h-12 rounded-2xl bg-gradient-primary/10 p-1 flex items-center justify-center overflow-hidden">
+            <div className="w-10 h-10 bg-gradient-primary/10 p-1 flex items-center justify-center overflow-hidden"
+                 style={{ borderRadius: '18px' }}>
               <img 
-                src="/lovable-uploads/8c3108da-f24c-42a0-8b27-f673bdf2ad7e.png" 
+                src="/lovable-uploads/6b6f63b6-abd8-4318-b063-1995660b8781.png" 
                 alt="CloserUP Logo" 
-                className="w-full h-full object-cover rounded-2xl"
+                className="w-full h-full object-contain"
               />
             </div>
             <span className="text-lg font-bold gradient-text">CloserUP</span>
@@ -47,39 +48,42 @@ const MobileHeader = () => {
       {/* Mobile Menu Overlay */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" onClick={() => setIsMenuOpen(false)}>
-          <div className="fixed top-0 right-0 h-full w-64 glass-effect border-l border-white/10 p-6">
+          <div className="fixed top-0 right-0 h-full w-64 glass-effect border-l border-white/20 p-6 bg-gradient-to-b from-background/95 to-background/90">
             <nav className="flex flex-col space-y-4 mt-16">
               <a 
                 href="#" 
-                className="text-foreground hover:text-sales-primary transition-colors py-2"
+                className="text-foreground/90 hover:text-sales-primary hover:bg-white/5 transition-all duration-200 py-3 px-4 rounded-lg font-medium"
                 onClick={() => { navigate('/training'); setIsMenuOpen(false); }}
               >
-                Treinamento
+                📚 Treinamento
               </a>
               <a 
                 href="#" 
-                className="text-foreground hover:text-sales-primary transition-colors py-2"
+                className="text-foreground/90 hover:text-sales-primary hover:bg-white/5 transition-all duration-200 py-3 px-4 rounded-lg font-medium"
                 onClick={() => { navigate('/mentorup'); setIsMenuOpen(false); }}
               >
-                Assistente IA
+                🤖 Assistente IA
               </a>
               <a 
                 href="#" 
-                className="text-foreground hover:text-sales-primary transition-colors py-2"
+                className="text-foreground/90 hover:text-sales-primary hover:bg-white/5 transition-all duration-200 py-3 px-4 rounded-lg font-medium"
                 onClick={() => { navigate('/plans'); setIsMenuOpen(false); }}
               >
-                Planos
+                💎 Planos
               </a>
               <a 
                 href="#" 
-                className="text-foreground hover:text-sales-primary transition-colors py-2"
+                className="text-foreground/90 hover:text-sales-primary hover:bg-white/5 transition-all duration-200 py-3 px-4 rounded-lg font-medium"
                 onClick={() => { navigate('/profile'); setIsMenuOpen(false); }}
               >
-                Perfil
+                👤 Perfil
               </a>
-              <div className="pt-4 border-t border-white/10">
-                <Button className="w-full btn-gradient justify-start">
-                  Upgrade Premium
+              <div className="pt-6 border-t border-white/20">
+                <Button 
+                  className="w-full btn-gradient text-white font-semibold py-3 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-200"
+                  onClick={() => { navigate('/plans'); setIsMenuOpen(false); }}
+                >
+                  👑 Upgrade Premium
                 </Button>
               </div>
             </nav>

@@ -11,15 +11,17 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3 cursor-pointer">
-            <div className="w-16 h-16 rounded-3xl bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden">
+            <div className="w-12 h-12 bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden"
+                 style={{ borderRadius: '20px' }}>
               <img 
-                src="/lovable-uploads/8c3108da-f24c-42a0-8b27-f673bdf2ad7e.png" 
+                src="/lovable-uploads/6b6f63b6-abd8-4318-b063-1995660b8781.png" 
                 alt="CloserUP Logo" 
-                className="w-full h-full object-cover rounded-3xl"
+                className="w-full h-full object-contain"
               />
             </div>
             <span className="text-2xl font-bold gradient-text">CloserUP</span>
           </div>
+          
           
           <nav className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-foreground hover:text-sales-primary transition-colors">
