@@ -16,7 +16,7 @@ export const useSubscription = () => {
     subscription_tier: null,
     subscription_end: null
   });
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Começar como false
   const [error, setError] = useState<string | null>(null);
 
   const checkSubscription = useCallback(async () => {
@@ -46,7 +46,6 @@ export const useSubscription = () => {
       if (error) {
         console.error('Subscription check error:', error);
         setError(error.message);
-        // Set default values on error
         setSubscriptionData({
           subscribed: false,
           subscription_tier: null,
@@ -60,7 +59,6 @@ export const useSubscription = () => {
       if (data) {
         setSubscriptionData(data);
       } else {
-        // Set default values if no data returned
         setSubscriptionData({
           subscribed: false,
           subscription_tier: null,
@@ -70,7 +68,6 @@ export const useSubscription = () => {
     } catch (err) {
       console.error('Subscription check error:', err);
       setError('Erro ao verificar assinatura');
-      // Set default values on catch
       setSubscriptionData({
         subscribed: false,
         subscription_tier: null,
@@ -82,7 +79,7 @@ export const useSubscription = () => {
   }, [user?.id, session?.access_token]);
 
   useEffect(() => {
-    // Set timeout to prevent infinite loading
+    // Timeout bem reduzido - 1 segundo apenas
     const timeout = setTimeout(() => {
       if (isLoading) {
         console.log('Subscription check timeout, setting default state');
@@ -93,7 +90,7 @@ export const useSubscription = () => {
         });
         setIsLoading(false);
       }
-    }, 3000); // 3 second timeout
+    }, 1000);
 
     if (user && session) {
       checkSubscription();

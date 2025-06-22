@@ -1,7 +1,6 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 interface AppFlowContextType {
   isFirstTime: boolean;
@@ -27,7 +26,7 @@ export const useAppFlow = () => {
 
 export const AppFlowProvider = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
-  const [isFirstTime, setIsFirstTime] = useState(true);
+  const [isFirstTime, setIsFirstTime] = useState(false);
   const [shouldShowOnboarding, setShouldShowOnboarding] = useState(false);
 
   const completeOnboarding = () => {
@@ -36,20 +35,18 @@ export const AppFlowProvider = ({ children }: { children: React.ReactNode }) => 
     setIsFirstTime(false);
   };
 
-  // Simplificar drasticamente a lógica
+  // Lógica muito simplificada - só mostrar onboarding em condições muito específicas
   useEffect(() => {
     if (loading) return;
 
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
     
-    // Só mostrar onboarding se o usuário estiver logado, na home e não viu ainda
-    if (user && window.location.pathname === '/' && !hasSeenOnboarding) {
-      setShouldShowOnboarding(true);
-      setIsFirstTime(true);
-    } else {
-      setShouldShowOnboarding(false);
-      setIsFirstTime(!hasSeenOnboarding);
-    }
+    // Só mostrar onboarding se estiver na home, logado e nunca viu antes
+    const isOnHome = window.location.pathname === '/';
+    const shouldShow = user && isOnHome && !hasSeenOnboarding;
+    
+    setShouldShowOnboarding(!!shouldShow);
+    setIsFirstTime(!hasSeenOnboarding);
   }, [user, loading]);
 
   return (

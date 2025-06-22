@@ -40,12 +40,12 @@ const Index = () => {
     navigate('/mentorup');
   };
 
-  // Renderizar onboarding se necessário
+  // Renderizar onboarding apenas se necessário
   if (shouldShowOnboarding) {
     return <OnboardingOverlay />;
   }
 
-  // Loading simples e direto
+  // Loading muito simples
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -54,6 +54,7 @@ const Index = () => {
     );
   }
 
+  // Sempre renderizar o conteúdo principal
   return (
     <div className="min-h-screen bg-background text-foreground">
       <MobileHeader />

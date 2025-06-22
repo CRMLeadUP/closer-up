@@ -23,32 +23,21 @@ export const PremiumGate = ({
   const navigate = useNavigate();
   const { hasCloserUpAccess, hasMentorUpAccess, hasAnyPremiumAccess, isLoading } = useSubscription();
 
-  // Reduced loading time and show content faster
+  // Timeout muito reduzido - mostrar conteúdo rapidamente
   if (isLoading) {
     return (
       <div className="space-y-4">
-        {/* Show skeleton loading for premium modules */}
-        {Array.from({ length: 4 }, (_, index) => (
-          <Card key={index} className="card-glass animate-pulse">
-            <CardHeader className="pb-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gray-300"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-300 rounded w-3/4"></div>
-                  <div className="h-3 bg-gray-300 rounded w-1/2"></div>
-                </div>
-                <div className="w-16 h-6 bg-gray-300 rounded"></div>
+        <Card className="card-glass animate-pulse">
+          <CardHeader className="pb-4">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gray-300"></div>
+              <div className="flex-1 space-y-2">
+                <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+                <div className="h-3 bg-gray-300 rounded w-1/2"></div>
               </div>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="flex items-center gap-4">
-                <div className="h-3 bg-gray-300 rounded w-16"></div>
-                <div className="h-3 bg-gray-300 rounded w-12"></div>
-                <div className="h-3 bg-gray-300 rounded w-20"></div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+            </div>
+          </CardHeader>
+        </Card>
       </div>
     );
   }
