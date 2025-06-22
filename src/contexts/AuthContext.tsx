@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 interface AuthContextType {
   user: User | null;
@@ -33,6 +34,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [signingOut, setSigningOut] = useState(false);
+  const { toast } = useToast();
 
   const checkAdminStatus = async (userId: string) => {
     try {
@@ -78,6 +80,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
       
       console.log('Sign out completed successfully');
+      toast({
+        title: "Logout realizado",
+        description: "Você foi desconectado com sucesso"
+      });
     } catch (error) {
       console.error('Sign out failed:', error);
       // Even if there's an error, clear the local state
@@ -111,6 +117,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
           setSession(session);
           setUser(session.user);
+          
+          // Show welcome message for new Google users
+          if (event === 'SIGNED_IN' && session.user?.app_metadata?.provider === 'google') {
+            const isNewUser = new Date(session.user.created_at).getTime() > (Date.now() - 60000); // Within last minute
+            if (isNewUser) {
+              setTimeout(() => {
+                toast({
+                  title: "Bem-vindo ao CloserUP!",
+                  description: `Olá, ${session.user?.user_metadata?.full_name || session.user?.email}! Conta criada com sucesso via Google.`
+                });
+              }, 1000);
+            } else {
+              setTimeout(() => {
+                toast({
+                  title: "Login realizado com sucesso!",
+                  description: `Bem-vindo de volta, ${session.user?.user_metadata?.full_name || session.user?.email}!`
+                });
+              }, 1000);
+            }
+          }
           
           if (session.user) {
             await checkAdminStatus(session.user.id);
@@ -153,7 +179,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [toast]);
 
   return (
     <AuthContext.Provider value={{ 
