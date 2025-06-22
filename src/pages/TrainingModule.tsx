@@ -719,7 +719,7 @@ const TrainingModule = () => {
                           {lesson.type === 'interactive' && '🎯 Interativo'}
                           {lesson.type === 'certificate' && '🏆 Certificado'}
                         </Badge>
-                        <Badge className="text-xs bg-sales-success">DISPONÍVEL</Badge>
+                        <Badge className="text-xs bg-sales-success text-white">DISPONÍVEL</Badge>
                         {lesson.type === 'video' && lesson.videoUrl && (
                           <Play className="h-3 w-3 text-muted-foreground" />
                         )}
@@ -736,14 +736,14 @@ const TrainingModule = () => {
                           size="sm"
                           className={`${
                             isCompleted
-                              ? 'bg-sales-success hover:bg-sales-success/80' 
-                              : 'btn-gradient'
-                          }`}
+                              ? 'bg-sales-success hover:bg-sales-success/80 text-white' 
+                              : 'bg-sales-primary hover:bg-sales-primary/90 text-white font-medium'
+                          } min-w-[100px]`}
                           onClick={() => canAccess && startLesson(lesson.id, lesson.type, true, lesson.videoUrl)}
                           disabled={!canAccess}
                         >
                           {isCompleted ? "✓ Concluído" : 
-                           lesson.type === 'video' && lesson.videoUrl ? "▶ Assistir" : 
+                           lesson.type === 'video' && lesson.videoUrl ? "▶ Iniciar" : 
                            lesson.type === 'certificate' ? "🏆 Obter Certificado" : "▶ Iniciar"}
                         </Button>
                       </div>
@@ -819,5 +819,4 @@ const TrainingModule = () => {
     </div>
   );
 };
-
 export default TrainingModule;
