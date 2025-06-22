@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,13 +26,18 @@ import { useSubscription } from "@/hooks/useSubscription";
 const Profile = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false);
   const { toast } = useToast();
   const { user, isAdmin, signOut } = useAuth();
   const { subscribed, subscription_tier, hasCloserUpAccess, hasMentorUpAccess, isLoading: subLoading } = useSubscription();
 
   const handleSignOut = async () => {
+    if (isSigningOut) return;
+
     try {
-      console.log('Iniciando logout...');
+      setIsSigningOut(true);
+      console.log('Profile: Starting logout process...');
+      
       await signOut();
       
       toast({
@@ -41,12 +47,14 @@ const Profile = () => {
       
       navigate('/auth');
     } catch (error) {
-      console.error('Erro no logout:', error);
+      console.error('Profile: Logout error:', error);
       toast({
         title: "Erro ao sair",
         description: "Não foi possível sair da conta. Tente novamente.",
         variant: "destructive"
       });
+    } finally {
+      setIsSigningOut(false);
     }
   };
 
@@ -247,9 +255,10 @@ const Profile = () => {
             variant="outline" 
             className="w-full justify-start glass-effect text-red-400 border-red-400/30 hover:bg-red-400/10"
             onClick={handleSignOut}
+            disabled={isSigningOut}
           >
             <LogOut className="h-5 w-5 mr-3" />
-            Sair da Conta
+            {isSigningOut ? "Saindo..." : "Sair da Conta"}
           </Button>
         </div>
 

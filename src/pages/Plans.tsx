@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -17,27 +18,16 @@ const Plans = () => {
   const { session, user } = useAuth();
 
   const handleCheckout = async (plan: string) => {
-    console.log('=== PLANS CHECKOUT START ===');
+    if (isLoading) return;
+
+    console.log('=== CHECKOUT INITIATED ===');
     console.log('Plan:', plan);
-    console.log('User:', user?.email);
-    console.log('Session token exists:', !!session?.access_token);
+    console.log('User authenticated:', !!user);
     
     if (!session || !user) {
-      console.log('User not authenticated');
       toast({
         title: "Login necessário",
-        description: "Faça login para continuar com a compra",
-        variant: "destructive"
-      });
-      navigate('/auth');
-      return;
-    }
-
-    if (!session.access_token) {
-      console.log('No access token');
-      toast({
-        title: "Erro de autenticação",
-        description: "Token de acesso não encontrado. Faça login novamente.",
+        description: "Faça login para continuar",
         variant: "destructive"
       });
       navigate('/auth');
@@ -45,56 +35,53 @@ const Plans = () => {
     }
 
     setIsLoading(true);
-    
+
     try {
-      const requestData = { plan };
-      console.log('Sending checkout request with data:', requestData);
+      const requestPayload = { plan };
+      console.log('Sending request:', requestPayload);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify(requestData),
+        body: requestPayload,
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         }
       });
 
-      console.log('Checkout response data:', data);
-      console.log('Checkout response error:', error);
+      console.log('Response received:', { data, error });
 
       if (error) {
-        console.error('Supabase function error:', error);
+        console.error('Function error:', error);
         toast({
           title: "Erro no checkout",
-          description: error.message || "Erro interno. Tente novamente.",
+          description: "Erro ao processar pagamento. Tente novamente.",
           variant: "destructive"
         });
         return;
       }
 
       if (data?.url) {
-        console.log('Redirecting to Stripe:', data.url);
+        console.log('Redirecting to:', data.url);
         toast({
           title: "Redirecionando",
-          description: "Você será redirecionado para o pagamento..."
+          description: "Abrindo pagamento..."
         });
         
-        // Wait a moment for the toast to show, then redirect
-        setTimeout(() => {
-          window.location.href = data.url;
-        }, 1000);
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
       } else {
-        console.error('No URL in response:', data);
+        console.error('No URL received:', data);
         toast({
           title: "Erro no checkout",
-          description: "URL de pagamento não foi gerada. Tente novamente.",
+          description: "Não foi possível gerar link de pagamento.",
           variant: "destructive"
         });
       }
     } catch (error) {
-      console.error('Checkout exception:', error);
+      console.error('Checkout error:', error);
       toast({
         title: "Erro no checkout",
-        description: "Erro interno. Tente novamente em alguns segundos.",
+        description: "Erro interno. Tente novamente.",
         variant: "destructive"
       });
     } finally {
@@ -168,15 +155,6 @@ const Plans = () => {
     }
   ];
 
-  const moduleBreakdown = [
-    { name: "Perfis Comportamentais", plan: "Gratuito", color: "sales-success" },
-    { name: "Gatilhos Mentais", plan: "Premium", color: "sales-primary" },
-    { name: "Rapport e Conexão", plan: "Premium", color: "sales-primary" },
-    { name: "Quebra de Objeções", plan: "Premium", color: "sales-primary" },
-    { name: "Estratégias de Fechamento", plan: "Premium", color: "sales-primary" },
-    { name: "MentorUP", plan: "MentorUP", color: "sales-success" }
-  ];
-
   return (
     <div className="min-h-screen bg-background">
       <MobileHeader />
@@ -195,32 +173,6 @@ const Plans = () => {
             Comece grátis e evolua suas vendas com nossos treinamentos especializados
           </p>
         </div>
-
-        {/* Module Breakdown */}
-        <Card className="card-glass mb-8 shadow-xl border-0 bg-gradient-to-br from-background/90 to-muted/40 animate-fade-in">
-          <CardHeader className="border-b border-border/50">
-            <CardTitle className="text-lg flex items-center gap-2">
-              <div className="bg-gradient-to-r from-sales-primary/20 to-sales-accent/20 
-                            rounded-full p-2">
-                <Star className="h-5 w-5 text-sales-primary" />
-              </div>
-              O que você terá em cada plano
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 p-6">
-            {moduleBreakdown.map((module, index) => (
-              <div key={index} className="flex items-center justify-between p-3 
-                                       rounded-xl bg-gradient-to-r from-background/50 to-muted/30
-                                       hover:from-sales-primary/10 hover:to-sales-accent/10
-                                       transition-all duration-300 hover:scale-[1.02]">
-                <span className="text-sm font-medium">{module.name}</span>
-                <Badge className="text-xs btn-gradient text-white border-0 shadow-sm">
-                  {module.plan}
-                </Badge>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
 
         {/* Plans */}
         <div className="space-y-6">
@@ -317,7 +269,6 @@ const Plans = () => {
                      }`}
                      disabled={plan.current || isLoading}
                      onClick={() => {
-                       console.log('Button clicked for plan:', plan.name);
                        if (plan.name === "Premium") {
                          handleCheckout("closerUp");
                        } else if (plan.name === "MentorUP") {

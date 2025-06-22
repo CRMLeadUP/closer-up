@@ -21,12 +21,12 @@ const MentorUP = () => {
   const navigate = useNavigate();
 
   const handleCheckout = async () => {
-    console.log('=== MENTORUP CHECKOUT START ===');
-    console.log('User:', user?.email);
-    console.log('Session token exists:', !!session?.access_token);
+    if (isLoading) return;
+
+    console.log('=== MENTORUP CHECKOUT INITIATED ===');
+    console.log('User authenticated:', !!user);
     
     if (!user || !session) {
-      console.log('User not authenticated');
       toast({
         title: "Login necessário",
         description: "Faça login para agendar sua mentoria",
@@ -36,69 +36,54 @@ const MentorUP = () => {
       return;
     }
 
-    if (!session.access_token) {
-      console.log('No access token');
-      toast({
-        title: "Erro de autenticação",
-        description: "Token de acesso não encontrado. Faça login novamente.",
-        variant: "destructive"
-      });
-      navigate('/auth');
-      return;
-    }
-
     setIsLoading(true);
 
     try {
-      const requestData = { plan: 'mentorup' };
-      console.log('Sending checkout request with data:', requestData);
+      const requestPayload = { plan: 'mentorup' };
+      console.log('Sending request:', requestPayload);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify(requestData),
+        body: requestPayload,
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         }
       });
 
-      console.log('Checkout response data:', data);
-      console.log('Checkout response error:', error);
+      console.log('Response received:', { data, error });
 
       if (error) {
-        console.error('Supabase function error:', error);
+        console.error('Function error:', error);
         toast({
           title: "Erro no checkout",
-          description: error.message || "Erro interno. Tente novamente.",
+          description: "Erro ao processar pagamento. Tente novamente.",
           variant: "destructive"
         });
         return;
       }
 
       if (data?.url) {
-        console.log('Redirecting to Stripe:', data.url);
+        console.log('Redirecting to:', data.url);
         toast({
           title: "Redirecionando",
-          description: "Você será redirecionado para o pagamento..."
+          description: "Abrindo pagamento..."
         });
         
-        // Wait a moment for the toast to show, then redirect
-        setTimeout(() => {
-          window.location.href = data.url;
-        }, 1000);
+        // Redirect to Stripe checkout
+        window.location.href = data.url;
       } else {
-        console.error('No URL in response:', data);
+        console.error('No URL received:', data);
         toast({
           title: "Erro no checkout",
-          description: "URL de pagamento não foi gerada. Tente novamente.",
+          description: "Não foi possível gerar link de pagamento.",
           variant: "destructive"
         });
       }
-
     } catch (error) {
-      console.error('Checkout exception:', error);
+      console.error('Checkout error:', error);
       toast({
         title: "Erro no checkout",
-        description: "Erro interno. Tente novamente em alguns segundos.",
+        description: "Erro interno. Tente novamente.",
         variant: "destructive"
       });
     } finally {
