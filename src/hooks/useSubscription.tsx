@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,7 +10,7 @@ interface SubscriptionData {
 }
 
 export const useSubscription = () => {
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const [subscriptionData, setSubscriptionData] = useState<SubscriptionData>({
     subscribed: false,
     subscription_tier: null,
@@ -19,7 +20,13 @@ export const useSubscription = () => {
   const [error, setError] = useState<string | null>(null);
 
   const checkSubscription = async () => {
-    if (!user) {
+    if (!user || !session) {
+      console.log('No user or session, setting default subscription state');
+      setSubscriptionData({
+        subscribed: false,
+        subscription_tier: null,
+        subscription_end: null
+      });
       setIsLoading(false);
       return;
     }
@@ -28,31 +35,40 @@ export const useSubscription = () => {
       setIsLoading(true);
       setError(null);
       
-      const { data, error } = await supabase.functions.invoke('check-subscription');
+      console.log('Checking subscription for user:', user.email);
+      
+      const { data, error } = await supabase.functions.invoke('check-subscription', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        }
+      });
       
       if (error) {
+        console.error('Subscription check error:', error);
         setError(error.message);
         return;
       }
+      
+      console.log('Subscription data received:', data);
       
       if (data) {
         setSubscriptionData(data);
       }
     } catch (err) {
-      setError('Erro ao verificar assinatura');
       console.error('Subscription check error:', err);
+      setError('Erro ao verificar assinatura');
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && session) {
       checkSubscription();
     } else {
       setIsLoading(false);
     }
-  }, [user]);
+  }, [user, session]);
 
   const hasCloserUpAccess = () => {
     return subscriptionData.subscribed && 
@@ -64,12 +80,17 @@ export const useSubscription = () => {
            subscriptionData.subscription_tier === 'mentorup';
   };
 
+  const hasAnyPremiumAccess = () => {
+    return subscriptionData.subscribed;
+  };
+
   return {
     ...subscriptionData,
     isLoading,
     error,
     checkSubscription,
     hasCloserUpAccess,
-    hasMentorUpAccess
+    hasMentorUpAccess,
+    hasAnyPremiumAccess
   };
 };

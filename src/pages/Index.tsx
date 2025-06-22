@@ -20,15 +20,14 @@ import AdManager from "@/components/AdManager";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOnboarding } from "@/contexts/OnboardingContext";
+import { useAppFlow } from "@/contexts/AppFlowContext";
 import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
 
 const Index = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { startOnboarding } = useOnboarding();
-
-  // Simulating user's current plan - in real app this would come from user context/auth
-  const userPlan = "free" as "free" | "premium" | "ai"; // Can be changed to "premium" or "ai" for testing
+  const { shouldShowOnboarding } = useAppFlow();
 
   const quickStats = [
     { value: "+5.2K", label: "Usuários", icon: Users },
@@ -41,9 +40,13 @@ const Index = () => {
     navigate('/mentorup');
   };
 
+  // Se deve mostrar onboarding, mostra o overlay
+  if (shouldShowOnboarding) {
+    return <OnboardingOverlay />;
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <OnboardingOverlay />
       <MobileHeader />
       
       {/* Banner Ad no topo */}

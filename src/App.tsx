@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { OnboardingProvider } from "./contexts/OnboardingContext";
+import { AppFlowProvider } from "./contexts/AppFlowContext";
 import Index from "./pages/Index";
 import Training from "./pages/Training";
 import TrainingModule from "./pages/TrainingModule";
@@ -28,33 +29,34 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
-      <OnboardingProvider>
-        <TooltipProvider>
-        <Toaster />
-        <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/training" element={<Training />} />
-          <Route path="/training/module/:moduleId" element={<TrainingModule />} />
-          <Route path="/training/module/:moduleId/quiz/:lessonId" element={<TrainingQuiz />} />
-          <Route path="/training/module/:moduleId/simulator/:lessonId" element={<TrainingSimulator />} />
-          <Route path="/training/simulator/:moduleId/:lessonId/result" element={<TrainingSimulatorResult />} />
-          <Route path="/training/certificate/:moduleId" element={<TrainingCertificate />} />
-          <Route path="/mentorup" element={<MentorUP />} />
-          <Route path="/plans" element={<Plans />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/analytics" element={<Analytics />} />
-          <Route path="/success" element={<Success />} />
-          <Route path="/auth" element={<Auth />} />
-          <Route path="/admin" element={<Admin />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <AppFlowProvider>
+          <OnboardingProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/training" element={<Training />} />
+                <Route path="/training/module/:moduleId" element={<TrainingModule />} />
+                <Route path="/training/module/:moduleId/quiz/:lessonId" element={<TrainingQuiz />} />
+                <Route path="/training/module/:moduleId/simulator/:lessonId" element={<TrainingSimulator />} />
+                <Route path="/training/simulator/:moduleId/:lessonId/result" element={<TrainingSimulatorResult />} />
+                <Route path="/training/certificate/:moduleId" element={<TrainingCertificate />} />
+                <Route path="/mentorup" element={<MentorUP />} />
+                <Route path="/plans" element={<Plans />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/success" element={<Success />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/admin" element={<Admin />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </TooltipProvider>
+          </OnboardingProvider>
+        </AppFlowProvider>
       </BrowserRouter>
-        </TooltipProvider>
-      </OnboardingProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

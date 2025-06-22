@@ -1,44 +1,46 @@
+
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Crown, Brain } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const Success = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isLoading, setIsLoading] = useState(true);
-  const [subscriptionInfo, setSubscriptionInfo] = useState<any>(null);
+  const { subscriptionData, checkSubscription } = useSubscription();
   
   const sessionId = searchParams.get('session_id');
 
   useEffect(() => {
-    const checkSubscription = async () => {
+    const verifyPayment = async () => {
       try {
-        // Wait a moment for Stripe to process the subscription
+        console.log('Success page loaded, checking subscription status...');
+        
+        // Aguardar um momento para o Stripe processar
         await new Promise(resolve => setTimeout(resolve, 3000));
         
-        const { data, error } = await supabase.functions.invoke('check-subscription');
+        // Verificar status da assinatura
+        await checkSubscription();
         
-        if (!error && data) {
-          setSubscriptionInfo(data);
-        }
+        console.log('Subscription verification completed');
       } catch (error) {
-        console.error('Error checking subscription:', error);
+        console.error('Error verifying payment:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    checkSubscription();
-  }, []);
+    verifyPayment();
+  }, [checkSubscription]);
 
   const getSubscriptionDetails = () => {
-    if (!subscriptionInfo?.subscription_tier) return null;
+    if (!subscriptionData?.subscription_tier) return null;
     
-    if (subscriptionInfo.subscription_tier === 'closerUp') {
+    if (subscriptionData.subscription_tier === 'closerUp') {
       return {
         name: 'CloserUP Premium',
         price: 'R$ 17,90/mês',
@@ -46,13 +48,13 @@ const Success = () => {
         color: 'sales-primary',
         description: 'Acesso completo a todos os módulos do CloserUP'
       };
-    } else if (subscriptionInfo.subscription_tier === 'closerAI') {
+    } else if (subscriptionData.subscription_tier === 'mentorup') {
       return {
-        name: 'CloserAI',
-        price: 'R$ 34,90/mês',
+        name: 'MentorUP',
+        price: 'R$ 47,90/sessão',
         icon: Brain,
         color: 'sales-success',
-        description: 'Assistente de IA avançado para vendas'
+        description: 'Mentoria personalizada exclusiva'
       };
     }
     
@@ -76,10 +78,7 @@ const Success = () => {
         <CardContent className="text-center space-y-6">
           {isLoading ? (
             <div className="space-y-4">
-              <div className="animate-pulse">
-                <div className="h-4 bg-muted rounded w-3/4 mx-auto mb-2"></div>
-                <div className="h-4 bg-muted rounded w-1/2 mx-auto"></div>
-              </div>
+              <div className="animate-spin rounded-full h-8 w-8 border-2 border-sales-primary border-t-transparent mx-auto"></div>
               <p className="text-sm text-muted-foreground">
                 Processando sua assinatura...
               </p>
@@ -92,7 +91,7 @@ const Success = () => {
               
               <div className="flex items-center justify-center gap-3">
                 <div className={`w-10 h-10 rounded-lg bg-${details.color}/20 flex items-center justify-center`}>
-                  <details.icon className="h-5 w-5 text-${details.color}" />
+                  <details.icon className={`h-5 w-5 text-${details.color}`} />
                 </div>
                 <div className="text-left">
                   <p className="font-semibold">{details.name}</p>
@@ -109,7 +108,18 @@ const Success = () => {
                   ✅ Assinatura ativada com sucesso!
                 </p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  Você já pode acessar todo o conteúdo
+                  Você já pode acessar todo o conteúdo premium
+                </p>
+              </div>
+            </div>
+          ) : subscriptionData?.subscribed ? (
+            <div className="space-y-4">
+              <div className="bg-sales-success/10 border border-sales-success/30 rounded-lg p-4">
+                <p className="text-sm font-medium text-sales-success">
+                  ✅ Pagamento confirmado!
+                </p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Sua assinatura está ativa
                 </p>
               </div>
             </div>
@@ -129,15 +139,15 @@ const Success = () => {
               className="w-full btn-gradient"
               onClick={() => navigate('/training')}
             >
-              Começar Treinamento
+              🎯 Começar Treinamento
             </Button>
             
             <Button 
               variant="outline" 
               className="w-full glass-effect"
-              onClick={() => navigate('/profile')}
+              onClick={() => navigate('/')}
             >
-              Ver Perfil
+              🏠 Ir para Início
             </Button>
           </div>
           
