@@ -27,6 +27,7 @@ export const useAppFlow = () => {
 export const AppFlowProvider = ({ children }: { children: React.ReactNode }) => {
   const { user, loading } = useAuth();
   const [isFirstTime, setIsFirstTime] = useState(false);
+  // Começar sempre como false - onboarding desabilitado temporariamente
   const [shouldShowOnboarding, setShouldShowOnboarding] = useState(false);
 
   const completeOnboarding = () => {
@@ -36,7 +37,7 @@ export const AppFlowProvider = ({ children }: { children: React.ReactNode }) => 
     setIsFirstTime(false);
   };
 
-  // Lógica super simples - só mostrar onboarding em condições muito específicas
+  // Lógica super simplificada - SEMPRE false para garantir que o dashboard carregue
   useEffect(() => {
     console.log('AppFlowContext effect - loading:', loading, 'user:', user?.email);
     
@@ -45,16 +46,11 @@ export const AppFlowProvider = ({ children }: { children: React.ReactNode }) => 
       return;
     }
 
+    // Temporariamente desabilitar onboarding para garantir que o dashboard carregue
+    setShouldShowOnboarding(false);
+    
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
     console.log('hasSeenOnboarding:', hasSeenOnboarding);
-    
-    // Só mostrar onboarding se estiver na home, logado e nunca viu antes
-    const isOnHome = window.location.pathname === '/';
-    const shouldShow = user && isOnHome && !hasSeenOnboarding;
-    
-    console.log('Onboarding conditions - isOnHome:', isOnHome, 'user exists:', !!user, 'shouldShow:', shouldShow);
-    
-    setShouldShowOnboarding(!!shouldShow);
     setIsFirstTime(!hasSeenOnboarding);
   }, [user, loading]);
 

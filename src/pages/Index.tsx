@@ -42,7 +42,7 @@ const Index = () => {
     navigate('/mentorup');
   };
 
-  // Loading muito simples - apenas mostrar spinner
+  // APENAS mostrar loading se realmente estiver carregando
   if (loading) {
     console.log('Showing loading spinner');
     return (
@@ -52,13 +52,7 @@ const Index = () => {
     );
   }
 
-  // Renderizar onboarding apenas se necessário E não estiver carregando
-  if (!loading && shouldShowOnboarding) {
-    console.log('Showing onboarding overlay');
-    return <OnboardingOverlay />;
-  }
-
-  // Sempre renderizar o conteúdo principal se não estiver em loading
+  // SEMPRE renderizar o dashboard - onboarding temporariamente desabilitado
   console.log('Rendering main dashboard content');
   return (
     <div className="min-h-screen bg-background text-foreground">
