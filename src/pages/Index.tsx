@@ -40,23 +40,18 @@ const Index = () => {
     navigate('/mentorup');
   };
 
-  // Show loading only while auth is loading
+  // Renderizar onboarding se necessário
+  if (shouldShowOnboarding) {
+    return <OnboardingOverlay />;
+  }
+
+  // Loading simples e direto
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Card className="card-glass">
-          <CardContent className="p-8 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-sales-primary border-t-transparent mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Carregando...</p>
-          </CardContent>
-        </Card>
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-sales-primary border-t-transparent"></div>
       </div>
     );
-  }
-
-  // Show onboarding overlay if needed
-  if (shouldShowOnboarding) {
-    return <OnboardingOverlay />;
   }
 
   return (
