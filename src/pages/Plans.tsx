@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -38,10 +37,10 @@ const Plans = () => {
 
     try {
       const requestPayload = { plan };
-      console.log('Sending request:', requestPayload);
+      console.log('Sending request payload:', requestPayload);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: requestPayload,
+        body: JSON.stringify(requestPayload),
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
