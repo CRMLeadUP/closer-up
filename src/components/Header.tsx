@@ -14,7 +14,7 @@ const Header = () => {
             <div className="w-12 h-12 bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden"
                  style={{ borderRadius: '20px' }}>
               <img 
-                src="/lovable-uploads/6b6f63b6-abd8-4318-b063-1995660b8781.png" 
+                src="/lovable-uploads/6ccdb0c9-8b1a-454a-b181-9ff8d320f7e7.png" 
                 alt="CloserUP Logo" 
                 className="w-full h-full object-contain"
               />

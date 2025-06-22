@@ -16,7 +16,7 @@ const MobileHeader = () => {
             <div className="w-10 h-10 bg-gradient-primary/10 p-1 flex items-center justify-center overflow-hidden"
                  style={{ borderRadius: '18px' }}>
               <img 
-                src="/lovable-uploads/6b6f63b6-abd8-4318-b063-1995660b8781.png" 
+                src="/lovable-uploads/6ccdb0c9-8b1a-454a-b181-9ff8d320f7e7.png" 
                 alt="CloserUP Logo" 
                 className="w-full h-full object-contain"
               />
