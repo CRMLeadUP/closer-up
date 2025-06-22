@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,86 +9,44 @@ import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/contexts/AuthContext";
 
 const Plans = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { session, user } = useAuth();
 
   const handleCheckout = async (plan: string) => {
-    if (isLoading) return;
-
-    console.log('=== CHECKOUT BUTTON CLICKED ===');
-    console.log('Plan selected:', plan);
-    console.log('User:', user?.email);
-    console.log('Session exists:', !!session);
-    
-    if (!session || !user) {
-      toast({
-        title: "Login necessário",
-        description: "Faça login para continuar",
-        variant: "destructive"
-      });
-      navigate('/auth');
-      return;
-    }
-
     setIsLoading(true);
-
+    
     try {
-      console.log('Calling create-checkout function...');
-      
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify({ plan }),
-        headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        }
+        body: { plan }
       });
-
-      console.log('Function response:', { data, error });
 
       if (error) {
-        console.error('Function error:', error);
         toast({
           title: "Erro no checkout",
-          description: "Erro ao processar pagamento. Tente novamente.",
+          description: error.message || "Ocorreu um erro ao processar o pagamento",
           variant: "destructive"
         });
         return;
       }
 
       if (data?.url) {
-        console.log('Redirecting to Stripe:', data.url);
-        toast({
-          title: "Redirecionando",
-          description: "Abrindo pagamento..."
-        });
-        
-        // Redirect to Stripe checkout
-        window.location.href = data.url;
-      } else {
-        console.error('No URL in response:', data);
-        toast({
-          title: "Erro no checkout",
-          description: "Link de pagamento não gerado.",
-          variant: "destructive"
-        });
+        // Open Stripe checkout in a new tab
+        window.open(data.url, '_blank');
       }
     } catch (error) {
       console.error('Checkout error:', error);
       toast({
         title: "Erro no checkout",
-        description: "Erro interno. Tente novamente.",
+        description: "Não foi possível iniciar o processo de pagamento",
         variant: "destructive"
       });
     } finally {
       setIsLoading(false);
     }
   };
-
   const plans = [
     {
       name: "Gratuito",
@@ -154,6 +113,15 @@ const Plans = () => {
     }
   ];
 
+  const moduleBreakdown = [
+    { name: "Perfis Comportamentais", plan: "Gratuito", color: "sales-success" },
+    { name: "Gatilhos Mentais", plan: "Premium", color: "sales-primary" },
+    { name: "Rapport e Conexão", plan: "Premium", color: "sales-primary" },
+    { name: "Quebra de Objeções", plan: "Premium", color: "sales-primary" },
+    { name: "Estratégias de Fechamento", plan: "Premium", color: "sales-primary" },
+    { name: "MentorUP", plan: "MentorUP", color: "sales-success" }
+  ];
+
   return (
     <div className="min-h-screen bg-background">
       <MobileHeader />
@@ -161,7 +129,10 @@ const Plans = () => {
       <div className="pt-20 pb-24 px-4">
         {/* Header */}
         <div className="text-center mb-8 animate-fade-in">
-          <Badge className="mb-4 btn-gradient text-white border-0 shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300">
+          <Badge className="mb-4 bg-gradient-to-r from-sales-success/20 to-sales-accent/20 
+                         text-sales-success border-sales-success/30 
+                         hover:from-sales-success/30 hover:to-sales-accent/30 
+                         transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105">
             <Sparkles className="h-3 w-3 mr-1 animate-pulse" />
             Planos e Preços
           </Badge>
@@ -172,6 +143,33 @@ const Plans = () => {
             Comece grátis e evolua suas vendas com nossos treinamentos especializados
           </p>
         </div>
+
+        {/* Module Breakdown */}
+        <Card className="card-glass mb-8 shadow-xl border-0 bg-gradient-to-br from-background/90 to-muted/40 animate-fade-in">
+          <CardHeader className="border-b border-border/50">
+            <CardTitle className="text-lg flex items-center gap-2">
+              <div className="bg-gradient-to-r from-sales-primary/20 to-sales-accent/20 
+                            rounded-full p-2">
+                <Star className="h-5 w-5 text-sales-primary" />
+              </div>
+              O que você terá em cada plano
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4 p-6">
+            {moduleBreakdown.map((module, index) => (
+              <div key={index} className="flex items-center justify-between p-3 
+                                       rounded-xl bg-gradient-to-r from-background/50 to-muted/30
+                                       hover:from-sales-primary/10 hover:to-sales-accent/10
+                                       transition-all duration-300 hover:scale-[1.02]">
+                <span className="text-sm font-medium">{module.name}</span>
+                <Badge className={`text-xs bg-gradient-to-r from-${module.color}/20 to-${module.color}/30 
+                                 text-${module.color} border-${module.color}/30 shadow-sm`}>
+                  {module.plan}
+                </Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
 
         {/* Plans */}
         <div className="space-y-6">
@@ -203,17 +201,18 @@ const Plans = () => {
                 
                 <CardHeader className={`pb-6 ${plan.highlight ? 'pt-8' : 'pt-6'}`}>
                   <div className="flex items-center justify-between mb-6">
-                    <div className={`relative w-16 h-16 rounded-2xl flex items-center justify-center shadow-lg 
-                                   group-hover:scale-110 transition-transform duration-300
-                                   ${plan.name === 'Gratuito' 
-                                     ? 'bg-gradient-to-br from-green-500 to-green-600' 
-                                     : plan.name === 'Premium'
-                                     ? 'bg-gradient-to-br from-blue-500 to-blue-600'
-                                     : 'bg-gradient-to-br from-purple-500 to-purple-600'
-                                   }`}>
+                    <div className={`relative w-16 h-16 rounded-2xl 
+                                   bg-gradient-to-br from-${plan.badgeColor} via-${plan.badgeColor}/80 to-${plan.badgeColor}/60 
+                                   flex items-center justify-center shadow-lg 
+                                   group-hover:scale-110 transition-transform duration-300`}>
                       <IconComponent className="h-8 w-8 text-white" />
+                      <div className="absolute inset-0 rounded-2xl bg-white/20 blur-sm"></div>
                     </div>
-                    <Badge className="btn-gradient text-white border-0 shadow-sm hover:scale-105 transition-transform duration-300">
+                    <Badge 
+                      className={`bg-gradient-to-r from-${plan.badgeColor}/20 to-${plan.badgeColor}/30 
+                                text-${plan.badgeColor} border-${plan.badgeColor}/40 shadow-sm
+                                hover:scale-105 transition-transform duration-300`}
+                    >
                       {plan.badge}
                     </Badge>
                   </div>

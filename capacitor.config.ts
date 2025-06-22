@@ -2,52 +2,19 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.closerup.app',
-  appName: 'CloserUP',
+  appId: 'app.lovable.5f11282c29224aa8a68aa78bf4a1a72b',
+  appName: 'closer-ai-boost',
   webDir: 'dist',
   server: {
-    androidScheme: 'https'
+    url: 'https://5f11282c-2922-4aa8-a68a-a78bf4a1a72b.lovableproject.com?forceHideBadge=true',
+    cleartext: true
   },
   plugins: {
     SplashScreen: {
-      launchShowDuration: 3000,
-      launchAutoHide: true,
+      launchShowDuration: 2000,
       backgroundColor: '#1a1a1a',
-      androidSplashResourceName: 'splash',
-      androidScaleType: 'CENTER_CROP',
-      showSpinner: false,
-      androidSpinnerStyle: 'large',
-      iosSpinnerStyle: 'small',
-      spinnerColor: '#999999',
-      splashFullScreen: true,
-      splashImmersive: true,
-      layoutName: 'launch_screen',
-      useDialog: true,
-    },
-    StatusBar: {
-      style: 'DARK',
-      backgroundColor: '#1a1a1a',
-    },
-    Keyboard: {
-      resize: 'body',
-      style: 'DARK',
-      resizeOnFullScreen: true,
-    },
-    App: {
-      appStateChange: true,
-    },
-    Haptics: {},
-    Device: {},
-    Network: {},
-  },
-  android: {
-    allowMixedContent: true,
-    captureInput: true,
-    webContentsDebuggingEnabled: false,
-  },
-  ios: {
-    contentInset: 'automatic',
-    scrollEnabled: true,
+      showSpinner: false
+    }
   }
 };
 

@@ -9,9 +9,9 @@ const WelcomeStep = () => {
         <div className="flex justify-center mb-4">
           <div className="w-20 h-20 rounded-3xl bg-gradient-primary/10 p-2 flex items-center justify-center overflow-hidden">
             <img 
-              src="/lovable-uploads/6ccdb0c9-8b1a-454a-b181-9ff8d320f7e7.png" 
+              src="/lovable-uploads/8c3108da-f24c-42a0-8b27-f673bdf2ad7e.png" 
               alt="CloserUP Logo" 
-              className="w-full h-full object-contain rounded-3xl"
+              className="w-full h-full object-cover rounded-3xl"
             />
           </div>
         </div>

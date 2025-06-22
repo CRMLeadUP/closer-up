@@ -1,5 +1,5 @@
 
-import { Home, Brain, MessageSquare, User } from "lucide-react";
+import { Home, Brain, MessageSquare, Trophy, User } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const AppBottomNav = () => {
@@ -9,6 +9,7 @@ const AppBottomNav = () => {
   const navItems = [
     { path: '/', icon: Home, label: 'Início' },
     { path: '/training', icon: Brain, label: 'Treinar' },
+    { path: '/gamification', icon: Trophy, label: 'Ranking' },
     { path: '/mentorup', icon: MessageSquare, label: 'MentorUP' },
     { path: '/profile', icon: User, label: 'Perfil' }
   ];

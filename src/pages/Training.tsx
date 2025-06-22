@@ -3,10 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { 
+  Brain, 
+  Target, 
   Users, 
-  Zap,
-  Heart,
-  Target,
+  MessageSquare,
   TrendingUp,
   Star,
   Trophy,
@@ -14,8 +14,7 @@ import {
   Play,
   CheckCircle2,
   Lock,
-  Crown,
-  MessageSquare
+  Crown
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import MobileHeader from "@/components/MobileHeader";
@@ -40,7 +39,7 @@ const Training = () => {
       id: "1",
       title: "Perfis Comportamentais",
       description: "Identifique e adapte estratégias ao perfil do cliente",
-      icon: Users,
+      icon: Brain,
       totalLessons: 10,
       completedLessons: 7,
       duration: "3h 15min",
@@ -55,7 +54,7 @@ const Training = () => {
       id: "2",
       title: "Gatilhos Mentais",
       description: "Técnicas de persuasão e construção de urgência",
-      icon: Zap,
+      icon: Target,
       totalLessons: 12,
       completedLessons: 4,
       duration: "3h 45min",
@@ -70,7 +69,7 @@ const Training = () => {
       id: "3",
       title: "Rapport e Conexão",
       description: "Como criar conexão e confiança com o cliente",
-      icon: Heart,
+      icon: Users,
       totalLessons: 6,
       completedLessons: 2,
       duration: "2h 15min",
@@ -85,7 +84,7 @@ const Training = () => {
       id: "4",
       title: "Quebra de Objeções",
       description: "Respostas práticas para situações comuns",
-      icon: Target,
+      icon: MessageSquare,
       totalLessons: 10,
       completedLessons: 0,
       duration: "4h 20min",
@@ -232,7 +231,7 @@ const Training = () => {
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center relative">
+                      <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${module.color} to-${module.color}/70 flex items-center justify-center relative`}>
                         <IconComponent className="h-6 w-6 text-white" />
                         {module.isLocked && (
                           <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
@@ -278,13 +277,7 @@ const Training = () => {
                           </div>
                         )}
                       </div>
-                      <Button 
-                        size="sm" 
-                        className={module.isLocked 
-                          ? "btn-gradient opacity-75 hover:opacity-100" 
-                          : "btn-gradient"
-                        }
-                      >
+                      <Button size="sm" className={module.isLocked ? "border border-sales-primary text-sales-primary hover:bg-sales-primary hover:text-white" : "btn-gradient"}>
                         {module.isLocked ? (
                           <>
                             <Lock className="h-4 w-4 mr-1" />
@@ -315,7 +308,7 @@ const Training = () => {
           >
             <CardContent className="p-4">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center relative">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sales-success to-sales-success/70 flex items-center justify-center relative">
                   <MessageSquare className="h-6 w-6 text-white" />
                   {userPlan !== "mentor" && (
                     <div className="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center">
@@ -344,13 +337,7 @@ const Training = () => {
                     <span>Script de vendas</span>
                   </div>
                 </div>
-                <Button 
-                  size="sm" 
-                  className={userPlan !== "mentor" 
-                    ? "btn-gradient opacity-75 hover:opacity-100" 
-                    : "btn-gradient"
-                  }
-                >
+                <Button size="sm" className={userPlan !== "mentor" ? "border border-sales-success text-sales-success hover:bg-sales-success hover:text-white" : "btn-gradient"}>
                   {userPlan !== "mentor" ? (
                     <>
                       <Lock className="h-4 w-4 mr-1" />

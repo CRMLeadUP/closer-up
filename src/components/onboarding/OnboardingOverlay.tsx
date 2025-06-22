@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,6 +5,7 @@ import { Progress } from '@/components/ui/progress';
 import { useOnboarding } from '@/contexts/OnboardingContext';
 import WelcomeStep from './WelcomeStep';
 import PersonalizationStep from './PersonalizationStep';
+import FeatureTourStep from './FeatureTourStep';
 import ValueDemoStep from './ValueDemoStep';
 import CompletionStep from './CompletionStep';
 
@@ -28,8 +28,10 @@ const OnboardingOverlay = () => {
       case 1:
         return <PersonalizationStep />;
       case 2:
-        return <ValueDemoStep />;
+        return <FeatureTourStep />;
       case 3:
+        return <ValueDemoStep />;
+      case 4:
         return <CompletionStep />;
       default:
         return <WelcomeStep />;
