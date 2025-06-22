@@ -19,6 +19,8 @@ const Plans = () => {
   const handleCheckout = async (plan: string) => {
     console.log('=== PLANS CHECKOUT START ===');
     console.log('Plan:', plan);
+    console.log('User:', user?.email);
+    console.log('Session token exists:', !!session?.access_token);
     
     if (!session || !user) {
       console.log('User not authenticated');
@@ -42,42 +44,44 @@ const Plans = () => {
       return;
     }
 
-    console.log('User authenticated:', user.email);
     setIsLoading(true);
     
     try {
-      const checkoutData = { plan };
-      console.log('Sending checkout request:', checkoutData);
+      const requestData = { plan };
+      console.log('Sending checkout request with data:', requestData);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: checkoutData,
+        body: JSON.stringify(requestData),
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         }
       });
 
-      console.log('Checkout response:', { data, error });
+      console.log('Checkout response data:', data);
+      console.log('Checkout response error:', error);
 
       if (error) {
-        console.error('Checkout error:', error);
+        console.error('Supabase function error:', error);
         toast({
           title: "Erro no checkout",
-          description: error.message || "Tente novamente em alguns segundos.",
+          description: error.message || "Erro interno. Tente novamente.",
           variant: "destructive"
         });
         return;
       }
 
       if (data?.url) {
-        console.log('Redirecting to:', data.url);
+        console.log('Redirecting to Stripe:', data.url);
         toast({
           title: "Redirecionando",
-          description: "Você será redirecionado para o Stripe..."
+          description: "Você será redirecionado para o pagamento..."
         });
         
-        // Redirect immediately
-        window.location.href = data.url;
+        // Wait a moment for the toast to show, then redirect
+        setTimeout(() => {
+          window.location.href = data.url;
+        }, 1000);
       } else {
         console.error('No URL in response:', data);
         toast({

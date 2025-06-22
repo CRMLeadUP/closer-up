@@ -77,14 +77,18 @@ serve(async (req) => {
     let requestBody;
     try {
       const bodyText = await req.text();
-      if (!bodyText.trim()) {
+      console.log("Raw body:", bodyText);
+      
+      if (!bodyText || bodyText.trim() === '') {
         console.error("Empty request body");
         return new Response(
           JSON.stringify({ error: "Request body required" }),
           { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
+      
       requestBody = JSON.parse(bodyText);
+      console.log("Parsed body:", requestBody);
     } catch (parseError) {
       console.error("JSON parse error:", parseError);
       return new Response(
