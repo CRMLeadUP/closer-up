@@ -41,7 +41,7 @@ const Plans = () => {
       console.log('Request payload:', { plan });
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { plan: plan },
+        body: JSON.stringify({ plan: plan }),
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'

@@ -65,28 +65,38 @@ serve(async (req) => {
 
     console.log("User authenticated:", user.email);
 
-    // Get request body
-    const body = await req.text();
-    console.log("Raw request body:", body);
-    
-    if (!body) {
-      console.error("Empty request body");
+    // Get request body - Try different approaches to parse the body
+    let requestData;
+    try {
+      const contentType = req.headers.get("content-type");
+      console.log("Content-Type:", contentType);
+      
+      if (contentType?.includes("application/json")) {
+        const bodyText = await req.text();
+        console.log("Raw request body:", bodyText);
+        
+        if (!bodyText || bodyText.trim() === '') {
+          console.error("Empty request body");
+          return new Response(
+            JSON.stringify({ error: "Request body is required" }),
+            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        
+        requestData = JSON.parse(bodyText);
+      } else {
+        // Try to get body as JSON directly
+        requestData = await req.json();
+      }
+    } catch (parseError) {
+      console.error("Body parse error:", parseError);
       return new Response(
-        JSON.stringify({ error: "Request body is required" }),
+        JSON.stringify({ error: "Invalid request body format" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    let requestData;
-    try {
-      requestData = JSON.parse(body);
-    } catch (parseError) {
-      console.error("JSON parse error:", parseError);
-      return new Response(
-        JSON.stringify({ error: "Invalid JSON in request body" }),
-        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
+    console.log("Parsed request data:", requestData);
 
     const { plan } = requestData;
     if (!plan) {

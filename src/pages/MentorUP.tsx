@@ -44,7 +44,7 @@ const MentorUP = () => {
       console.log('Request payload:', { plan: 'mentorup' });
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { plan: 'mentorup' },
+        body: JSON.stringify({ plan: 'mentorup' }),
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
