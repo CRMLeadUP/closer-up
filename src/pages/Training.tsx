@@ -23,6 +23,19 @@ import { useSubscription } from "@/hooks/useSubscription";
 const Training = () => {
   const navigate = useNavigate();
   const { hasCloserUpAccess, hasAnyPremiumAccess, isLoading } = useSubscription();
+  const [loadingTimeout, setLoadingTimeout] = useState(false);
+
+  // Safety timeout to prevent infinite loading
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (isLoading) {
+        console.log('Loading timeout reached, forcing render');
+        setLoadingTimeout(true);
+      }
+    }, 5000); // 5 second timeout
+
+    return () => clearTimeout(timer);
+  }, [isLoading]);
 
   const modules = [
     {
@@ -98,7 +111,8 @@ const Training = () => {
   const freeModule = modules.find(m => !m.premium);
   const premiumModules = modules.filter(m => m.premium);
 
-  if (isLoading) {
+  // Show content even if loading takes too long
+  if (isLoading && !loadingTimeout) {
     return (
       <div className="min-h-screen bg-background">
         <MobileHeader />

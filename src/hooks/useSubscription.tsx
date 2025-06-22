@@ -46,6 +46,12 @@ export const useSubscription = () => {
       if (error) {
         console.error('Subscription check error:', error);
         setError(error.message);
+        // Set default values on error
+        setSubscriptionData({
+          subscribed: false,
+          subscription_tier: null,
+          subscription_end: null
+        });
         return;
       }
       
@@ -53,22 +59,53 @@ export const useSubscription = () => {
       
       if (data) {
         setSubscriptionData(data);
+      } else {
+        // Set default values if no data returned
+        setSubscriptionData({
+          subscribed: false,
+          subscription_tier: null,
+          subscription_end: null
+        });
       }
     } catch (err) {
       console.error('Subscription check error:', err);
       setError('Erro ao verificar assinatura');
+      // Set default values on catch
+      setSubscriptionData({
+        subscribed: false,
+        subscription_tier: null,
+        subscription_end: null
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
+    // Only check subscription once when user/session changes
+    let mounted = true;
+    
+    const runCheck = async () => {
+      if (mounted) {
+        await checkSubscription();
+      }
+    };
+
     if (user && session) {
-      checkSubscription();
+      runCheck();
     } else {
       setIsLoading(false);
+      setSubscriptionData({
+        subscribed: false,
+        subscription_tier: null,
+        subscription_end: null
+      });
     }
-  }, [user, session]);
+
+    return () => {
+      mounted = false;
+    };
+  }, [user?.id, session?.access_token]); // Only depend on user id and session token
 
   const hasCloserUpAccess = () => {
     return subscriptionData.subscribed && 
