@@ -10,7 +10,6 @@ import {
   MessageSquare, 
   Target, 
   Trophy,
-  Lock,
   Crown,
   CheckCircle2
 } from "lucide-react";
@@ -22,20 +21,17 @@ import { useSubscription } from "@/hooks/useSubscription";
 
 const Training = () => {
   const navigate = useNavigate();
-  const { hasCloserUpAccess, hasAnyPremiumAccess, isLoading } = useSubscription();
-  const [loadingTimeout, setLoadingTimeout] = useState(false);
+  const { hasCloserUpAccess, isLoading } = useSubscription();
+  const [showContent, setShowContent] = useState(false);
 
-  // Safety timeout to prevent infinite loading
+  // Show content after a short delay even if still loading
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (isLoading) {
-        console.log('Loading timeout reached, forcing render');
-        setLoadingTimeout(true);
-      }
-    }, 5000); // 5 second timeout
+      setShowContent(true);
+    }, 1000); // Show content after 1 second
 
     return () => clearTimeout(timer);
-  }, [isLoading]);
+  }, []);
 
   const modules = [
     {
@@ -47,7 +43,7 @@ const Training = () => {
       duration: "2h 30min",
       difficulty: "Iniciante",
       color: "sales-primary",
-      premium: false, // Módulo gratuito
+      premium: false,
       completed: false
     },
     {
@@ -102,7 +98,6 @@ const Training = () => {
 
   const handleModuleClick = (module: any) => {
     if (module.premium && !hasCloserUpAccess()) {
-      // Não navega, deixa o PremiumGate lidar
       return;
     }
     navigate(`/training/module/${module.id}`);
@@ -111,8 +106,8 @@ const Training = () => {
   const freeModule = modules.find(m => !m.premium);
   const premiumModules = modules.filter(m => m.premium);
 
-  // Show content even if loading takes too long
-  if (isLoading && !loadingTimeout) {
+  // Show loading only for the first second
+  if (!showContent && isLoading) {
     return (
       <div className="min-h-screen bg-background">
         <MobileHeader />
@@ -221,7 +216,7 @@ const Training = () => {
             fallbackDescription="Acesse todos os 4 módulos premium com técnicas avançadas de vendas por apenas R$ 17,90/mês."
           >
             <div className="space-y-4">
-              {premiumModules.map((module, index) => {
+              {premiumModules.map((module) => {
                 const IconComponent = module.icon;
                 return (
                   <Card 
