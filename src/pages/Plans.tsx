@@ -17,10 +17,9 @@ const Plans = () => {
   const { session, user } = useAuth();
 
   const handleCheckout = async (plan: string) => {
-    console.log('=== INICIANDO CHECKOUT ===');
-    console.log('Plano:', plan);
-    console.log('Usuário autenticado:', !!user);
-    console.log('Sessão presente:', !!session);
+    console.log('=== INICIANDO CHECKOUT PLANS ===');
+    console.log('Plano selecionado:', plan);
+    console.log('Timestamp:', new Date().toISOString());
     
     if (!session || !user) {
       console.log('ERRO: Usuário não autenticado');
@@ -44,26 +43,52 @@ const Plans = () => {
       return;
     }
 
+    console.log('Usuário autenticado:', {
+      userId: user.id,
+      email: user.email,
+      plan,
+      tokenLength: session.access_token.length
+    });
+
     setIsLoading(true);
     
     try {
-      console.log('Chamando edge function create-checkout...');
+      // Preparar dados do checkout
+      const checkoutData = { plan };
+      console.log('Dados preparados para checkout:', checkoutData);
+      
+      console.log('Invocando edge function create-checkout...');
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify({ plan }),
+        body: checkoutData,
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         }
       });
 
-      console.log('Resposta da função:', { data, error });
+      console.log('Resposta da edge function:', {
+        data,
+        error,
+        timestamp: new Date().toISOString()
+      });
 
       if (error) {
-        console.error('ERRO na função create-checkout:', error);
+        console.error('ERRO retornado pela edge function:', error);
+        
+        let errorMessage = "Erro no checkout";
+        
+        if (error.message) {
+          errorMessage = error.message;
+        } else if (typeof error === 'string') {
+          errorMessage = error;
+        } else if (error.code) {
+          errorMessage = `Erro ${error.code}: ${error.details || 'Tente novamente'}`;
+        }
+        
         toast({
           title: "Erro no checkout",
-          description: error.message || "Edge function returned a non-2xx status code",
+          description: errorMessage,
           variant: "destructive"
         });
         return;
@@ -71,6 +96,7 @@ const Plans = () => {
 
       if (data?.url) {
         console.log('URL do checkout recebida:', data.url);
+        console.log('SessionId:', data.sessionId);
         
         toast({
           title: "Redirecionando para pagamento",
@@ -78,20 +104,33 @@ const Plans = () => {
         });
         
         // Redirecionamento direto
-        window.location.href = data.url;
+        console.log('Executando redirecionamento...');
+        setTimeout(() => {
+          console.log('Redirecionando para:', data.url);
+          window.location.href = data.url;
+        }, 500);
+        
       } else {
         console.error('ERRO: URL não recebida');
+        console.log('Dados completos:', data);
+        
         toast({
           title: "Erro no checkout",
-          description: "Não foi possível obter a URL de pagamento",
+          description: "Não foi possível obter a URL de pagamento. Tente novamente.",
           variant: "destructive"
         });
       }
     } catch (error) {
-      console.error('ERRO geral no checkout:', error);
+      console.error('ERRO CRÍTICO no checkout:', error);
+      console.error('Detalhes do erro:', {
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : 'N/A',
+        type: typeof error
+      });
+      
       toast({
         title: "Erro no checkout",
-        description: "Não foi possível iniciar o processo de pagamento. Tente novamente.",
+        description: "Erro interno. Tente novamente em alguns segundos.",
         variant: "destructive"
       });
     } finally {

@@ -22,9 +22,7 @@ const MentorUP = () => {
 
   const handleCheckout = async () => {
     console.log('=== INICIANDO CHECKOUT MENTORUP ===');
-    console.log('Usuário autenticado:', !!user);
-    console.log('Sessão presente:', !!session);
-    console.log('Token disponível:', !!session?.access_token);
+    console.log('Timestamp:', new Date().toISOString());
     
     if (!user || !session) {
       console.log('ERRO: Usuário não autenticado');
@@ -48,35 +46,50 @@ const MentorUP = () => {
       return;
     }
 
+    console.log('Usuário autenticado:', {
+      userId: user.id,
+      email: user.email,
+      tokenLength: session.access_token.length
+    });
+
     setIsLoading(true);
 
     try {
-      console.log('Preparando dados para checkout...');
+      // Preparar dados para o checkout
       const checkoutData = { plan: 'mentorup' };
-      console.log('Dados do checkout:', checkoutData);
+      console.log('Dados do checkout preparados:', checkoutData);
       
-      console.log('Chamando edge function create-checkout...');
+      console.log('Fazendo chamada para edge function...');
+      console.log('Headers que serão enviados:', {
+        'Authorization': `Bearer ${session.access_token.substring(0, 20)}...`,
+        'Content-Type': 'application/json'
+      });
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify(checkoutData),
+        body: checkoutData,
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         }
       });
 
-      console.log('Resposta completa da função:', { data, error });
-      console.log('Dados recebidos:', data);
-      console.log('Erro recebido:', error);
+      console.log('Resposta recebida da edge function:', {
+        data,
+        error,
+        timestamp: new Date().toISOString()
+      });
 
       if (error) {
-        console.error('ERRO na função create-checkout:', error);
+        console.error('ERRO retornado pela edge function:', error);
+        
         let errorMessage = "Erro no checkout";
         
         if (error.message) {
           errorMessage = error.message;
         } else if (typeof error === 'string') {
           errorMessage = error;
+        } else if (error.code) {
+          errorMessage = `Erro ${error.code}: ${error.details || 'Tente novamente'}`;
         }
         
         toast({
@@ -89,31 +102,39 @@ const MentorUP = () => {
 
       if (data?.url) {
         console.log('URL do checkout recebida:', data.url);
+        console.log('SessionId:', data.sessionId);
         
         toast({
           title: "Redirecionando para pagamento",
-          description: "Você será redirecionado para o checkout..."
+          description: "Você será redirecionado para o checkout do Stripe..."
         });
         
-        // Pequeno delay para mostrar o toast
+        // Redirecionamento direto e imediato
+        console.log('Iniciando redirecionamento...');
         setTimeout(() => {
-          console.log('Redirecionando para:', data.url);
+          console.log('Executando redirecionamento para:', data.url);
           window.location.href = data.url;
-        }, 1000);
+        }, 500);
+        
       } else {
-        console.error('ERRO: URL não recebida da função');
+        console.error('ERRO: URL não recebida');
         console.log('Dados completos recebidos:', data);
+        
         toast({
           title: "Erro no checkout",
-          description: "Não foi possível obter a URL de pagamento",
+          description: "Não foi possível obter a URL de pagamento. Tente novamente.",
           variant: "destructive"
         });
       }
 
     } catch (error) {
-      console.error('ERRO geral no checkout MentorUP:', error);
+      console.error('ERRO CRÍTICO no checkout:', error);
       console.error('Tipo do erro:', typeof error);
-      console.error('Stack do erro:', error instanceof Error ? error.stack : 'N/A');
+      console.error('Detalhes completos:', {
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : 'N/A',
+        name: error instanceof Error ? error.name : 'Unknown'
+      });
       
       toast({
         title: "Erro no checkout",
@@ -264,7 +285,7 @@ const MentorUP = () => {
                   {isLoading ? (
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      Processando...
+                      Processando checkout...
                     </div>
                   ) : (
                     "🚀 Agendar Mentoria - R$ 47,90"
