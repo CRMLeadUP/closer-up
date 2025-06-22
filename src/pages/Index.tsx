@@ -113,7 +113,7 @@ const Index = () => {
             <CardHeader className="pb-4">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sales-primary to-sales-primary/70 flex items-center justify-center">
-                  <Brain className="h-6 w-6 text-white" />
+                  <Brain className="h-6 w-6 text-yellow-300" />
                 </div>
                 <div className="flex-1">
                   <CardTitle className="text-lg">CloserUP</CardTitle>
@@ -139,7 +139,7 @@ const Index = () => {
             <CardHeader className="pb-4">
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sales-secondary to-sales-secondary/70 flex items-center justify-center">
-                  <MessageSquare className="h-6 w-6 text-white" />
+                  <MessageSquare className="h-6 w-6 text-cyan-300" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
