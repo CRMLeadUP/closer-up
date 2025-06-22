@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,18 +37,34 @@ const MentorUP = () => {
       return;
     }
 
+    if (!session.access_token) {
+      console.log('ERRO: Token de acesso não encontrado');
+      toast({
+        title: "Erro de autenticação",
+        description: "Token de acesso não encontrado. Faça login novamente.",
+        variant: "destructive"
+      });
+      navigate('/auth');
+      return;
+    }
+
     console.log('Token de acesso presente:', !!session.access_token);
     setIsLoading(true);
 
     try {
       console.log('Chamando edge function create-checkout para mentorup...');
+      console.log('Headers sendo enviados:', {
+        'Authorization': `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json'
+      });
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: {
           plan: 'mentorup'
         },
         headers: {
-          Authorization: `Bearer ${session.access_token}`
+          'Authorization': `Bearer ${session.access_token}`,
+          'Content-Type': 'application/json'
         }
       });
 
@@ -59,7 +74,7 @@ const MentorUP = () => {
         console.error('ERRO na função create-checkout:', error);
         toast({
           title: "Erro no checkout",
-          description: `Erro: ${error.message}`,
+          description: error.message || "Erro desconhecido",
           variant: "destructive"
         });
         return;
@@ -75,8 +90,9 @@ const MentorUP = () => {
         
         // Aguardar um momento para o usuário ver o toast
         setTimeout(() => {
+          console.log('Redirecionando para:', data.url);
           window.location.href = data.url;
-        }, 1000);
+        }, 1500);
       } else {
         console.error('ERRO: URL não recebida da função');
         toast({

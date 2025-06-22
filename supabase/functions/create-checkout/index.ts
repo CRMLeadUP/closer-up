@@ -18,11 +18,6 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const supabaseClient = createClient(
-    Deno.env.get("SUPABASE_URL") ?? "",
-    Deno.env.get("SUPABASE_ANON_KEY") ?? ""
-  );
-
   try {
     logStep("Function started");
 
@@ -36,21 +31,39 @@ serve(async (req) => {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       logStep("ERROR: No authorization header");
-      throw new Error("No authorization header provided");
+      return new Response(JSON.stringify({ error: "No authorization header provided" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
     }
     
     const token = authHeader.replace("Bearer ", "");
+    logStep("Token extracted", { tokenLength: token.length });
+    
+    // Create supabase client with anon key for user verification
+    const supabaseClient = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? ""
+    );
+    
     logStep("Extracting user from token");
     
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError) {
       logStep("ERROR: Authentication failed", { error: userError.message });
-      throw new Error(`Authentication error: ${userError.message}`);
+      return new Response(JSON.stringify({ error: `Authentication error: ${userError.message}` }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
     }
+    
     const user = userData.user;
     if (!user?.email) {
       logStep("ERROR: User not authenticated or no email");
-      throw new Error("User not authenticated or email not available");
+      return new Response(JSON.stringify({ error: "User not authenticated or email not available" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 401,
+      });
     }
     logStep("User authenticated", { userId: user.id, email: user.email });
 
@@ -59,7 +72,10 @@ serve(async (req) => {
     
     if (!plan || (plan !== "closerUp" && plan !== "closerAI" && plan !== "mentorup")) {
       logStep("ERROR: Invalid plan", { plan });
-      throw new Error("Invalid plan specified. Must be 'closerUp', 'closerAI', or 'mentorup'");
+      return new Response(JSON.stringify({ error: "Invalid plan specified. Must be 'closerUp', 'closerAI', or 'mentorup'" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
     }
     logStep("Plan specified", { plan });
 
