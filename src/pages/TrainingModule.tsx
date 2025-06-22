@@ -737,7 +737,7 @@ const TrainingModule = () => {
                           className={`${
                             isCompleted
                               ? 'bg-sales-success hover:bg-sales-success/80 text-white' 
-                              : 'bg-sales-primary hover:bg-sales-primary/90 text-white font-medium'
+                              : 'btn-gradient text-white font-medium'
                           } min-w-[100px]`}
                           onClick={() => canAccess && startLesson(lesson.id, lesson.type, true, lesson.videoUrl)}
                           disabled={!canAccess}
