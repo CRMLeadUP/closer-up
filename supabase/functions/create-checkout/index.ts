@@ -130,10 +130,6 @@ serve(async (req) => {
         priceId: "price_1Rb5oNE06ubkhHJygHtdcVJB",
         mode: "subscription" as const
       },
-      closerAI: {
-        priceId: "price_1Rb5oqE06ubkhHJyH7RW6SVC", 
-        mode: "subscription" as const
-      },
       mentorup: {
         priceId: "price_1Rc6srE06ubkhHJyYqZD2ko7",
         mode: "payment" as const
