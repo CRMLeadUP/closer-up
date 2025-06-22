@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     let mounted = true;
 
-    // Set up auth state listener
+    // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         if (!mounted) return;
@@ -139,19 +139,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           }
           
           if (session.user) {
-            await checkAdminStatus(session.user.id);
+            // Use setTimeout to avoid blocking the auth state update
+            setTimeout(() => {
+              checkAdminStatus(session.user.id);
+            }, 0);
           }
+          
+          // Set loading to false immediately after setting user data
           setLoading(false);
         }
       }
     );
 
-    // Get initial session
+    // THEN check for existing session
     const getInitialSession = async () => {
       try {
         const { data: { session }, error } = await supabase.auth.getSession();
         if (error) {
           console.error('Error getting session:', error);
+          if (mounted) setLoading(false);
           return;
         }
 
@@ -162,14 +168,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          await checkAdminStatus(session.user.id);
+          setTimeout(() => {
+            checkAdminStatus(session.user.id);
+          }, 0);
         }
+        
+        setLoading(false);
       } catch (error) {
         console.error('Error in getInitialSession:', error);
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
+        if (mounted) setLoading(false);
       }
     };
 

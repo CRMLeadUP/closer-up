@@ -25,9 +25,19 @@ import OnboardingOverlay from "@/components/onboarding/OnboardingOverlay";
 
 const Index = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const { startOnboarding } = useOnboarding();
   const { shouldShowOnboarding } = useAppFlow();
+  const [isComponentReady, setIsComponentReady] = useState(false);
+
+  useEffect(() => {
+    // Small delay to ensure everything is properly initialized
+    const timer = setTimeout(() => {
+      setIsComponentReady(true);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const quickStats = [
     { value: "+5.2K", label: "Usuários", icon: Users },
@@ -39,6 +49,20 @@ const Index = () => {
   const handleMentorUPClick = () => {
     navigate('/mentorup');
   };
+
+  // Show loading while auth is loading or component is not ready
+  if (loading || !isComponentReady) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="card-glass">
+          <CardContent className="p-8 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-sales-primary border-t-transparent mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Carregando...</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Se deve mostrar onboarding, mostra o overlay
   if (shouldShowOnboarding) {
