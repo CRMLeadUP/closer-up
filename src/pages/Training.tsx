@@ -42,7 +42,7 @@ const Training = () => {
       lessons: 10,
       duration: "2h 30min",
       difficulty: "Iniciante",
-      color: "sales-primary",
+      color: "blue-500",
       premium: false,
       completed: false
     },
@@ -175,7 +175,7 @@ const Training = () => {
             >
               <CardHeader className="pb-4">
                 <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${freeModule.color} to-${freeModule.color}/70 flex items-center justify-center`}>
+                  <div className="w-12 h-12 rounded-xl bg-blue-500 flex items-center justify-center">
                     <freeModule.icon className="h-6 w-6 text-white" />
                   </div>
                   <div className="flex-1">
