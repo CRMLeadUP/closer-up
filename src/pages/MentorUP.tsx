@@ -25,6 +25,7 @@ const MentorUP = () => {
 
     console.log('=== MENTORUP CHECKOUT INITIATED ===');
     console.log('User authenticated:', !!user);
+    console.log('Session exists:', !!session);
     
     if (!user || !session) {
       toast({
@@ -39,21 +40,20 @@ const MentorUP = () => {
     setIsLoading(true);
 
     try {
-      const requestPayload = { plan: 'mentorup' };
-      console.log('Sending request payload:', requestPayload);
+      console.log('Invoking create-checkout function for MentorUP...');
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify(requestPayload),
+        body: { plan: 'mentorup' },
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         }
       });
 
-      console.log('Response received:', { data, error });
+      console.log('Function response:', { data, error });
 
       if (error) {
-        console.error('Function error:', error);
+        console.error('Function invocation error:', error);
         toast({
           title: "Erro no checkout",
           description: "Erro ao processar pagamento. Tente novamente.",
@@ -63,16 +63,16 @@ const MentorUP = () => {
       }
 
       if (data?.url) {
-        console.log('Redirecting to:', data.url);
+        console.log('Redirecting to Stripe checkout:', data.url);
         toast({
           title: "Redirecionando",
-          description: "Abrindo pagamento..."
+          description: "Abrindo pagamento no Stripe..."
         });
         
         // Redirect to Stripe checkout
         window.location.href = data.url;
       } else {
-        console.error('No URL received:', data);
+        console.error('No checkout URL received:', data);
         toast({
           title: "Erro no checkout",
           description: "Não foi possível gerar link de pagamento.",
