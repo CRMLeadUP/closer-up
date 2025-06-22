@@ -24,6 +24,7 @@ const MentorUP = () => {
     console.log('=== INICIANDO CHECKOUT MENTORUP ===');
     console.log('Usuário autenticado:', !!user);
     console.log('Sessão presente:', !!session);
+    console.log('Token disponível:', !!session?.access_token);
     
     if (!user || !session) {
       console.log('ERRO: Usuário não autenticado');
@@ -50,23 +51,37 @@ const MentorUP = () => {
     setIsLoading(true);
 
     try {
-      console.log('Chamando edge function create-checkout para mentorup...');
+      console.log('Preparando dados para checkout...');
+      const checkoutData = { plan: 'mentorup' };
+      console.log('Dados do checkout:', checkoutData);
+      
+      console.log('Chamando edge function create-checkout...');
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify({ plan: 'mentorup' }),
+        body: JSON.stringify(checkoutData),
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
         }
       });
 
-      console.log('Resposta da função create-checkout:', { data, error });
+      console.log('Resposta completa da função:', { data, error });
+      console.log('Dados recebidos:', data);
+      console.log('Erro recebido:', error);
 
       if (error) {
         console.error('ERRO na função create-checkout:', error);
+        let errorMessage = "Erro no checkout";
+        
+        if (error.message) {
+          errorMessage = error.message;
+        } else if (typeof error === 'string') {
+          errorMessage = error;
+        }
+        
         toast({
           title: "Erro no checkout",
-          description: error.message || "Edge function returned a non-2xx status code",
+          description: errorMessage,
           variant: "destructive"
         });
         return;
@@ -77,13 +92,17 @@ const MentorUP = () => {
         
         toast({
           title: "Redirecionando para pagamento",
-          description: "Após o pagamento, você poderá escolher data e horário"
+          description: "Você será redirecionado para o checkout..."
         });
         
-        // Redirecionamento direto
-        window.location.href = data.url;
+        // Pequeno delay para mostrar o toast
+        setTimeout(() => {
+          console.log('Redirecionando para:', data.url);
+          window.location.href = data.url;
+        }, 1000);
       } else {
         console.error('ERRO: URL não recebida da função');
+        console.log('Dados completos recebidos:', data);
         toast({
           title: "Erro no checkout",
           description: "Não foi possível obter a URL de pagamento",
@@ -93,9 +112,12 @@ const MentorUP = () => {
 
     } catch (error) {
       console.error('ERRO geral no checkout MentorUP:', error);
+      console.error('Tipo do erro:', typeof error);
+      console.error('Stack do erro:', error instanceof Error ? error.stack : 'N/A');
+      
       toast({
         title: "Erro no checkout",
-        description: "Tente novamente ou entre em contato",
+        description: "Erro interno. Tente novamente em alguns segundos.",
         variant: "destructive"
       });
     } finally {

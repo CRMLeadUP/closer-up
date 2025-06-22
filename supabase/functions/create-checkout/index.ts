@@ -21,16 +21,18 @@ serve(async (req) => {
   try {
     logStep("Function started");
 
+    // Verificar chave do Stripe
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) {
       logStep("ERROR: STRIPE_SECRET_KEY not found");
-      return new Response(JSON.stringify({ error: "Stripe key not configured" }), {
+      return new Response(JSON.stringify({ error: "Stripe configuration error" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 500,
       });
     }
     logStep("Stripe key verified");
 
+    // Verificar header de autorização
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       logStep("ERROR: No authorization header");
@@ -43,11 +45,13 @@ serve(async (req) => {
     const token = authHeader.replace("Bearer ", "");
     logStep("Token extracted", { tokenLength: token.length });
     
+    // Criar cliente Supabase
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
     
+    // Autenticar usuário
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
     if (userError || !userData.user) {
       logStep("ERROR: Authentication failed", { error: userError?.message });
@@ -67,16 +71,25 @@ serve(async (req) => {
     }
     logStep("User authenticated", { userId: user.id, email: user.email });
 
+    // Processar body da requisição
     let requestBody;
     try {
       const bodyText = await req.text();
-      if (!bodyText) {
-        throw new Error("Empty request body");
+      logStep("Request body received", { bodyLength: bodyText.length });
+      
+      if (!bodyText.trim()) {
+        logStep("ERROR: Empty request body");
+        return new Response(JSON.stringify({ error: "Request body is required" }), {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+          status: 400,
+        });
       }
+      
       requestBody = JSON.parse(bodyText);
+      logStep("Request body parsed", { body: requestBody });
     } catch (parseError) {
-      logStep("ERROR: Invalid request body", { error: parseError.message });
-      return new Response(JSON.stringify({ error: "Invalid request body" }), {
+      logStep("ERROR: Invalid JSON in request body", { error: parseError.message });
+      return new Response(JSON.stringify({ error: "Invalid JSON in request body" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
@@ -84,26 +97,39 @@ serve(async (req) => {
 
     const { plan } = requestBody;
     
-    if (!plan || !["closerUp", "closerAI", "mentorup"].includes(plan)) {
-      logStep("ERROR: Invalid plan", { plan });
-      return new Response(JSON.stringify({ error: "Invalid plan specified" }), {
+    // Validar plano
+    const validPlans = ["closerUp", "closerAI", "mentorup"];
+    if (!plan || !validPlans.includes(plan)) {
+      logStep("ERROR: Invalid plan", { plan, validPlans });
+      return new Response(JSON.stringify({ error: `Invalid plan. Must be one of: ${validPlans.join(", ")}` }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
     }
-    logStep("Plan specified", { plan });
+    logStep("Plan validated", { plan });
 
+    // Inicializar Stripe
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
     
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    // Verificar/criar cliente no Stripe
     let customerId;
-    if (customers.data.length > 0) {
-      customerId = customers.data[0].id;
-      logStep("Found existing customer", { customerId });
-    } else {
-      logStep("No existing customer found");
+    try {
+      const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+        logStep("Found existing customer", { customerId });
+      } else {
+        logStep("No existing customer found, will create during checkout");
+      }
+    } catch (stripeError) {
+      logStep("ERROR: Failed to check Stripe customer", { error: stripeError.message });
+      return new Response(JSON.stringify({ error: "Failed to verify customer" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
     }
 
+    // Definir preços
     const priceIds = {
       closerUp: "price_1Rb5oNE06ubkhHJygHtdcVJB",
       closerAI: "price_1Rb5oqE06ubkhHJyH7RW6SVC",
@@ -120,10 +146,12 @@ serve(async (req) => {
     }
     logStep("Using price ID", { priceId, plan });
 
-    const origin = req.headers.get("origin") || "https://preview--closer-ai-boost-58.lovable.app";
+    // Determinar origem para URLs de retorno
+    const origin = req.headers.get("origin") || req.headers.get("referer")?.split('/').slice(0, 3).join('/') || "https://preview--closer-ai-boost-58.lovable.app";
     logStep("Using origin", { origin });
     
-    const sessionConfig = {
+    // Configurar sessão do checkout
+    const sessionConfig: any = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
@@ -134,27 +162,77 @@ serve(async (req) => {
       ],
       mode: plan === "mentorup" ? "payment" as const : "subscription" as const,
       success_url: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/plans`,
+      cancel_url: `${origin}/${plan === "mentorup" ? "mentorup" : "plans"}`,
       metadata: {
         user_id: user.id,
-        plan: plan
-      }
+        plan: plan,
+        user_email: user.email
+      },
+      allow_promotion_codes: true,
     };
 
-    logStep("Creating checkout session", { config: sessionConfig });
+    logStep("Creating checkout session", { 
+      mode: sessionConfig.mode,
+      priceId,
+      hasCustomer: !!customerId,
+      successUrl: sessionConfig.success_url,
+      cancelUrl: sessionConfig.cancel_url
+    });
 
-    const session = await stripe.checkout.sessions.create(sessionConfig);
+    // Criar sessão do checkout
+    let session;
+    try {
+      session = await stripe.checkout.sessions.create(sessionConfig);
+      logStep("Checkout session created successfully", { 
+        sessionId: session.id, 
+        url: session.url,
+        status: session.status
+      });
+    } catch (stripeError) {
+      logStep("ERROR: Failed to create checkout session", { 
+        error: stripeError.message,
+        code: stripeError.code,
+        type: stripeError.type
+      });
+      return new Response(JSON.stringify({ 
+        error: "Failed to create checkout session",
+        details: stripeError.message 
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
+    }
 
-    logStep("Checkout session created successfully", { sessionId: session.id, url: session.url });
+    // Verificar se a URL foi criada
+    if (!session.url) {
+      logStep("ERROR: No checkout URL returned from Stripe");
+      return new Response(JSON.stringify({ error: "No checkout URL generated" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
+    }
+
+    logStep("Function completed successfully", { url: session.url });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 200,
     });
+
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in create-checkout", { message: errorMessage });
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    
+    logStep("CRITICAL ERROR in create-checkout", { 
+      message: errorMessage,
+      stack: errorStack,
+      type: typeof error
+    });
+    
+    return new Response(JSON.stringify({ 
+      error: "Internal server error",
+      message: errorMessage 
+    }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
     });
