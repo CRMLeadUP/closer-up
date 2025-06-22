@@ -19,9 +19,9 @@ const Plans = () => {
   const handleCheckout = async (plan: string) => {
     if (isLoading) return;
 
-    console.log('=== CHECKOUT INITIATED ===');
-    console.log('Plan:', plan);
-    console.log('User authenticated:', !!user);
+    console.log('=== CHECKOUT BUTTON CLICKED ===');
+    console.log('Plan selected:', plan);
+    console.log('User:', user?.email);
     console.log('Session exists:', !!session);
     
     if (!session || !user) {
@@ -37,8 +37,7 @@ const Plans = () => {
     setIsLoading(true);
 
     try {
-      console.log('Invoking create-checkout function...');
-      console.log('Request body will be:', { plan });
+      console.log('Calling create-checkout function...');
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: JSON.stringify({ plan }),
@@ -51,7 +50,7 @@ const Plans = () => {
       console.log('Function response:', { data, error });
 
       if (error) {
-        console.error('Function invocation error:', error);
+        console.error('Function error:', error);
         toast({
           title: "Erro no checkout",
           description: "Erro ao processar pagamento. Tente novamente.",
@@ -61,19 +60,19 @@ const Plans = () => {
       }
 
       if (data?.url) {
-        console.log('Redirecting to Stripe checkout:', data.url);
+        console.log('Redirecting to Stripe:', data.url);
         toast({
           title: "Redirecionando",
-          description: "Abrindo pagamento no Stripe..."
+          description: "Abrindo pagamento..."
         });
         
         // Redirect to Stripe checkout
         window.location.href = data.url;
       } else {
-        console.error('No checkout URL received:', data);
+        console.error('No URL in response:', data);
         toast({
           title: "Erro no checkout",
-          description: "Não foi possível gerar link de pagamento.",
+          description: "Link de pagamento não gerado.",
           variant: "destructive"
         });
       }

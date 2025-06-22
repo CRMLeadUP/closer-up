@@ -15,19 +15,19 @@ serve(async (req) => {
   }
 
   try {
-    console.log("=== CHECKOUT STARTED ===");
+    console.log("=== CHECKOUT FUNCTION STARTED ===");
     
-    // Validate Stripe configuration
+    // Get Stripe key
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) {
-      console.error("STRIPE_SECRET_KEY missing");
+      console.error("STRIPE_SECRET_KEY not found");
       return new Response(
-        JSON.stringify({ error: "Payment system not configured" }),
+        JSON.stringify({ error: "Stripe configuration missing" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Validate request
+    // Get authorization header
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       console.error("No authorization header");
@@ -51,7 +51,7 @@ serve(async (req) => {
 
     const supabase = createClient(supabaseUrl, supabaseAnonKey);
     
-    // Authenticate user
+    // Get user
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     
@@ -65,33 +65,32 @@ serve(async (req) => {
 
     console.log("User authenticated:", user.email);
 
-    // Parse request body safely
-    let requestBody;
-    try {
-      const bodyText = await req.text();
-      console.log("Request body:", bodyText);
-      
-      if (!bodyText?.trim()) {
-        console.error("Empty request body");
-        return new Response(
-          JSON.stringify({ error: "Plan selection required" }),
-          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-        );
-      }
-      
-      requestBody = JSON.parse(bodyText);
-      console.log("Parsed request:", requestBody);
-    } catch (parseError) {
-      console.error("JSON parse error:", parseError);
+    // Get request body
+    const body = await req.text();
+    console.log("Raw request body:", body);
+    
+    if (!body) {
+      console.error("Empty request body");
       return new Response(
-        JSON.stringify({ error: "Invalid request format" }),
+        JSON.stringify({ error: "Request body is required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const { plan } = requestBody;
+    let requestData;
+    try {
+      requestData = JSON.parse(body);
+    } catch (parseError) {
+      console.error("JSON parse error:", parseError);
+      return new Response(
+        JSON.stringify({ error: "Invalid JSON in request body" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { plan } = requestData;
     if (!plan) {
-      console.error("No plan specified");
+      console.error("No plan specified in request");
       return new Response(
         JSON.stringify({ error: "Plan is required" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -106,7 +105,7 @@ serve(async (req) => {
       httpClient: Stripe.createFetchHttpClient()
     });
 
-    // Get or create customer
+    // Check for existing customer
     let customerId;
     try {
       const customers = await stripe.customers.list({ 
@@ -118,35 +117,32 @@ serve(async (req) => {
         customerId = customers.data[0].id;
         console.log("Found existing customer:", customerId);
       } else {
-        console.log("Will create customer during checkout");
+        console.log("No existing customer found, will create during checkout");
       }
     } catch (customerError) {
       console.error("Customer lookup failed:", customerError);
-      return new Response(
-        JSON.stringify({ error: "Customer processing failed" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      // Continue without existing customer
     }
 
-    // Plan configurations
+    // Plan configurations with correct price IDs
     const planConfigs = {
       closerUp: {
         priceId: "price_1Rb5oNE06ubkhHJygHtdcVJB",
-        mode: "subscription"
+        mode: "subscription" as const
       },
       closerAI: {
-        priceId: "price_1Rb5oqE06ubkhHJyH7RW6SVC",
-        mode: "subscription"
+        priceId: "price_1Rb5oqE06ubkhHJyH7RW6SVC", 
+        mode: "subscription" as const
       },
       mentorup: {
         priceId: "price_1Rc6srE06ubkhHJyYqZD2ko7",
-        mode: "payment"
+        mode: "payment" as const
       }
     };
 
     const planConfig = planConfigs[plan as keyof typeof planConfigs];
     if (!planConfig) {
-      console.error("Invalid plan:", plan);
+      console.error("Invalid plan:", plan, "Available plans:", Object.keys(planConfigs));
       return new Response(
         JSON.stringify({ error: "Invalid plan selected" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -155,22 +151,22 @@ serve(async (req) => {
 
     console.log("Using plan config:", planConfig);
 
-    // Determine URLs
-    const origin = req.headers.get("origin") || "https://preview--closer-ai-boost-58.lovable.app";
+    // Get origin for redirect URLs
+    const origin = req.headers.get("origin") || req.headers.get("referer")?.split('/').slice(0, 3).join('/') || "https://preview--closer-ai-boost-58.lovable.app";
     const successUrl = `${origin}/success?session_id={CHECKOUT_SESSION_ID}`;
     const cancelUrl = `${origin}/${plan === "mentorup" ? "mentorup" : "plans"}`;
 
-    console.log("Redirect URLs:", { successUrl, cancelUrl });
+    console.log("Checkout URLs:", { origin, successUrl, cancelUrl });
 
     // Create checkout session
-    const sessionConfig = {
+    const sessionParams = {
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [{
         price: planConfig.priceId,
         quantity: 1,
       }],
-      mode: planConfig.mode as "payment" | "subscription",
+      mode: planConfig.mode,
       success_url: successUrl,
       cancel_url: cancelUrl,
       metadata: {
@@ -181,17 +177,18 @@ serve(async (req) => {
       allow_promotion_codes: true,
     };
 
-    console.log("Creating session...");
+    console.log("Creating Stripe session with params:", JSON.stringify(sessionParams, null, 2));
 
     let session;
     try {
-      session = await stripe.checkout.sessions.create(sessionConfig);
-      console.log("Session created:", session.id);
+      session = await stripe.checkout.sessions.create(sessionParams);
+      console.log("Stripe session created successfully:", session.id);
+      console.log("Session URL:", session.url);
     } catch (stripeError) {
       console.error("Stripe session creation failed:", stripeError);
       return new Response(
         JSON.stringify({ 
-          error: "Payment session creation failed",
+          error: "Failed to create checkout session",
           details: stripeError.message 
         }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -201,19 +198,18 @@ serve(async (req) => {
     if (!session.url) {
       console.error("No session URL generated");
       return new Response(
-        JSON.stringify({ error: "Payment URL not generated" }),
+        JSON.stringify({ error: "Checkout URL not generated" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
     console.log("=== CHECKOUT SUCCESS ===");
-    console.log("Redirecting to:", session.url);
+    console.log("Returning session URL:", session.url);
 
     return new Response(
       JSON.stringify({ 
         url: session.url,
-        sessionId: session.id,
-        success: true
+        sessionId: session.id
       }),
       { 
         status: 200, 
@@ -223,12 +219,12 @@ serve(async (req) => {
 
   } catch (error) {
     console.error("=== CHECKOUT ERROR ===");
-    console.error("Error details:", error);
+    console.error("Error:", error);
     
     return new Response(
       JSON.stringify({ 
         error: "Internal server error",
-        message: error.message || "Unknown error"
+        message: error.message
       }),
       { 
         status: 500, 
