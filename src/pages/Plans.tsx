@@ -40,25 +40,26 @@ const Plans = () => {
       console.log('Calling create-checkout function...');
       console.log('Request payload:', { plan });
       
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: JSON.stringify({ plan: plan }),
+      const response = await fetch(`https://tezvfxwcnulzitnigesg.supabase.co/functions/v1/create-checkout`, {
+        method: 'POST',
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRlenZmeHdjbnVseml0bmlnZXNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAwODgxMjUsImV4cCI6MjA2NTY2NDEyNX0.OKFPwDVDWyTqMgy5BOSTzpISmOSjyjdMwy6j1Vyyxh4'
+        },
+        body: JSON.stringify({ plan })
       });
 
-      console.log('Function response:', { data, error });
-
-      if (error) {
-        console.error('Function error:', error);
-        toast({
-          title: "Erro no checkout",
-          description: error.message || "Erro ao processar pagamento. Tente novamente.",
-          variant: "destructive"
-        });
-        return;
+      console.log('Response status:', response.status);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Response error:', errorText);
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
+
+      const data = await response.json();
+      console.log('Function response data:', data);
 
       if (data?.url) {
         console.log('Redirecting to Stripe:', data.url);
@@ -81,7 +82,7 @@ const Plans = () => {
       console.error('Checkout error:', error);
       toast({
         title: "Erro no checkout",
-        description: "Erro interno. Tente novamente.",
+        description: error.message || "Erro interno. Tente novamente.",
         variant: "destructive"
       });
     } finally {

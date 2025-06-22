@@ -16,6 +16,8 @@ serve(async (req) => {
 
   try {
     console.log("=== CHECKOUT FUNCTION STARTED ===");
+    console.log("Request method:", req.method);
+    console.log("Request headers:", Object.fromEntries(req.headers.entries()));
     
     // Get Stripe key
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
@@ -65,29 +67,22 @@ serve(async (req) => {
 
     console.log("User authenticated:", user.email);
 
-    // Get request body - Try different approaches to parse the body
+    // Get request body
     let requestData;
     try {
-      const contentType = req.headers.get("content-type");
-      console.log("Content-Type:", contentType);
+      const bodyText = await req.text();
+      console.log("Raw request body:", bodyText);
       
-      if (contentType?.includes("application/json")) {
-        const bodyText = await req.text();
-        console.log("Raw request body:", bodyText);
-        
-        if (!bodyText || bodyText.trim() === '') {
-          console.error("Empty request body");
-          return new Response(
-            JSON.stringify({ error: "Request body is required" }),
-            { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-          );
-        }
-        
-        requestData = JSON.parse(bodyText);
-      } else {
-        // Try to get body as JSON directly
-        requestData = await req.json();
+      if (!bodyText || bodyText.trim() === '') {
+        console.error("Empty request body received");
+        return new Response(
+          JSON.stringify({ error: "Request body is required" }),
+          { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
       }
+      
+      requestData = JSON.parse(bodyText);
+      console.log("Parsed request data:", requestData);
     } catch (parseError) {
       console.error("Body parse error:", parseError);
       return new Response(
@@ -95,8 +90,6 @@ serve(async (req) => {
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
-
-    console.log("Parsed request data:", requestData);
 
     const { plan } = requestData;
     if (!plan) {
