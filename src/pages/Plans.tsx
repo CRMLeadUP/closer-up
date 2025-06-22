@@ -22,7 +22,6 @@ const Plans = () => {
     console.log('Usuário autenticado:', !!user);
     console.log('Sessão presente:', !!session);
     
-    // Verificar se o usuário está autenticado
     if (!session || !user) {
       console.log('ERRO: Usuário não autenticado');
       toast({
@@ -34,8 +33,6 @@ const Plans = () => {
       return;
     }
 
-    console.log('Token de acesso presente:', !!session.access_token);
-    
     if (!session.access_token) {
       console.log('ERRO: Token de acesso não encontrado');
       toast({
@@ -51,13 +48,9 @@ const Plans = () => {
     
     try {
       console.log('Chamando edge function create-checkout...');
-      console.log('Headers sendo enviados:', {
-        'Authorization': `Bearer ${session.access_token}`,
-        'Content-Type': 'application/json'
-      });
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { plan },
+        body: JSON.stringify({ plan }),
         headers: {
           'Authorization': `Bearer ${session.access_token}`,
           'Content-Type': 'application/json'
@@ -70,7 +63,7 @@ const Plans = () => {
         console.error('ERRO na função create-checkout:', error);
         toast({
           title: "Erro no checkout",
-          description: error.message || "Erro desconhecido",
+          description: error.message || "Edge function returned a non-2xx status code",
           variant: "destructive"
         });
         return;
@@ -78,16 +71,14 @@ const Plans = () => {
 
       if (data?.url) {
         console.log('URL do checkout recebida:', data.url);
+        
         toast({
           title: "Redirecionando para pagamento",
           description: "Você será redirecionado para o Stripe..."
         });
         
-        // Aguardar um momento para o usuário ver o toast
-        setTimeout(() => {
-          console.log('Redirecionando para:', data.url);
-          window.location.href = data.url;
-        }, 1500);
+        // Redirecionamento direto
+        window.location.href = data.url;
       } else {
         console.error('ERRO: URL não recebida');
         toast({

@@ -25,41 +25,28 @@ import { useSubscription } from "@/hooks/useSubscription";
 const Profile = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [isSigningOut, setIsSigningOut] = useState(false);
   const { toast } = useToast();
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, signOut } = useAuth();
   const { subscribed, subscription_tier, hasCloserUpAccess, hasMentorUpAccess, isLoading: subLoading } = useSubscription();
 
   const handleSignOut = async () => {
-    setIsSigningOut(true);
     try {
       console.log('Iniciando logout...');
-      const { error } = await supabase.auth.signOut();
+      await signOut();
       
-      if (error) {
-        console.error('Erro no logout:', error);
-        toast({
-          title: "Erro ao sair",
-          description: "Não foi possível sair da conta. Tente novamente.",
-          variant: "destructive"
-        });
-      } else {
-        console.log('Logout realizado com sucesso');
-        toast({
-          title: "Logout realizado",
-          description: "Você saiu da sua conta com sucesso."
-        });
-        navigate('/auth');
-      }
+      toast({
+        title: "Logout realizado",
+        description: "Você saiu da sua conta com sucesso."
+      });
+      
+      navigate('/auth');
     } catch (error) {
-      console.error('Erro geral no logout:', error);
+      console.error('Erro no logout:', error);
       toast({
         title: "Erro ao sair",
-        description: "Erro inesperado. Tente novamente.",
+        description: "Não foi possível sair da conta. Tente novamente.",
         variant: "destructive"
       });
-    } finally {
-      setIsSigningOut(false);
     }
   };
 
@@ -260,17 +247,9 @@ const Profile = () => {
             variant="outline" 
             className="w-full justify-start glass-effect text-red-400 border-red-400/30 hover:bg-red-400/10"
             onClick={handleSignOut}
-            disabled={isSigningOut}
           >
             <LogOut className="h-5 w-5 mr-3" />
-            {isSigningOut ? (
-              <div className="flex items-center gap-2">
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-red-400 border-t-transparent"></div>
-                Saindo...
-              </div>
-            ) : (
-              "Sair da Conta"
-            )}
+            Sair da Conta
           </Button>
         </div>
 

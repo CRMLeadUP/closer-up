@@ -24,14 +24,17 @@ serve(async (req) => {
     const stripeKey = Deno.env.get("STRIPE_SECRET_KEY");
     if (!stripeKey) {
       logStep("ERROR: STRIPE_SECRET_KEY not found");
-      throw new Error("STRIPE_SECRET_KEY is not set");
+      return new Response(JSON.stringify({ error: "Stripe key not configured" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 500,
+      });
     }
     logStep("Stripe key verified");
 
     const authHeader = req.headers.get("Authorization");
     if (!authHeader) {
       logStep("ERROR: No authorization header");
-      return new Response(JSON.stringify({ error: "No authorization header provided" }), {
+      return new Response(JSON.stringify({ error: "Authorization required" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 401,
       });
@@ -40,39 +43,50 @@ serve(async (req) => {
     const token = authHeader.replace("Bearer ", "");
     logStep("Token extracted", { tokenLength: token.length });
     
-    // Create supabase client with anon key for user verification
     const supabaseClient = createClient(
       Deno.env.get("SUPABASE_URL") ?? "",
       Deno.env.get("SUPABASE_ANON_KEY") ?? ""
     );
     
-    logStep("Extracting user from token");
-    
     const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) {
-      logStep("ERROR: Authentication failed", { error: userError.message });
-      return new Response(JSON.stringify({ error: `Authentication error: ${userError.message}` }), {
+    if (userError || !userData.user) {
+      logStep("ERROR: Authentication failed", { error: userError?.message });
+      return new Response(JSON.stringify({ error: "Authentication failed" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 401,
       });
     }
     
     const user = userData.user;
-    if (!user?.email) {
-      logStep("ERROR: User not authenticated or no email");
-      return new Response(JSON.stringify({ error: "User not authenticated or email not available" }), {
+    if (!user.email) {
+      logStep("ERROR: User email not available");
+      return new Response(JSON.stringify({ error: "User email required" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 401,
+        status: 400,
       });
     }
     logStep("User authenticated", { userId: user.id, email: user.email });
 
-    const requestBody = await req.json();
+    let requestBody;
+    try {
+      const bodyText = await req.text();
+      if (!bodyText) {
+        throw new Error("Empty request body");
+      }
+      requestBody = JSON.parse(bodyText);
+    } catch (parseError) {
+      logStep("ERROR: Invalid request body", { error: parseError.message });
+      return new Response(JSON.stringify({ error: "Invalid request body" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
+
     const { plan } = requestBody;
     
-    if (!plan || (plan !== "closerUp" && plan !== "closerAI" && plan !== "mentorup")) {
+    if (!plan || !["closerUp", "closerAI", "mentorup"].includes(plan)) {
       logStep("ERROR: Invalid plan", { plan });
-      return new Response(JSON.stringify({ error: "Invalid plan specified. Must be 'closerUp', 'closerAI', or 'mentorup'" }), {
+      return new Response(JSON.stringify({ error: "Invalid plan specified" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 400,
       });
@@ -81,17 +95,15 @@ serve(async (req) => {
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2023-10-16" });
     
-    // Check if customer exists
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
     let customerId;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
       logStep("Found existing customer", { customerId });
     } else {
-      logStep("No existing customer found, will create new one");
+      logStep("No existing customer found");
     }
 
-    // Price IDs for different plans
     const priceIds = {
       closerUp: "price_1Rb5oNE06ubkhHJygHtdcVJB",
       closerAI: "price_1Rb5oqE06ubkhHJyH7RW6SVC",
@@ -99,6 +111,13 @@ serve(async (req) => {
     };
 
     const priceId = priceIds[plan as keyof typeof priceIds];
+    if (!priceId) {
+      logStep("ERROR: Price ID not found for plan", { plan });
+      return new Response(JSON.stringify({ error: "Price not configured for plan" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+      });
+    }
     logStep("Using price ID", { priceId, plan });
 
     const origin = req.headers.get("origin") || "https://preview--closer-ai-boost-58.lovable.app";
@@ -134,7 +153,7 @@ serve(async (req) => {
     });
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    logStep("ERROR in create-checkout", { message: errorMessage, stack: error instanceof Error ? error.stack : undefined });
+    logStep("ERROR in create-checkout", { message: errorMessage });
     return new Response(JSON.stringify({ error: errorMessage }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
       status: 500,
