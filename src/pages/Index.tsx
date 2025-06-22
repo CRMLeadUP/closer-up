@@ -5,10 +5,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { 
   Brain, 
-  MessageSquare, 
-  User,
-  Menu,
-  X,
   Target,
   Award,
   TrendingUp,
@@ -34,19 +30,12 @@ const Index = () => {
     }
   }, [user]);
 
-  // Simulating user's current plan - in real app this would come from user context/auth
-  const userPlan = "free" as "free" | "premium" | "ai"; // Can be changed to "premium" or "ai" for testing
-
   const quickStats = [
     { value: "+5.2K", label: "Usuários", icon: Users },
     { value: "+35%", label: "Crescimento", icon: TrendingUp },
     { value: "4.8/5", label: "Avaliação", icon: Award },
     { value: "92%", label: "Conclusão", icon: Target }
   ];
-
-  const handleMentorUPClick = () => {
-    navigate('/mentorup');
-  };
 
   const handleStartOnboarding = () => {
     setShowOnboardingPrompt(false);
@@ -98,15 +87,15 @@ const Index = () => {
       <section className="px-4 pt-20 pb-8">
         <div className="text-center space-y-6">
           <Badge className="bg-sales-primary/20 text-sales-primary border-sales-primary/30">
-            🚀 Sua dupla perfeita para vendas
+            🚀 Treinamento profissional em vendas
           </Badge>
           
           <h1 className="text-3xl font-bold gradient-text">
-            CloserUP + MentorUP
+            CloserUP
           </h1>
           
           <p className="text-muted-foreground text-lg">
-            Treine como um profissional e tenha mentoria personalizada exclusiva
+            Treine como um profissional e domine as técnicas de vendas
           </p>
         </div>
       </section>
@@ -129,9 +118,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Main Features */}
+      {/* Main Feature */}
       <section className="px-4 pb-8">
-        <h2 className="text-xl font-bold mb-6 text-center">Escolha sua ferramenta</h2>
+        <h2 className="text-xl font-bold mb-6 text-center">Comece seu treinamento</h2>
         
         <div className="space-y-4">
           {/* CloserUP Card */}
@@ -156,37 +145,6 @@ const Index = () => {
               </p>
               <Button className="w-full btn-gradient">
                 🎯 Iniciar Treinamento
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* MentorUP Card */}
-          <Card 
-            className="card-glass hover:scale-105 transition-all duration-300 cursor-pointer"
-            onClick={handleMentorUPClick}
-          >
-            <CardHeader className="pb-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-sales-secondary to-sales-secondary/70 flex items-center justify-center">
-                  <MessageSquare className="h-6 w-6 text-white" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <CardTitle className="text-lg">MentorUP</CardTitle>
-                    <Badge className="text-xs bg-sales-secondary/20 text-sales-secondary border-sales-secondary/30">
-                      R$ 47,90
-                    </Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground">Mentoria Personalizada</p>
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <p className="text-sm text-muted-foreground mb-4">
-                1 hora de mentoria exclusiva + mapa mental + script personalizado
-              </p>
-              <Button className="w-full btn-gradient">
-                🎯 Agendar Mentoria
               </Button>
             </CardContent>
           </Card>

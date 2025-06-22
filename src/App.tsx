@@ -13,14 +13,12 @@ import TrainingQuiz from "./pages/TrainingQuiz";
 import TrainingSimulator from "./pages/TrainingSimulator";
 import TrainingSimulatorResult from "./pages/TrainingSimulatorResult";
 import TrainingCertificate from "./pages/TrainingCertificate";
-import MentorUP from "./pages/MentorUP";
 import Plans from "./pages/Plans";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Analytics from "./pages/Analytics";
 import Success from "./pages/Success";
 import Auth from "./pages/Auth";
-import Gamification from "./pages/Gamification";
 import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 
@@ -42,14 +40,12 @@ const App = () => (
           <Route path="/training/module/:moduleId/simulator/:lessonId" element={<TrainingSimulator />} />
           <Route path="/training/simulator/:moduleId/:lessonId/result" element={<TrainingSimulatorResult />} />
           <Route path="/training/certificate/:moduleId" element={<TrainingCertificate />} />
-          <Route path="/mentorup" element={<MentorUP />} />
           <Route path="/plans" element={<Plans />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/success" element={<Success />} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/gamification" element={<Gamification />} />
           <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

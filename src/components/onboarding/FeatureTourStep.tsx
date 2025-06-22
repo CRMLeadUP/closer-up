@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Brain, MessageSquare, Award, Target } from 'lucide-react';
+import { Brain, Target, Award, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const FeatureTourStep = () => {
@@ -20,25 +21,13 @@ const FeatureTourStep = () => {
       gradient: 'from-sales-primary to-sales-primary/70'
     },
     {
-      icon: MessageSquare,
-      title: 'CloserAI - Assistente',
-      description: 'Seu consultor de vendas pessoal 24/7',
-      details: [
-        '💬 Respostas instantâneas sobre vendas',
-        '🎯 Estratégias personalizadas',
-        '📝 Scripts e objection handling',
-        '🧠 Análise de conversas'
-      ],
-      gradient: 'from-sales-secondary to-sales-secondary/70'
-    },
-    {
       icon: Award,
-      title: 'Gamificação Avançada',
+      title: 'Sistema de Conquistas',
       description: 'Torne o aprendizado divertido e envolvente',
       details: [
         '🏅 Conquistas e badges exclusivos',
-        '📈 Rankings e competições',
-        '🎮 Desafios semanais',
+        '📈 Sistema de progressão',
+        '🎮 Desafios de aprendizado',
         '⭐ Sistema de níveis progressivos'
       ],
       gradient: 'from-sales-accent to-sales-success'
@@ -54,6 +43,18 @@ const FeatureTourStep = () => {
         '📋 Relatórios de progresso'
       ],
       gradient: 'from-sales-success to-sales-accent'
+    },
+    {
+      icon: TrendingUp,
+      title: 'Crescimento Contínuo',
+      description: 'Evolua constantemente suas habilidades',
+      details: [
+        '📚 Conteúdo sempre atualizado',
+        '🔄 Feedback personalizado',
+        '💡 Dicas e insights',
+        '📈 Melhoria contínua'
+      ],
+      gradient: 'from-sales-secondary to-sales-primary'
     }
   ];
 
