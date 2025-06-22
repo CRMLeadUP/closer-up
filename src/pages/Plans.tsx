@@ -17,12 +17,11 @@ const Plans = () => {
   const { session, user } = useAuth();
 
   const handleCheckout = async (plan: string) => {
-    console.log('=== INICIANDO CHECKOUT PLANS ===');
-    console.log('Plano selecionado:', plan);
-    console.log('Timestamp:', new Date().toISOString());
+    console.log('=== PLANS CHECKOUT START ===');
+    console.log('Plan:', plan);
     
     if (!session || !user) {
-      console.log('ERRO: Usuário não autenticado');
+      console.log('User not authenticated');
       toast({
         title: "Login necessário",
         description: "Faça login para continuar com a compra",
@@ -33,7 +32,7 @@ const Plans = () => {
     }
 
     if (!session.access_token) {
-      console.log('ERRO: Token de acesso não encontrado');
+      console.log('No access token');
       toast({
         title: "Erro de autenticação",
         description: "Token de acesso não encontrado. Faça login novamente.",
@@ -43,21 +42,12 @@ const Plans = () => {
       return;
     }
 
-    console.log('Usuário autenticado:', {
-      userId: user.id,
-      email: user.email,
-      plan,
-      tokenLength: session.access_token.length
-    });
-
+    console.log('User authenticated:', user.email);
     setIsLoading(true);
     
     try {
-      // Preparar dados do checkout
       const checkoutData = { plan };
-      console.log('Dados preparados para checkout:', checkoutData);
-      
-      console.log('Invocando edge function create-checkout...');
+      console.log('Sending checkout request:', checkoutData);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: checkoutData,
@@ -67,67 +57,37 @@ const Plans = () => {
         }
       });
 
-      console.log('Resposta da edge function:', {
-        data,
-        error,
-        timestamp: new Date().toISOString()
-      });
+      console.log('Checkout response:', { data, error });
 
       if (error) {
-        console.error('ERRO retornado pela edge function:', error);
-        
-        let errorMessage = "Erro no checkout";
-        
-        if (error.message) {
-          errorMessage = error.message;
-        } else if (typeof error === 'string') {
-          errorMessage = error;
-        } else if (error.code) {
-          errorMessage = `Erro ${error.code}: ${error.details || 'Tente novamente'}`;
-        }
-        
+        console.error('Checkout error:', error);
         toast({
           title: "Erro no checkout",
-          description: errorMessage,
+          description: error.message || "Tente novamente em alguns segundos.",
           variant: "destructive"
         });
         return;
       }
 
       if (data?.url) {
-        console.log('URL do checkout recebida:', data.url);
-        console.log('SessionId:', data.sessionId);
-        
+        console.log('Redirecting to:', data.url);
         toast({
-          title: "Redirecionando para pagamento",
+          title: "Redirecionando",
           description: "Você será redirecionado para o Stripe..."
         });
         
-        // Redirecionamento direto
-        console.log('Executando redirecionamento...');
-        setTimeout(() => {
-          console.log('Redirecionando para:', data.url);
-          window.location.href = data.url;
-        }, 500);
-        
+        // Redirect immediately
+        window.location.href = data.url;
       } else {
-        console.error('ERRO: URL não recebida');
-        console.log('Dados completos:', data);
-        
+        console.error('No URL in response:', data);
         toast({
           title: "Erro no checkout",
-          description: "Não foi possível obter a URL de pagamento. Tente novamente.",
+          description: "URL de pagamento não foi gerada. Tente novamente.",
           variant: "destructive"
         });
       }
     } catch (error) {
-      console.error('ERRO CRÍTICO no checkout:', error);
-      console.error('Detalhes do erro:', {
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : 'N/A',
-        type: typeof error
-      });
-      
+      console.error('Checkout exception:', error);
       toast({
         title: "Erro no checkout",
         description: "Erro interno. Tente novamente em alguns segundos.",
@@ -353,7 +313,7 @@ const Plans = () => {
                      }`}
                      disabled={plan.current || isLoading}
                      onClick={() => {
-                       console.log('Botão clicado para plano:', plan.name);
+                       console.log('Button clicked for plan:', plan.name);
                        if (plan.name === "Premium") {
                          handleCheckout("closerUp");
                        } else if (plan.name === "MentorUP") {

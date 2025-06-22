@@ -21,11 +21,10 @@ const MentorUP = () => {
   const navigate = useNavigate();
 
   const handleCheckout = async () => {
-    console.log('=== INICIANDO CHECKOUT MENTORUP ===');
-    console.log('Timestamp:', new Date().toISOString());
+    console.log('=== MENTORUP CHECKOUT START ===');
     
     if (!user || !session) {
-      console.log('ERRO: Usuário não autenticado');
+      console.log('User not authenticated');
       toast({
         title: "Login necessário",
         description: "Faça login para agendar sua mentoria",
@@ -36,7 +35,7 @@ const MentorUP = () => {
     }
 
     if (!session.access_token) {
-      console.log('ERRO: Token de acesso não encontrado');
+      console.log('No access token');
       toast({
         title: "Erro de autenticação",
         description: "Token de acesso não encontrado. Faça login novamente.",
@@ -46,24 +45,12 @@ const MentorUP = () => {
       return;
     }
 
-    console.log('Usuário autenticado:', {
-      userId: user.id,
-      email: user.email,
-      tokenLength: session.access_token.length
-    });
-
+    console.log('User authenticated:', user.email);
     setIsLoading(true);
 
     try {
-      // Preparar dados para o checkout
       const checkoutData = { plan: 'mentorup' };
-      console.log('Dados do checkout preparados:', checkoutData);
-      
-      console.log('Fazendo chamada para edge function...');
-      console.log('Headers que serão enviados:', {
-        'Authorization': `Bearer ${session.access_token.substring(0, 20)}...`,
-        'Content-Type': 'application/json'
-      });
+      console.log('Sending checkout request:', checkoutData);
       
       const { data, error } = await supabase.functions.invoke('create-checkout', {
         body: checkoutData,
@@ -73,69 +60,38 @@ const MentorUP = () => {
         }
       });
 
-      console.log('Resposta recebida da edge function:', {
-        data,
-        error,
-        timestamp: new Date().toISOString()
-      });
+      console.log('Checkout response:', { data, error });
 
       if (error) {
-        console.error('ERRO retornado pela edge function:', error);
-        
-        let errorMessage = "Erro no checkout";
-        
-        if (error.message) {
-          errorMessage = error.message;
-        } else if (typeof error === 'string') {
-          errorMessage = error;
-        } else if (error.code) {
-          errorMessage = `Erro ${error.code}: ${error.details || 'Tente novamente'}`;
-        }
-        
+        console.error('Checkout error:', error);
         toast({
           title: "Erro no checkout",
-          description: errorMessage,
+          description: error.message || "Tente novamente em alguns segundos.",
           variant: "destructive"
         });
         return;
       }
 
       if (data?.url) {
-        console.log('URL do checkout recebida:', data.url);
-        console.log('SessionId:', data.sessionId);
-        
+        console.log('Redirecting to:', data.url);
         toast({
-          title: "Redirecionando para pagamento",
-          description: "Você será redirecionado para o checkout do Stripe..."
+          title: "Redirecionando",
+          description: "Você será redirecionado para o pagamento..."
         });
         
-        // Redirecionamento direto e imediato
-        console.log('Iniciando redirecionamento...');
-        setTimeout(() => {
-          console.log('Executando redirecionamento para:', data.url);
-          window.location.href = data.url;
-        }, 500);
-        
+        // Redirect immediately
+        window.location.href = data.url;
       } else {
-        console.error('ERRO: URL não recebida');
-        console.log('Dados completos recebidos:', data);
-        
+        console.error('No URL in response:', data);
         toast({
           title: "Erro no checkout",
-          description: "Não foi possível obter a URL de pagamento. Tente novamente.",
+          description: "URL de pagamento não foi gerada. Tente novamente.",
           variant: "destructive"
         });
       }
 
     } catch (error) {
-      console.error('ERRO CRÍTICO no checkout:', error);
-      console.error('Tipo do erro:', typeof error);
-      console.error('Detalhes completos:', {
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : 'N/A',
-        name: error instanceof Error ? error.name : 'Unknown'
-      });
-      
+      console.error('Checkout exception:', error);
       toast({
         title: "Erro no checkout",
         description: "Erro interno. Tente novamente em alguns segundos.",
@@ -285,7 +241,7 @@ const MentorUP = () => {
                   {isLoading ? (
                     <div className="flex items-center gap-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      Processando checkout...
+                      Processando...
                     </div>
                   ) : (
                     "🚀 Agendar Mentoria - R$ 47,90"
