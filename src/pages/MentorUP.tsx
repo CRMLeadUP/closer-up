@@ -15,16 +15,15 @@ import { BookingTab } from "@/components/mentor/BookingTab";
 import { BenefitsTab } from "@/components/mentor/BenefitsTab";
 
 const MentorUP = () => {
+  const [selectedPlan] = useState("mentorup");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const { user, session } = useAuth();
   const navigate = useNavigate();
 
   const handleCheckout = async () => {
-    console.log('=== MENTORUP CHECKOUT START ===');
-    
+    // Check if user is authenticated
     if (!user || !session) {
-      console.log('User not authenticated');
       toast({
         title: "Login necessário",
         description: "Faça login para agendar sua mentoria",
@@ -34,67 +33,33 @@ const MentorUP = () => {
       return;
     }
 
-    if (!session.access_token) {
-      console.log('No access token');
-      toast({
-        title: "Erro de autenticação",
-        description: "Token de acesso não encontrado. Faça login novamente.",
-        variant: "destructive"
-      });
-      navigate('/auth');
-      return;
-    }
-
-    console.log('User authenticated:', user.email);
     setIsLoading(true);
 
     try {
-      const checkoutData = { plan: 'mentorup' };
-      console.log('Sending checkout request:', checkoutData);
-      
       const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: checkoutData,
+        body: {
+          plan: 'mentorup'
+        },
         headers: {
-          'Authorization': `Bearer ${session.access_token}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${session.access_token}`
         }
       });
 
-      console.log('Checkout response:', { data, error });
+      if (error) throw error;
 
-      if (error) {
-        console.error('Checkout error:', error);
-        toast({
-          title: "Erro no checkout",
-          description: error.message || "Tente novamente em alguns segundos.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      if (data?.url) {
-        console.log('Redirecting to:', data.url);
-        toast({
-          title: "Redirecionando",
-          description: "Você será redirecionado para o pagamento..."
-        });
-        
-        // Redirect immediately
-        window.location.href = data.url;
-      } else {
-        console.error('No URL in response:', data);
-        toast({
-          title: "Erro no checkout",
-          description: "URL de pagamento não foi gerada. Tente novamente.",
-          variant: "destructive"
-        });
-      }
+      // Open Stripe checkout in a new tab
+      window.open(data.url, '_blank');
+      
+      toast({
+        title: "Redirecionando para pagamento",
+        description: "Após o pagamento, você poderá escolher data e horário"
+      });
 
     } catch (error) {
-      console.error('Checkout exception:', error);
+      console.error('Error creating checkout:', error);
       toast({
         title: "Erro no checkout",
-        description: "Erro interno. Tente novamente em alguns segundos.",
+        description: "Tente novamente ou entre em contato",
         variant: "destructive"
       });
     } finally {
@@ -238,14 +203,7 @@ const MentorUP = () => {
                   onClick={handleCheckout}
                   disabled={isLoading}
                 >
-                  {isLoading ? (
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                      Processando...
-                    </div>
-                  ) : (
-                    "🚀 Agendar Mentoria - R$ 47,90"
-                  )}
+                  {isLoading ? "Processando..." : "🚀 Agendar Mentoria - R$ 47,90"}
                 </Button>
                 <Button 
                   variant="outline" 

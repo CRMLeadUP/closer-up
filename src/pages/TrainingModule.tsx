@@ -14,12 +14,7 @@ import {
   Star,
   Lock,
   Play,
-  Crown,
-  Users,
-  Zap,
-  Heart,
-  Target,
-  TrendingUp
+  Crown
 } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,7 +35,7 @@ const TrainingModule = () => {
     "1": {
       title: "Perfis Comportamentais",
       description: "Identifique e adapte estratégias ao perfil do cliente",
-      icon: Users,
+      icon: Brain,
       totalLessons: 10,
       duration: "3h 15min",
       xpReward: 250,
@@ -137,7 +132,7 @@ const TrainingModule = () => {
     "2": {
       title: "Gatilhos Mentais",
       description: "Técnicas de persuasão e construção de urgência",
-      icon: Zap,
+      icon: Brain,
       totalLessons: 12,
       duration: "3h 45min",
       xpReward: 300,
@@ -251,7 +246,7 @@ const TrainingModule = () => {
     "3": {
       title: "Rapport e Conexão",
       description: "Como criar conexão e confiança com o cliente",
-      icon: Heart,
+      icon: Brain,
       totalLessons: 6,
       duration: "2h 15min",
       xpReward: 200,
@@ -312,9 +307,9 @@ const TrainingModule = () => {
       ]
     },
     "4": {
-      title: "Quebra de Objeções",  
+      title: "Quebra de Objeções",
       description: "Respostas práticas para situações comuns",
-      icon: Target,
+      icon: Brain,
       totalLessons: 10,
       duration: "4h 20min",
       xpReward: 350,
@@ -411,7 +406,7 @@ const TrainingModule = () => {
     "5": {
       title: "Estratégias de Fechamento",
       description: "Técnicas para finalizar vendas com sucesso",
-      icon: TrendingUp,
+      icon: Brain,
       totalLessons: 8,
       duration: "2h 50min",
       xpReward: 280,
@@ -493,6 +488,7 @@ const TrainingModule = () => {
   const module = moduleData[moduleId as keyof typeof moduleData];
   if (!module) return <div>Módulo não encontrado</div>;
 
+  // Check if user has access to this module
   const hasAccess = () => {
     if (module.planRequired === "free") return true;
     if (module.planRequired === "premium" && (userPlan === "premium" || userPlan === "ai")) return true;

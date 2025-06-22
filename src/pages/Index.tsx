@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,7 +16,6 @@ import {
 } from "lucide-react";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
-import AdManager from "@/components/AdManager";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useOnboarding } from "@/contexts/OnboardingContext";
@@ -58,16 +58,6 @@ const Index = () => {
       <OnboardingOverlay />
       <MobileHeader />
       
-      {/* Banner Ad no topo */}
-      <div className="px-4 pt-20">
-        <AdManager 
-          adType="banner" 
-          className="mb-4"
-          onAdLoaded={() => console.log('Banner ad loaded')}
-          onAdError={(error) => console.error('Banner ad error:', error)}
-        />
-      </div>
-      
       {/* Onboarding Prompt */}
       {showOnboardingPrompt && (
         <div className="fixed bottom-20 left-4 right-4 z-40 animate-slide-in-right">
@@ -105,7 +95,7 @@ const Index = () => {
       )}
       
       {/* Hero Section */}
-      <section className="px-4 pt-4 pb-8">
+      <section className="px-4 pt-20 pb-8">
         <div className="text-center space-y-6">
           <Badge className="bg-sales-primary/20 text-sales-primary border-sales-primary/30">
             🚀 Sua dupla perfeita para vendas
@@ -137,15 +127,6 @@ const Index = () => {
             );
           })}
         </div>
-      </section>
-
-      {/* Ad Banner entre seções */}
-      <section className="px-4 pb-4">
-        <AdManager 
-          adType="banner" 
-          className="mb-4"
-          onAdLoaded={() => console.log('Mid-section banner loaded')}
-        />
       </section>
 
       {/* Main Features */}
