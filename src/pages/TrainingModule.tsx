@@ -29,7 +29,7 @@ import AppBottomNav from "@/components/AppBottomNav";
 const TrainingModule = () => {
   const navigate = useNavigate();
   const { moduleId } = useParams();
-  const [completedLessons, setCompletedLessons] = useState<number[]>([1, 2]);
+  const [completedLessons, setCompletedLessons] = useState<number[]>([]);
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
 
