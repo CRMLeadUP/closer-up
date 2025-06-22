@@ -29,6 +29,8 @@ const Index = () => {
   const { startOnboarding } = useOnboarding();
   const { shouldShowOnboarding } = useAppFlow();
 
+  console.log('Index render - user:', user?.email, 'loading:', loading, 'shouldShowOnboarding:', shouldShowOnboarding);
+
   const quickStats = [
     { value: "+5.2K", label: "Usuários", icon: Users },
     { value: "+35%", label: "Crescimento", icon: TrendingUp },
@@ -40,13 +42,9 @@ const Index = () => {
     navigate('/mentorup');
   };
 
-  // Renderizar onboarding apenas se necessário
-  if (shouldShowOnboarding) {
-    return <OnboardingOverlay />;
-  }
-
-  // Loading muito simples
+  // Loading muito simples - apenas mostrar spinner
   if (loading) {
+    console.log('Showing loading spinner');
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="animate-spin rounded-full h-8 w-8 border-2 border-sales-primary border-t-transparent"></div>
@@ -54,7 +52,14 @@ const Index = () => {
     );
   }
 
-  // Sempre renderizar o conteúdo principal
+  // Renderizar onboarding apenas se necessário E não estiver carregando
+  if (!loading && shouldShowOnboarding) {
+    console.log('Showing onboarding overlay');
+    return <OnboardingOverlay />;
+  }
+
+  // Sempre renderizar o conteúdo principal se não estiver em loading
+  console.log('Rendering main dashboard content');
   return (
     <div className="min-h-screen bg-background text-foreground">
       <MobileHeader />

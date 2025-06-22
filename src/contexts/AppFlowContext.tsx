@@ -30,20 +30,29 @@ export const AppFlowProvider = ({ children }: { children: React.ReactNode }) => 
   const [shouldShowOnboarding, setShouldShowOnboarding] = useState(false);
 
   const completeOnboarding = () => {
+    console.log('Completing onboarding');
     localStorage.setItem('hasSeenOnboarding', 'true');
     setShouldShowOnboarding(false);
     setIsFirstTime(false);
   };
 
-  // Lógica muito simplificada - só mostrar onboarding em condições muito específicas
+  // Lógica super simples - só mostrar onboarding em condições muito específicas
   useEffect(() => {
-    if (loading) return;
+    console.log('AppFlowContext effect - loading:', loading, 'user:', user?.email);
+    
+    if (loading) {
+      console.log('Still loading auth, not setting onboarding state');
+      return;
+    }
 
     const hasSeenOnboarding = localStorage.getItem('hasSeenOnboarding');
+    console.log('hasSeenOnboarding:', hasSeenOnboarding);
     
     // Só mostrar onboarding se estiver na home, logado e nunca viu antes
     const isOnHome = window.location.pathname === '/';
     const shouldShow = user && isOnHome && !hasSeenOnboarding;
+    
+    console.log('Onboarding conditions - isOnHome:', isOnHome, 'user exists:', !!user, 'shouldShow:', shouldShow);
     
     setShouldShowOnboarding(!!shouldShow);
     setIsFirstTime(!hasSeenOnboarding);
