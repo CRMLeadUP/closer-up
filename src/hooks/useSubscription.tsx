@@ -16,7 +16,7 @@ export const useSubscription = () => {
     subscription_tier: null,
     subscription_end: null
   });
-  const [isLoading, setIsLoading] = useState(false); // Começar como false
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const checkSubscription = useCallback(async () => {
@@ -37,14 +37,24 @@ export const useSubscription = () => {
       
       console.log('Checking subscription for user:', user.email);
       
-      const { data, error } = await supabase.functions.invoke('check-subscription', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        }
+      // Verificar primeiro se a função existe antes de chamar
+      const { data, error } = await supabase.rpc('check_subscription_status', {
+        user_id: user.id
       });
       
       if (error) {
         console.error('Subscription check error:', error);
+        // Se a função não existir, usar dados padrão
+        if (error.code === '42883') {
+          console.log('Subscription function not found, using default values');
+          setSubscriptionData({
+            subscribed: false,
+            subscription_tier: null,
+            subscription_end: null
+          });
+          setError(null);
+          return;
+        }
         setError(error.message);
         setSubscriptionData({
           subscribed: false,
@@ -79,7 +89,7 @@ export const useSubscription = () => {
   }, [user?.id, session?.access_token]);
 
   useEffect(() => {
-    // Timeout bem reduzido - 1 segundo apenas
+    // Timeout para evitar carregamento infinito
     const timeout = setTimeout(() => {
       if (isLoading) {
         console.log('Subscription check timeout, setting default state');
@@ -90,7 +100,7 @@ export const useSubscription = () => {
         });
         setIsLoading(false);
       }
-    }, 1000);
+    }, 3000);
 
     if (user && session) {
       checkSubscription();

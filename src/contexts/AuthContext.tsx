@@ -59,7 +59,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     let mounted = true;
 
-    // Função para verificar admin status
+    // Função para verificar admin status com fallback
     const checkAdminStatus = async (userId: string) => {
       try {
         const { data } = await supabase
@@ -73,6 +73,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setIsAdmin(!!data);
         }
       } catch (error) {
+        console.log('Admin check failed (normal for non-admin users):', error);
         if (mounted) {
           setIsAdmin(false);
         }
@@ -93,26 +94,34 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Verificar admin status sem bloquear
           checkAdminStatus(session.user.id);
           
-          // Mostrar mensagem de boas-vindas para Google
-          if (event === 'SIGNED_IN' && session.user?.app_metadata?.provider === 'google') {
+          // Mostrar mensagem de boas-vindas para login bem-sucedido
+          if (event === 'SIGNED_IN') {
+            const provider = session.user?.app_metadata?.provider;
             setTimeout(() => {
               const isNewUser = new Date(session.user.created_at).getTime() > (Date.now() - 60000);
               toast({
                 title: isNewUser ? "Bem-vindo ao CloserUP!" : "Login realizado com sucesso!",
-                description: `${isNewUser ? 'Conta criada com sucesso via Google.' : 'Bem-vindo de volta!'}`
+                description: `${isNewUser ? 'Conta criada com sucesso' : 'Bem-vindo de volta!'} ${provider === 'google' ? 'via Google' : ''}`
               });
             }, 1000);
           }
         } else {
           setIsAdmin(false);
         }
+        
+        // Sempre definir loading como false após processar mudança de estado
+        setLoading(false);
       }
     );
 
-    // Verificar sessão inicial
+    // Verificar sessão inicial com timeout
     const initializeAuth = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('Error getting session:', error);
+        }
         
         if (mounted) {
           console.log('Initial session:', session?.user?.email);
@@ -126,20 +135,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setLoading(false);
         }
       } catch (error) {
-        console.error('Error getting session:', error);
+        console.error('Error initializing auth:', error);
         if (mounted) {
           setLoading(false);
         }
       }
     };
 
+    // Timeout para garantir que loading não fica infinito
+    const loadingTimeout = setTimeout(() => {
+      if (mounted && loading) {
+        console.log('Auth initialization timeout, setting loading to false');
+        setLoading(false);
+      }
+    }, 5000);
+
     initializeAuth();
 
     return () => {
       mounted = false;
       subscription.unsubscribe();
+      clearTimeout(loadingTimeout);
     };
-  }, [toast]);
+  }, [toast, loading]);
 
   return (
     <AuthContext.Provider value={{ 
