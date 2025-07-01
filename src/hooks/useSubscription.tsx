@@ -37,24 +37,11 @@ export const useSubscription = () => {
       
       console.log('Checking subscription for user:', user.email);
       
-      // Verificar primeiro se a função existe antes de chamar
-      const { data, error } = await supabase.rpc('check_subscription_status', {
-        user_id: user.id
-      });
+      // Usar a edge function que criamos
+      const { data, error } = await supabase.functions.invoke('check-subscription-status');
       
       if (error) {
         console.error('Subscription check error:', error);
-        // Se a função não existir, usar dados padrão
-        if (error.code === '42883') {
-          console.log('Subscription function not found, using default values');
-          setSubscriptionData({
-            subscribed: false,
-            subscription_tier: null,
-            subscription_end: null
-          });
-          setError(null);
-          return;
-        }
         setError(error.message);
         setSubscriptionData({
           subscribed: false,
@@ -66,8 +53,12 @@ export const useSubscription = () => {
       
       console.log('Subscription data received:', data);
       
-      if (data) {
-        setSubscriptionData(data);
+      if (data && typeof data === 'object') {
+        setSubscriptionData({
+          subscribed: data.subscribed || false,
+          subscription_tier: data.subscription_tier || null,
+          subscription_end: data.subscription_end || null
+        });
       } else {
         setSubscriptionData({
           subscribed: false,
