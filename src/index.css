@@ -36,6 +36,13 @@
     --ring: 222.2 84% 4.9%;
  
     --radius: 0.5rem;
+
+    /* Sales theme colors */
+    --sales-primary: 262 83% 58%;
+    --sales-secondary: 296 76% 50%;
+    --sales-accent: 323 77% 58%;
+    --sales-success: 142 76% 36%;
+    --sales-warning: 48 96% 53%;
   }
  
   .dark {
@@ -69,6 +76,13 @@
     --ring: 217.2 32.6% 17.5%;
  
     --radius: 0.5rem;
+
+    /* Sales theme colors (dark mode) */
+    --sales-primary: 262 83% 58%;
+    --sales-secondary: 296 76% 50%;
+    --sales-accent: 323 77% 58%;
+    --sales-success: 142 76% 36%;
+    --sales-warning: 48 96% 53%;
   }
 }
  
@@ -128,10 +142,81 @@
   @apply bg-gray-50 dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-4 text-center text-sm text-gray-500;
 }
 
+/* Desktop layout styles */
+.web-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.hero-section {
+  background: linear-gradient(135deg, rgba(119, 42, 255, 0.1) 0%, rgba(255, 92, 161, 0.1) 100%);
+  border-radius: 24px;
+  padding: 48px 32px;
+  margin-bottom: 48px;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+/* Navigation header for web */
+.web-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.dark .web-header {
+  background: rgba(34, 34, 34, 0.95);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
 /* Store-ready optimizations */
 @media (max-width: 320px) {
   .mobile-sm {
     font-size: 14px;
     padding: 8px;
+  }
+}
+
+/* Desktop responsive breakpoints */
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+  
+  .web-only {
+    display: block !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .web-only {
+    display: none !important;
+  }
+  
+  .mobile-only {
+    display: block !important;
+  }
+  
+  .hero-section {
+    padding: 32px 24px;
+    margin-bottom: 32px;
+  }
+  
+  .web-container {
+    padding: 0 16px;
   }
 }
