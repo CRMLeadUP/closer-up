@@ -137,7 +137,7 @@ const Success = () => {
           <div className="space-y-3 pt-4">
             <Button 
               className="w-full btn-gradient"
-              onClick={() => navigate('/training')}
+              onClick={() => navigate('/training/module/1')}
             >
               🎯 Começar Treinamento
             </Button>

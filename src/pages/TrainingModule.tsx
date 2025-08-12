@@ -25,6 +25,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import MobileHeader from "@/components/MobileHeader";
 import AppBottomNav from "@/components/AppBottomNav";
+import { useSubscription } from "@/hooks/useSubscription";
 
 const TrainingModule = () => {
   const navigate = useNavigate();
@@ -33,8 +34,8 @@ const TrainingModule = () => {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
   const [currentVideoUrl, setCurrentVideoUrl] = useState("");
 
-  // Simulating user's current plan - in real app this would come from user context/auth
-  const userPlan = "free" as "free" | "premium" | "ai"; // Can be changed to "premium" or "ai" for testing
+  // Real subscription data from useSubscription hook
+  const { hasCloserUpAccess } = useSubscription();
 
   const moduleData = {
     "1": {
@@ -495,8 +496,7 @@ const TrainingModule = () => {
 
   const hasAccess = () => {
     if (module.planRequired === "free") return true;
-    if (module.planRequired === "premium" && (userPlan === "premium" || userPlan === "ai")) return true;
-    if (module.planRequired === "ai" && userPlan === "ai") return true;
+    if (module.planRequired === "premium") return hasCloserUpAccess();
     return false;
   };
 
